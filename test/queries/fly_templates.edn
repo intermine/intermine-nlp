@@ -1,0 +1,4171 @@
+{:AnatomyTerm_Alleles
+ {:description
+  "Find all D. melanogaster alleles that have a phenotype in  a specific anatomical structure and that are from a certain allele class. (Data Source: FlyBase)",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.alleles.organism.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.alleles.phenotypeAnnotations.description",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*eye disc*"}
+   {:path "Gene.alleles.alleleClass",
+    :op "LIKE",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*loss of function*"}],
+  :name "AnatomyTerm_Alleles",
+  :rank "23",
+  :title "Phenotype --> Alleles",
+  :comment "",
+  :constraintLogic "B and A and C",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.alleles.alleleClass"
+   "Gene.alleles.primaryIdentifier"
+   "Gene.alleles.secondaryIdentifier"
+   "Gene.alleles.phenotypeAnnotations.description"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Mutagen_Allele
+ {:description
+  "Find all D. melanogaster gene alleles created in a certain way. Give the corresponding gene for the allele. (Data Source: FlyBase).",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.alleles.mutagens.description",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "P-element activity"}],
+  :name "Mutagen_Allele",
+  :rank "112",
+  :title "Mutagen class --> Alleles ",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.alleles.primaryIdentifier"
+   "Gene.alleles.secondaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.alleles.mutagens.description"
+   "Gene.alleles.dataSets.dataSource.name"],
+  :orderBy [{:Gene.alleles.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Stage_FlyFishBDGP
+ {:description
+  "For a given embryonic stage of Drosophila melanogaster, show which genes are expressed or not expressed according to the FlyFish and BDGP in situ projects.",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene.mRNAExpressionResults.stages.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "embryonic stage 7"}],
+  :name "Stage_FlyFishBDGP",
+  :rank "67",
+  :title "Stage --> FlyFish + BDGP in situ data",
+  :comment "",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.mRNAExpressionResults.expressed"
+   "Gene.mRNAExpressionResults.stageRange"
+   "Gene.mRNAExpressionResults.dataSet.name"],
+  :model {:name "genomic"}},
+ :Gene_TranscriptOrthologue
+ {:description
+  "Show the transcript identifiers for a particular gene and the transcript identifiers of its predicted orthologues. (Data Source: InParanoid, Drosophila Consortium).",
+  :tags ["im:aspect:Homology" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG12399",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_TranscriptOrthologue",
+  :rank "63",
+  :title "Gene --> Transcript + Transcripts for orthologues",
+  :comment "07.06.07 updated to work from gene class - Philip",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.transcripts.primaryIdentifier"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.type"
+   "Gene.homologues.homologue.organism.name"
+   "Gene.homologues.homologue.transcripts.primaryIdentifier"
+   "Gene.homologues.dataSets.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_RegionLocation
+ {:description
+  "For a specific gene from D. melanogaster, show its Cis-Regulatory Modules, their chromosomal locations and lengths. (Data Source: REDfly)",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.regulatoryRegions", :type "CRM"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG1454",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_RegionLocation",
+  :rank "75",
+  :title "Gene --> CRMs",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :constraintLogic "B and A",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.regulatoryRegions.primaryIdentifier"
+   "Gene.regulatoryRegions.chromosome.primaryIdentifier"
+   "Gene.regulatoryRegions.chromosomeLocation.start"
+   "Gene.regulatoryRegions.chromosomeLocation.end"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Organism_GOtermsOrthologues
+ {:description
+  "Show the GO terms for all genes in a particular organism which have an orthologue in another organism.",
+  :tags ["im:aspect:Function" "im:aspect:Homology" "im:public"],
+  :where
+  [{:path "Gene.homologues.type",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "orthologue"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.homologues.homologue.organism.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "Homo sapiens"}],
+  :name "Organism_GOtermsOrthologues",
+  :rank "27",
+  :title
+  "Organism --> GO terms + Orthologues in one specific organism",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.homologues.homologue.primaryIdentifier"
+   "Gene.homologues.homologue.symbol"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :ProbeSet_FlyAtlas
+ {:description
+  "Show the expression data of the following probeset in the FlyAtlas experiments. (Data Source: Affymetrix, FlyAtlas).",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "ProbeSet.dataSets.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "FlyAtlas"}
+   {:path "ProbeSet.results", :type "FlyAtlasResult"}
+   {:path "ProbeSet.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1622901_at"}],
+  :name "ProbeSet_FlyAtlas",
+  :rank "86",
+  :title "Probeset --> FlyAtlas expression data",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["ProbeSet.primaryIdentifier"
+   "ProbeSet.results.presentCall"
+   "ProbeSet.results.enrichment"
+   "ProbeSet.results.affyCall"
+   "ProbeSet.dataSets.name"
+   "ProbeSet.results.dataSets.name"
+   "ProbeSet.results.tissue.name"],
+  :orderBy [{:ProbeSet.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Protein_GeneChromosomeLength
+ {:description
+  "Show the gene that codes for the following protein, with its chromosomal location and length.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Protein",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "P19107"}],
+  :name "Protein_GeneChromosomeLength",
+  :rank "19",
+  :title "Protein --> Gene",
+  :comment "06.06.07 updated to work from protein class - Philip",
+  :select
+  ["Protein.primaryAccession"
+   "Protein.genes.secondaryIdentifier"
+   "Protein.genes.symbol"
+   "Protein.genes.chromosome.primaryIdentifier"
+   "Protein.genes.chromosomeLocation.start"
+   "Protein.genes.chromosomeLocation.end"
+   "Protein.genes.chromosomeLocation.strand"
+   "Protein.genes.length"],
+  :orderBy [{:Protein.primaryAccession "ASC"}],
+  :model {:name "genomic"}},
+ :organismGenes_GOterms
+ {:description
+  "Show the GO terms for all genes from a specified organism.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "organismGenes_GOterms",
+  :rank "39",
+  :title "Genes [all] --> GO terms",
+  :comment "",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.description"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :INDAC_GeneLocation
+ {:description
+  "For a particular INDAC long oligo, search for corresponding D. melanoster genes and show their chromosomal coordinates.",
+  :tags ["im:public"],
+  :where
+  [{:path "MicroarrayOligo.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1000030702"}],
+  :name "INDAC_GeneLocation",
+  :rank "108",
+  :title "INDAC long oligo --> Genes",
+  :comment "",
+  :select
+  ["MicroarrayOligo.primaryIdentifier"
+   "MicroarrayOligo.transcript.primaryIdentifier"
+   "MicroarrayOligo.transcript.gene.secondaryIdentifier"
+   "MicroarrayOligo.transcript.gene.symbol"
+   "MicroarrayOligo.transcript.gene.chromosome.primaryIdentifier"
+   "MicroarrayOligo.transcript.gene.chromosomeLocation.start"
+   "MicroarrayOligo.transcript.gene.chromosomeLocation.end"],
+  :orderBy [{:MicroarrayOligo.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_proteindomain
+ {:description
+  "Show protein domain information for the proteins of a specified gene.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "notch",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_proteindomain",
+  :rank "94",
+  :title "Gene --> Protein + Domains",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.proteins.uniprotAccession"
+   "Gene.proteins.proteinDomainRegions.proteinDomain.name"
+   "Gene.proteins.proteinDomainRegions.proteinDomain.type"
+   "Gene.proteins.proteinDomainRegions.start"
+   "Gene.proteins.proteinDomainRegions.end"
+   "Gene.proteins.proteinDomainRegions.identifier"
+   "Gene.proteins.proteinDomainRegions.database"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :organism_allmiRNA
+ {:description "Show all miRNA for a specified organism.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "MiRNA.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "organism_allmiRNA",
+  :rank "87",
+  :title "Organism --> All miRNA",
+  :comment "",
+  :select
+  ["MiRNA.primaryIdentifier"
+   "MiRNA.chromosome.primaryIdentifier"
+   "MiRNA.chromosomeLocation.start"
+   "MiRNA.chromosomeLocation.end"
+   "MiRNA.chromosomeLocation.strand"],
+  :orderBy [{:MiRNA.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :ListPathway
+ {:description
+  "For a given Gene A (or List A of Genes) show any associated Pathway(s) in common with Gene B (or List B of Genes). Datasource: KEGG or REACTOME. Keywords: pathways, cascade, metabolism, reaction",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "N",
+    :extraValue "D. melanogaster"}
+   {:path "Gene.pathways.genes",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ser",
+    :extraValue "D. melanogaster"}],
+  :name "ListPathway",
+  :rank "70",
+  :title "Gene A --> Pathways <-- Gene B ",
+  :comment "Under development for in-list comparisons: ML",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.pathways.genes.primaryIdentifier"
+   "Gene.pathways.genes.symbol"
+   "Gene.pathways.genes.name"
+   "Gene.pathways.name"
+   "Gene.pathways.identifier"
+   "Gene.pathways.dataSets.name"
+   "Gene.pathways.genes.organism.shortName"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :AnatomyTerm_Region
+ {:description
+  "Show all the Cis-Regulatory Modules from REDfly that have been associated with a specific anatomy ontology term. (Data Source: REDfly).",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "CRM.gene.regulatoryRegions.dataSets.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "REDfly Drosophila transcriptional cis-regulatory modules"}
+   {:path "CRM.anatomyOntology.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*neuro*"}],
+  :name "AnatomyTerm_Region",
+  :rank "95",
+  :title "Anatomy term --> CRMs",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["CRM.anatomyOntology.name"
+   "CRM.primaryIdentifier"
+   "CRM.chromosome.primaryIdentifier"
+   "CRM.chromosomeLocation.start"
+   "CRM.chromosomeLocation.end"
+   "CRM.length"
+   "CRM.publications.pubMedId"
+   "CRM.gene.regulatoryRegions.dataSets.dataSource.name"],
+  :orderBy [{:CRM.anatomyOntology.name "ASC"}],
+  :model {:name "genomic"}},
+ :GOTerm_Gene2
+ {:description
+  "Show genes annotated with a specified GO term.  Optionally constrain the organism and the evidence code. (Includes 'with' annotation: the 'with' field holds an additional identifier for annotations using certain evidence codes) ",
+  :tags ["im:aspect:Function" "im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.goAnnotation.ontologyTerm", :type "GOTerm"}
+   {:path "Gene.goAnnotation.ontologyTerm.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "protein binding"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "Drosophila melanogaster"}],
+  :name "GOTerm_Gene2",
+  :rank "3",
+  :joins ["Gene.goAnnotation.evidence.with"],
+  :title "GO term --> Genes",
+  :comment "",
+  :constraintLogic "B and C",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.evidence.code.code"
+   "Gene.goAnnotation.evidence.with.primaryIdentifier"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_CDSs
+ {:description
+  "For the selected organism retrieve all genes and their coding sequences, suitable for export as GFF3 or FASTA.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "Gene_CDSs",
+  :rank "41",
+  :title "Organism --> All genes and CDSs",
+  :comment "",
+  :select
+  ["Gene.symbol"
+   "Gene.primaryIdentifier"
+   "Gene.CDSs.primaryIdentifier"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :FlyFish_Genes
+ {:description
+  "For a certain embryonic stage of D. melanogaster and a given expression term, show all the genes that are expressed according to the FlyFISH project.",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene.mRNAExpressionResults.expressed",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "true"}
+   {:path "Gene.mRNAExpressionResults.dataSet.name",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "fly-Fish data set"}
+   {:path "Gene.mRNAExpressionResults.stageRange",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "stage 4-5 (fly-FISH)"}
+   {:path "Gene.mRNAExpressionResults.mRNAExpressionTerms.name",
+    :op "=",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*blastoderm nuclei*"}],
+  :name "FlyFish_Genes",
+  :rank "79",
+  :title "FlyFISH expression term + Stage --> Genes",
+  :comment "",
+  :constraintLogic "A and B and C and D",
+  :select
+  ["Gene.mRNAExpressionResults.stageRange"
+   "Gene.mRNAExpressionResults.mRNAExpressionTerms.name"
+   "Gene.mRNAExpressionResults.gene.primaryIdentifier"
+   "Gene.mRNAExpressionResults.gene.secondaryIdentifier"
+   "Gene.mRNAExpressionResults.gene.symbol"
+   "Gene.mRNAExpressionResults.expressed"],
+  :orderBy [{:Gene.mRNAExpressionResults.stageRange "ASC"}],
+  :model {:name "genomic"}},
+ :ECnumber_gene_protein
+ {:description
+  "For a specified Enzyme Commission (EC)number show the corresponding genes and proteins in a particular organism.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Protein.genes.organism.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Protein.ecNumbers.identifier",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1.2.1.*"}],
+  :name "ECnumber_gene_protein",
+  :rank "90",
+  :title
+  "Enzyme Commission number --> Genes + Proteins in a specified organism",
+  :comment "",
+  :constraintLogic "B and C",
+  :select
+  ["Protein.ecNumbers.identifier"
+   "Protein.genes.primaryIdentifier"
+   "Protein.genes.symbol"
+   "Protein.genes.name"
+   "Protein.primaryAccession"
+   "Protein.primaryIdentifier"
+   "Protein.genes.organism.name"],
+  :orderBy [{:Protein.genes.name "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_AlleleStocks
+ {:description
+  "For a specified gene or list of genes show the alleles and the stocks available.  Optionally, you can filter the search with a specific allele of the gene and/or show only those stocks available from a specified stock centre.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "eve",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_AlleleStocks",
+  :rank "59",
+  :title "Gene --> Alleles + stocks",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["Gene.symbol"
+   "Gene.primaryIdentifier"
+   "Gene.alleles.primaryIdentifier"
+   "Gene.alleles.symbol"
+   "Gene.alleles.alleleClass"
+   "Gene.alleles.phenotypeAnnotations.description"
+   "Gene.alleles.phenotypeAnnotations.annotationType"
+   "Gene.alleles.stocks.primaryIdentifier"
+   "Gene.alleles.stocks.stockCenter"
+   "Gene.alleles.stocks.type"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :Chromosome_CRMOverlappingInsertion
+ {:description
+  "For a specific chromosome from D. melanogaster, show all CRMs with insertions. Show the chromosomal locations for each CRM and each insertion. (Data Source: REDfly, FlyBase).",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "CRM.overlappingFeatures",
+    :type "TransposableElementInsertionSite"}
+   {:path "CRM.chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2L"}],
+  :name "Chromosome_CRMOverlappingInsertion",
+  :rank "100",
+  :title "Chromosome --> All CRMs with insertions",
+  :comment "",
+  :select
+  ["CRM.primaryIdentifier"
+   "CRM.chromosome.primaryIdentifier"
+   "CRM.chromosomeLocation.start"
+   "CRM.chromosomeLocation.end"
+   "CRM.dataSets.dataSource.name"
+   "CRM.overlappingFeatures.primaryIdentifier"
+   "CRM.overlappingFeatures.chromosome.primaryIdentifier"
+   "CRM.overlappingFeatures.chromosomeLocation.start"
+   "CRM.overlappingFeatures.chromosomeLocation.end"
+   "CRM.overlappingFeatures.dataSets.dataSource.name"],
+  :orderBy [{:CRM.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :GO_Gene
+ {:description
+  "Find all genes that are associated with a particular  GO term in a specific organism. This template will return genes that have been assigned the given GO term as well as genes that have a more specific GO term.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.goAnnotation.ontologyTerm.parents", :type "GOTerm"}
+   {:path "Gene.goAnnotation.ontologyTerm", :type "GOTerm"}
+   {:path "Gene.goAnnotation.ontologyTerm.parents.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "DNA binding"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "GO_Gene",
+  :rank "5",
+  :title
+  "GO term name [and children of this term] --> Genes in one specific organism",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.goAnnotation.ontologyTerm.parents.name"
+   "Gene.goAnnotation.ontologyTerm.parents.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.identifier"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :NaturalTransposableElement_InsertedElements
+ {:description
+  "For a particular transposable element show the individual elements and their chromosomal locations.",
+  :tags ["im:public"],
+  :where
+  [{:path "NaturalTransposableElement",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "FBte0000007",
+    :extraValue "D. melanogaster"}],
+  :name "NaturalTransposableElement_InsertedElements",
+  :rank "107",
+  :title
+  "Natural Transposable Element --> Inserted Elements + Chromosomal Location",
+  :comment "",
+  :select
+  ["NaturalTransposableElement.primaryIdentifier"
+   "NaturalTransposableElement.symbol"
+   "NaturalTransposableElement.transposableElements.primaryIdentifier"
+   "NaturalTransposableElement.transposableElements.symbol"
+   "NaturalTransposableElement.transposableElements.chromosome.primaryIdentifier"
+   "NaturalTransposableElement.transposableElements.chromosomeLocation.start"
+   "NaturalTransposableElement.transposableElements.chromosomeLocation.end"
+   "NaturalTransposableElement.transposableElements.chromosomeLocation.strand"],
+  :orderBy [{:NaturalTransposableElement.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_AdjacentGene_FlyAtlas_upstream
+ {:description
+  "For a particular gene or set of genes, give the upstream adjacent gene and FlyAtlas data that satisifies certain constraints. (Note: the FlyAtlas data is for the adjacent gene).  ",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path
+    "Gene.upstreamIntergenicRegion.adjacentGenes.microArrayResults",
+    :type "FlyAtlasResult"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG10009"}
+   {:path
+    "Gene.upstreamIntergenicRegion.adjacentGenes.microArrayResults.mRNASignal",
+    :op ">=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "100.0"}
+   {:path
+    "Gene.upstreamIntergenicRegion.adjacentGenes.microArrayResults.enrichment",
+    :op ">=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2.0"}
+   {:path
+    "Gene.upstreamIntergenicRegion.adjacentGenes.microArrayResults.affyCall",
+    :op "=",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Up"}],
+  :name "Gene_AdjacentGene_FlyAtlas_upstream",
+  :rank "105",
+  :title "Gene --> Adjacent Genes (upstream) + FlyAtlas data",
+  :comment "",
+  :constraintLogic "A and B and C and D",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.upstreamIntergenicRegion.adjacentGenes.secondaryIdentifier"
+   "Gene.upstreamIntergenicRegion.adjacentGenes.microArrayResults.mRNASignal"
+   "Gene.upstreamIntergenicRegion.adjacentGenes.microArrayResults.enrichment"
+   "Gene.upstreamIntergenicRegion.adjacentGenes.microArrayResults.tissue.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_GOAll
+ {:description
+  "Given a gene show the associated GO terms, and all parents to the top of the directed graph. The query returns a column containing the assigned GO term and a column containing all parents of that primary assignment.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG11348",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_GOAll",
+  :rank "37",
+  :title "Gene --> GO terms + Parents of those terms",
+  :comment "",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.parents.name"
+   "Gene.goAnnotation.qualifier"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :AlleleClass_Allele
+ {:description
+  "Find all D. melanogaster gene alleles from a certain allele type. List the corresponding genes. (Data Source: FlyBase).",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.alleles.organism.name",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.alleles.alleleClass",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*hypomorph*"}],
+  :name "AlleleClass_Allele",
+  :rank "109",
+  :title "Allele class --> Alleles",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.alleles.primaryIdentifier"
+   "Gene.alleles.secondaryIdentifier"
+   "Gene.alleles.alleleClass"
+   "Gene.symbol"],
+  :orderBy [{:Gene.alleles.secondaryIdentifier "DESC"}],
+  :model {:name "genomic"}},
+ :Protein_PublicationAll
+ {:description
+  "This search returns the publications referenced by Uniprot AND the publications for the Gene.  This gives two columns of pubmed Ids: the first for the publications from Uniprot and the second for the publications for the Gene.  To create a single list of all publications, create a list for the first set and then add the second set to this list using the functions under 'Create/Add to list'.",
+  :tags ["im:public"],
+  :where
+  [{:path "Protein",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "3-hydroxyacyl-CoA dehydrogenase type-2 "}
+   {:path "Protein.organism.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "Protein_PublicationAll",
+  :rank "115",
+  :title "Protein --> Publications (All)",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Protein.name"
+   "Protein.uniprotAccession"
+   "Protein.genes.symbol"
+   "Protein.genes.primaryIdentifier"
+   "Protein.genes.publications.pubMedId"
+   "Protein.publications.pubMedId"],
+  :orderBy [{:Protein.name "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_DrosophilaOrthologues
+ {:description
+  "For a particular Drosophila gene or list of genes show the orthologues in the other Drosophila species.",
+  :tags ["im:aspect:Homology" "im:public"],
+  :where
+  [{:path "Gene.homologues.homologue.organism.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*Drosophila*"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "zen",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_DrosophilaOrthologues",
+  :rank "31",
+  :title "Gene --> Orthologues in other Drosophila species",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.homologues.homologue.primaryIdentifier"
+   "Gene.homologues.homologue.secondaryIdentifier"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.homologue.organism.name"
+   "Gene.homologues.type"
+   "Gene.homologues.dataSets.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :PointMutation_Gene_Chromosome
+ {:description
+  "For a particular point mutation in D. melanogaster, search for overlapping genes. Show chromosomal coordinates for the point mutation and the genes. (Data Source: FlyBase).",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "PointMutation.overlappingFeatures", :type "Gene"}
+   {:path "PointMutation.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "trp[14]-2"}],
+  :name "PointMutation_Gene_Chromosome",
+  :rank "102",
+  :title "Point mutation --> Genes",
+  :comment "",
+  :select
+  ["PointMutation.primaryIdentifier"
+   "PointMutation.chromosome.primaryIdentifier"
+   "PointMutation.chromosomeLocation.start"
+   "PointMutation.chromosomeLocation.end"
+   "PointMutation.chromosomeLocation.strand"
+   "PointMutation.overlappingFeatures.primaryIdentifier"
+   "PointMutation.overlappingFeatures.symbol"
+   "PointMutation.overlappingFeatures.chromosomeLocation.start"
+   "PointMutation.overlappingFeatures.chromosomeLocation.end"
+   "PointMutation.overlappingFeatures.chromosomeLocation.strand"
+   "PointMutation.dataSets.dataSource.name"],
+  :orderBy [{:PointMutation.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :GotermGene2genes
+ {:description
+  "For a particular gene(s), show whether it is annotated to a specified GO term.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.goAnnotation.ontologyTerm", :type "GOTerm"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "notch",
+    :extraValue "D. melanogaster"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.goAnnotation.ontologyTerm.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "protein binding"}],
+  :name "GotermGene2genes",
+  :rank "83",
+  :joins ["Gene.goAnnotation.evidence.with"],
+  :title "Gene + Go Term -> Genes",
+  :comment "",
+  :constraintLogic "A and B and C and D and E",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.evidence.code.code"
+   "Gene.goAnnotation.evidence.with.primaryIdentifier"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :GOterm_GenesInsertions
+ {:description
+  "Show all D. melanogaster genes that have been annotated with a particular GO term and that have insertions. (Data Source: GO, FlyBase).",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.goAnnotation.ontologyTerm", :type "GOTerm"}
+   {:path "Gene.overlappingFeatures",
+    :type "TransposableElementInsertionSite"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.goAnnotation.ontologyTerm.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "neuropeptide receptor activity"}],
+  :name "GOterm_GenesInsertions",
+  :rank "81",
+  :title "GO term name --> All genes with insertions",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.overlappingFeatures.primaryIdentifier"
+   "Gene.overlappingFeatures.symbol"
+   "Gene.overlappingFeatures.dataSets.dataSource.name"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :ChromLocation_TFBindingSiteLocationGeneFactor
+ {:description
+  "For a particular D. melanogaster chromosomal location, show all REDfly TF binding sites with their locations and associated genes and transcription factors. (Data Source: REDfly).",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "TFBindingSite.gene.regulatoryRegions.dataSets.name",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "REDfly Drosophila transcription factor binding sites"}
+   {:path "TFBindingSite.gene.regulatoryRegions",
+    :type "TFBindingSite"}
+   {:path "TFBindingSite.chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "3R"}
+   {:path "TFBindingSite.chromosomeLocation.start",
+    :op ">",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "9000000"}
+   {:path "TFBindingSite.chromosomeLocation.end",
+    :op "<",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "10000000"}],
+  :name "ChromLocation_TFBindingSiteLocationGeneFactor",
+  :rank "69",
+  :title "Chromosomal location -->  TF binding sites",
+  :comment "",
+  :constraintLogic "A and C and B and D",
+  :select
+  ["TFBindingSite.chromosome.primaryIdentifier"
+   "TFBindingSite.chromosomeLocation.start"
+   "TFBindingSite.chromosomeLocation.end"
+   "TFBindingSite.primaryIdentifier"
+   "TFBindingSite.gene.primaryIdentifier"
+   "TFBindingSite.gene.name"
+   "TFBindingSite.factor.primaryIdentifier"
+   "TFBindingSite.factor.name"
+   "TFBindingSite.gene.regulatoryRegions.dataSets.dataSource.name"],
+  :orderBy [{:TFBindingSite.chromosome.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_upstreamRegulatoryRegions
+ {:description
+  "For a particular gene, show any regulatory elements found in its upstream intergenic region and the chromosome location of these regions. Regulatory elements can include: CRMs and TF binding sites from REDfly and enhancers from FlyBase. (Data Source: REDfly, FlyBase).",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "Gene.upstreamIntergenicRegion.overlappingFeatures",
+    :type "RegulatoryRegion"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "zen",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_upstreamRegulatoryRegions",
+  :rank "21",
+  :title
+  "Gene --> Regulatory elements in the upstream intergenic region",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.upstreamIntergenicRegion.primaryIdentifier"
+   "Gene.upstreamIntergenicRegion.overlappingFeatures.primaryIdentifier"
+   "Gene.upstreamIntergenicRegion.overlappingFeatures.chromosome.primaryIdentifier"
+   "Gene.upstreamIntergenicRegion.overlappingFeatures.chromosomeLocation.start"
+   "Gene.upstreamIntergenicRegion.overlappingFeatures.chromosomeLocation.end"
+   "Gene.upstreamIntergenicRegion.overlappingFeatures.dataSets.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Probe
+ {:description
+  "Show affymetrix probes for a particular gene. (Data Source: Ensembl). ",
+  :tags ["im:public"],
+  :where
+  [{:path "Gene.probeSets.dataSets.dataSource.name",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Ensembl"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG4722"}],
+  :name "Gene_Probe",
+  :rank "47",
+  :title "Gene --> Affymetrix probe",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :constraintLogic "A and B and D",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.probeSets.primaryIdentifier"
+   "Gene.probeSets.dataSets.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_RNA_seq
+ {:description
+  "For a specified gene or set of genes show the RNA_seq expression levels.  Optionally constrain your search to genes with a particular expression level or score and/or show expression at a particular developmental stage.  Data source: modENCODE RNA_seq data analysed by FlyBAse.  Note:  The expression scores are binned into the expression levels as follows: No/Extremely low expression: 0-0; Very low expression: 1-3; Low expression: 4-10; Moderate expression: 11-25; Moderately high expression: 26-50; High expression: 51-100; Very high expression: 101-1000; Extremely high expression: >1000;",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "eve",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_RNA_seq",
+  :rank "16",
+  :title "Gene --> RNA_seq expression",
+  :comment "",
+  :constraintLogic "A and B and C and D",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.rnaSeqResults.stage"
+   "Gene.rnaSeqResults.expressionScore"
+   "Gene.rnaSeqResults.expressionLevel"],
+  :orderBy [{:Gene.rnaSeqResults.stage "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_AdjacentGene_FlyAtlas_downstream
+ {:description
+  "For a particular gene or set of genes, give the downstream adjacent gene and any FlyAtlas data that satisfies certain constraints.  ",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path
+    "Gene.downstreamIntergenicRegion.adjacentGenes.microArrayResults",
+    :type "FlyAtlasResult"}
+   {:path "Gene.downstreamIntergenicRegion.adjacentGenes",
+    :op "!=",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Gene"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG10267",
+    :extraValue "D. melanogaster"}
+   {:path
+    "Gene.downstreamIntergenicRegion.adjacentGenes.microArrayResults.mRNASignal",
+    :op ">=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "100.0"}
+   {:path
+    "Gene.downstreamIntergenicRegion.adjacentGenes.microArrayResults.enrichment",
+    :op ">=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2.0"}
+   {:path
+    "Gene.downstreamIntergenicRegion.adjacentGenes.microArrayResults.affyCall",
+    :op "=",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Up"}],
+  :name "Gene_AdjacentGene_FlyAtlas_downstream",
+  :rank "89",
+  :title "Gene --> Adjacent Gene (downstream) + FlyAtlas data",
+  :comment "",
+  :constraintLogic "A and B and C and D and E",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.downstreamIntergenicRegion.adjacentGenes.secondaryIdentifier"
+   "Gene.downstreamIntergenicRegion.adjacentGenes.microArrayResults.mRNASignal"
+   "Gene.downstreamIntergenicRegion.adjacentGenes.microArrayResults.enrichment"
+   "Gene.downstreamIntergenicRegion.adjacentGenes.microArrayResults.tissue.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Probe_Gene
+ {:description
+  "For specified Affymetrix probeset(s) show the corresponding gene. (Data Source: Ensembl).",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.probeSets",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "155099_at"}],
+  :name "Probe_Gene",
+  :rank "71",
+  :title "Affymetrix probeset --> Gene",
+  :comment "",
+  :constraintLogic "A and B",
+  :select ["Gene.probeSets.primaryIdentifier" "Gene.symbol"],
+  :model {:name "genomic"}},
+ :Gene_AdjacentGenesLocations
+ {:description
+  "For a particular gene, find the upstream and the downstream adjacent genes and their chromosome locations.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.upstreamIntergenicRegion.adjacentGenes",
+    :op "!=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Gene"}
+   {:path "Gene.downstreamIntergenicRegion.adjacentGenes",
+    :op "!=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Gene"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG10021"}],
+  :name "Gene_AdjacentGenesLocations",
+  :rank "106",
+  :title
+  "Gene --> Adjacent genes (upstream and downstream) + chromosome locations",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.chromosomeLocation.strand"
+   "Gene.downstreamIntergenicRegion.adjacentGenes.primaryIdentifier"
+   "Gene.downstreamIntergenicRegion.adjacentGenes.symbol"
+   "Gene.downstreamIntergenicRegion.adjacentGenes.chromosomeLocation.start"
+   "Gene.downstreamIntergenicRegion.adjacentGenes.chromosomeLocation.end"
+   "Gene.downstreamIntergenicRegion.adjacentGenes.chromosomeLocation.strand"
+   "Gene.upstreamIntergenicRegion.adjacentGenes.primaryIdentifier"
+   "Gene.upstreamIntergenicRegion.adjacentGenes.symbol"
+   "Gene.upstreamIntergenicRegion.adjacentGenes.chromosomeLocation.start"
+   "Gene.upstreamIntergenicRegion.adjacentGenes.chromosomeLocation.end"
+   "Gene.upstreamIntergenicRegion.adjacentGenes.chromosomeLocation.strand"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Intergenic_RegRegion
+ {:description
+  "For the following intergenic region from D. melanogaster, show all regulatory elements with their chromosomal locations and lengths. Regulatory elements can include: CRMs and TF binding sites from REDfly, enhancers from FlyBase and predicted sites from Tiffin. (Data Source: FlyBase, REDfly, Tiffin).",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "IntergenicRegion.overlappingFeatures",
+    :type "RegulatoryRegion"}
+   {:path "IntergenicRegion.organism.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "IntergenicRegion.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "intergenic_region_chr2L_10295386..10295858"}],
+  :name "Intergenic_RegRegion",
+  :rank "111",
+  :title "Intergenic region --> Regulatory elements",
+  :comment
+  "templates duplicates results when intergenic identifier is in output",
+  :constraintLogic "B and A",
+  :select
+  ["IntergenicRegion.primaryIdentifier"
+   "IntergenicRegion.overlappingFeatures.primaryIdentifier"
+   "IntergenicRegion.overlappingFeatures.chromosomeLocation.start"
+   "IntergenicRegion.overlappingFeatures.chromosomeLocation.end"
+   "IntergenicRegion.overlappingFeatures.length"
+   "IntergenicRegion.overlappingFeatures.dataSets.name"],
+  :orderBy [{:IntergenicRegion.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_pathway_interactions
+ {:description
+  "For a specified gene or gene list, show any interactions with genes involved in a specified pathway.",
+  :tags ["im:aspect:Function" "im:aspect:Interactions" "im:public"],
+  :where
+  [{:path "Gene.interactions.participant2", :type "Gene"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Chc",
+    :extraValue "D. melanogaster"}
+   {:path "Gene.interactions.participant2.pathways.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ABC-family proteins mediated transport"}],
+  :name "Gene_pathway_interactions",
+  :rank "28",
+  :title "Gene + Pathway --> Interactions",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.interactions.participant2.primaryIdentifier"
+   "Gene.interactions.participant2.symbol"
+   "Gene.interactions.details.type"
+   "Gene.interactions.participant2.pathways.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :modENCODE_RNA_seq_Tissues
+ {:description
+  "Show genes expressed in a set of tissues/stages according to the modENCODE RNA_seq data.  The expression scores are binned into the expression levels as follows: No/Extremely low expression: 0-0; Very low expression: 1-3; Low expression: 4-10; Moderate expression: 11-25; Moderately high expression: 26-50; High expression: 51-100; Very high expression: 101-1000; Extremely high expression: >1000;",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene.rnaSeqResults.stage",
+    :op "ONE OF",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :values
+    ["A MateF 1d head"
+     "A MateF 20d head"
+     "A MateF 4d head"
+     "A MateM 1d head"
+     "A MateM 20d head"
+     "A MateM 4d acc gland"
+     "A MateM 4d head"
+     "A MateM 4d testis"
+     "A VirF 1d head"
+     "A VirF 20d head"
+     "A VirF 4d head"
+     "CNS ML-DmBG1-c1"
+     "CNS ML-DmBG2-c2"
+     "L3 CNS"
+     "L3 Wand carcass"
+     "L3 Wand dig sys"
+     "L3 Wand fat"
+     "L3 Wand imag disc"
+     "L3 Wand saliv"]}
+   {:path "Gene.rnaSeqResults.expressionLevel",
+    :op "ONE OF",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :values
+    ["Extremely high expression"
+     "High expression"
+     "High level expression"
+     "Moderately high expression"
+     "Very high expression"]}],
+  :name "modENCODE_RNA_seq_Tissues",
+  :rank "52",
+  :title "RNA_seq --> Genes expressed in a set of tissues",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.symbol"
+   "Gene.rnaSeqResults.stage"
+   "Gene.rnaSeqResults.expressionLevel"
+   "Gene.rnaSeqResults.expressionScore"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Pathway
+ {:description
+  "Show the Pathway identifier(s) and name for the selected gene.",
+  :tags ["im:aspect:Function" "im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "bsk",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_Pathway",
+  :rank "2",
+  :title "Gene -->  Pathway",
+  :comment "",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.pathways.identifier"
+   "Gene.pathways.name"
+   "Gene.pathways.dataSets.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_INDAC
+ {:description
+  "For a particular Drosophila gene, search for corresponding INDAC long oligos.",
+  :tags ["im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG1046",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_INDAC",
+  :rank "113",
+  :title "Gene --> INDAC long oligos",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.transcripts.primaryIdentifier"
+   "Gene.transcripts.microarrayOligos.primaryIdentifier"
+   "Gene.transcripts.microarrayOligos.length"
+   "Gene.transcripts.microarrayOligos.tm"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Transcript_INDAC
+ {:description
+  "For specified transcript(s) show the corresponding INDAC microarray long oligo, along with its tm, length and sequence.",
+  :tags ["im:public"],
+  :where
+  [{:path "Transcript",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG10000-RA"}],
+  :name "Transcript_INDAC",
+  :rank "98",
+  :title "Transcript --> INDAC long oligo",
+  :comment "06.06.07 updated to work from transcript class - Philip",
+  :select
+  ["Transcript.primaryIdentifier"
+   "Transcript.microarrayOligos.primaryIdentifier"
+   "Transcript.microarrayOligos.tm"
+   "Transcript.microarrayOligos.length"
+   "Transcript.microarrayOligos.sequence.residues"],
+  :orderBy [{:Transcript.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_RegulatoryRegion
+ {:description
+  "Show all known regulatory elements for a particular D. melanogaster gene. Regulatory elements can include: CRMs and TF binding sites from REDfly and enhancers from FlyBase. (Data Source: REDfly, FlyBase).",
+  :tags
+  ["im:aspect:Genes" "im:aspect:Regulation" "im:public" "im:report"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "dpp"}],
+  :name "Gene_RegulatoryRegion",
+  :rank "9",
+  :title "Gene --> Regulatory elements",
+  :comment "",
+  :constraintLogic "A and C",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.regulatoryRegions.primaryIdentifier"
+   "Gene.regulatoryRegions.chromosome.primaryIdentifier"
+   "Gene.regulatoryRegions.sequenceOntologyTerm.name"
+   "Gene.regulatoryRegions.chromosomeLocation.end"
+   "Gene.regulatoryRegions.chromosomeLocation.start"
+   "Gene.regulatoryRegions.dataSets.dataSource.name"
+   "Gene.regulatoryRegions.sequence.residues"],
+  :orderBy [{:Gene.regulatoryRegions.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Organism_3UTR
+ {:description "Show all 3' UTRs for a particular organism.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.UTRs", :type "ThreePrimeUTR"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "Organism_3UTR",
+  :rank "66",
+  :title "Organism --> All 3' UTRs",
+  :comment "",
+  :select
+  ["Gene.UTRs.primaryIdentifier"
+   "Gene.UTRs.length"
+   "Gene.UTRs.chromosomeLocation.start"
+   "Gene.UTRs.chromosomeLocation.end"
+   "Gene.secondaryIdentifier"],
+  :orderBy [{:Gene.UTRs.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Protein
+ {:description "Show the proteins for a particular gene",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG1046"}],
+  :name "Gene_Protein",
+  :rank "45",
+  :title "Gene --> Proteins",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.proteins.primaryIdentifier"
+   "Gene.proteins.primaryAccession"
+   "Gene.proteins.isUniprotCanonical"
+   "Gene.proteins.molecularWeight"
+   "Gene.proteins.length"
+   "Gene.proteins.isFragment"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :miRNAtargetGene_miRNAgene
+ {:description
+  "For a specified gene show any microRNA genes that are known to target it. (DataSet: miRBase).",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.miRNAtargets.target.gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "FBgn0026876",
+    :extraValue "D. melanogaster"}],
+  :name "miRNAtargetGene_miRNAgene",
+  :rank "44",
+  :joins ["Gene.miRNAtargets.dataSets"],
+  :title "Gene --> microRNA (miRNA) gene",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.miRNAtargets.target.gene.secondaryIdentifier"
+   "Gene.miRNAtargets.target.gene.symbol"
+   "Gene.miRNAtargets.target.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.miRNAtargets.pvalue"
+   "Gene.miRNAtargets.dataSets.name"],
+  :orderBy
+  [{:Gene.miRNAtargets.target.gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :ChromLocation_CRMOverlappingTFBindingsite
+ {:description
+  "For a specific chromosomal location of D. melanogaster, show all CRMs and the TF binding sites that overlap these CRMs, according to REDfly. Show the chromosomal positions and lengths of all CRMs and TF binding sites.",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "CRM.overlappingFeatures", :type "TFBindingSite"}
+   {:path "CRM.chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2R"}
+   {:path "CRM.chromosomeLocation.start",
+    :op ">=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "9000000"}
+   {:path "CRM.chromosomeLocation.end",
+    :op "<=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "10000000"}],
+  :name "ChromLocation_CRMOverlappingTFBindingsite",
+  :rank "80",
+  :title
+  "Chromosomal location --> CRMs + TF binding sites overlapping these CRMs",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["CRM.primaryIdentifier"
+   "CRM.length"
+   "CRM.chromosome.primaryIdentifier"
+   "CRM.chromosomeLocation.start"
+   "CRM.chromosomeLocation.end"
+   "CRM.overlappingFeatures.primaryIdentifier"
+   "CRM.overlappingFeatures.length"
+   "CRM.overlappingFeatures.chromosome.primaryIdentifier"
+   "CRM.overlappingFeatures.chromosomeLocation.start"
+   "CRM.overlappingFeatures.chromosomeLocation.end"],
+  :orderBy [{:CRM.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :ChromLocation_GeneTranscriptExon
+ {:description
+  "For a specified organism and chromosomal location show all genes, transcripts and exons.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Chromosome.locatedFeatures.feature", :type "Exon"}
+   {:path "Chromosome.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Chromosome.primaryIdentifier",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2L"}
+   {:path "Chromosome.locatedFeatures.start",
+    :op ">=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1"}
+   {:path "Chromosome.locatedFeatures.end",
+    :op "<",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "10000"}],
+  :name "ChromLocation_GeneTranscriptExon",
+  :rank "51",
+  :title "Chromosomal location --> All genes + Transcripts + Exons",
+  :comment "",
+  :constraintLogic "A and B and C and D",
+  :select
+  ["Chromosome.primaryIdentifier"
+   "Chromosome.organism.name"
+   "Chromosome.locatedFeatures.feature.gene.primaryIdentifier"
+   "Chromosome.locatedFeatures.feature.transcripts.primaryIdentifier"
+   "Chromosome.locatedFeatures.feature.primaryIdentifier"],
+  :orderBy
+  [{:Chromosome.primaryIdentifier "ASC"}
+   {:Chromosome.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :MeSH_Publication
+ {:description "For given MeSH term show all publications.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "MeshTerm.name",
+    :op "CONTAINS",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Ataxia"}],
+  :name "MeSH_Publication",
+  :rank "114",
+  :title "MeSH term --> Publication",
+  :comment "",
+  :select
+  ["MeshTerm.name"
+   "MeshTerm.publications.firstAuthor"
+   "MeshTerm.publications.title"
+   "MeshTerm.publications.year"
+   "MeshTerm.publications.journal"
+   "MeshTerm.publications.volume"
+   "MeshTerm.publications.pages"
+   "MeshTerm.publications.pubMedId"],
+  :orderBy [{:MeshTerm.name "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Publications
+ {:description
+  "Returns a list of publications that reference a specified gene. References are loaded from FlyBase for all Drosophila species, and from NCBI for D. melanogaster, C. elegans and S. cerevisiae.",
+  :tags ["im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "brat"}],
+  :name "Gene_Publications",
+  :rank "38",
+  :title "Gene --> Publications",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.publications.pubMedId"
+   "Gene.publications.title"
+   "Gene.publications.firstAuthor"
+   "Gene.publications.journal"
+   "Gene.publications.year"],
+  :orderBy [{:Gene.publications.year "DESC"}],
+  :model {:name "genomic"}},
+ :Clone_gene
+ {:description
+  "For a cDNA clone or list of clones give the corresponding gene identifiers.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "CDNAClone",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "LD14383"}],
+  :name "Clone_gene",
+  :rank "102",
+  :joins ["CDNAClone.gene"],
+  :title "Clone --> Gene",
+  :comment "",
+  :select
+  ["CDNAClone.primaryIdentifier"
+   "CDNAClone.gene.primaryIdentifier"
+   "CDNAClone.gene.secondaryIdentifier"
+   "CDNAClone.gene.symbol"],
+  :orderBy [{:CDNAClone.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :ChromLocation_GeneTranscriptINDAC
+ {:description
+  "Show the genes, transcripts and INDAC oligos located in a particular chromosome location.",
+  :tags ["im:public"],
+  :where
+  [{:path "Gene.chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2R"}
+   {:path "Gene.chromosomeLocation.start",
+    :op ">",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "19910266"}
+   {:path "Gene.chromosomeLocation.end",
+    :op "<",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "20450439"}],
+  :name "ChromLocation_GeneTranscriptINDAC",
+  :rank "72",
+  :title
+  "Chromosomal location --> Genes + transcripts + INDAC long oligos",
+  :comment "",
+  :constraintLogic "A and C and B",
+  :select
+  ["Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.transcripts.primaryIdentifier"
+   "Gene.transcripts.microarrayOligos.primaryIdentifier"
+   "Gene.transcripts.microarrayOligos.sequence.residues"],
+  :orderBy [{:Gene.chromosome.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Organism_Intergenic
+ {:description
+  "For a particular organism, show all intergenic regions with their chromosomal locations, lenghts and adjacent genes. (Data Source: FlyMine).",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "IntergenicRegion.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "Organism_Intergenic",
+  :rank "34",
+  :title "Organism --> All intergenic regions",
+  :comment "",
+  :select
+  ["IntergenicRegion.primaryIdentifier"
+   "IntergenicRegion.length"
+   "IntergenicRegion.chromosome.primaryIdentifier"
+   "IntergenicRegion.chromosomeLocation.start"
+   "IntergenicRegion.chromosomeLocation.end"
+   "IntergenicRegion.adjacentGenes.primaryIdentifier"
+   "IntergenicRegion.dataSets.dataSource.name"],
+  :orderBy [{:IntergenicRegion.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_1CDSsequence
+ {:description
+  "Show the CDS and its sequence for all genes from a particular organism. This template contains an additional constraint to limit the result to one CDS per sequence (e.g all -PA CDS from D. melanogaster).",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.CDSs.primaryIdentifier",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*PA*"}],
+  :name "Gene_1CDSsequence",
+  :rank "93",
+  :title "Gene --> 1 CDS + sequence",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.CDSs.primaryIdentifier"
+   "Gene.CDSs.sequence.residues"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_disease
+ {:description
+  "For a given gene or set of genes show orthologous human genes which have an associated OMIM disease. Optionally constrain the search to use a particular orthologue mapping (Ensembl Compara or TreeFam).",
+  :tags ["im:public"],
+  :where
+  [{:path "Disease.genes.homologues.homologue",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "psn",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_disease",
+  :rank "29",
+  :title "Gene --> Human disease gene and OMIM disease",
+  :comment "",
+  :select
+  ["Disease.genes.homologues.homologue.primaryIdentifier"
+   "Disease.genes.homologues.homologue.symbol"
+   "Disease.genes.primaryIdentifier"
+   "Disease.genes.symbol"
+   "Disease.identifier"
+   "Disease.name"
+   "Disease.genes.homologues.dataSets.name"],
+  :orderBy [{:Disease.identifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_FlyFish
+ {:description
+  "For a certain gene from Drosophila melanogaster, show the mRNA embryonic localisation results from FlyFish.",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene.mRNAExpressionResults.dataSet.name",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "fly-Fish data set"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "armadillo"}],
+  :name "Gene_FlyFish",
+  :rank "76",
+  :title "Gene --> FlyFish data",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.mRNAExpressionResults.stageRange"
+   "Gene.mRNAExpressionResults.expressed"
+   "Gene.mRNAExpressionResults.mRNAExpressionTerms.name"
+   "Gene.mRNAExpressionResults.dataSet.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Pathway_Genes
+ {:description
+  "For a specified KEGG, REACTOME or FlyReactome pathway, list all the genes that are involved for a particular organism",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Pathway.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Pentose phosphate pathway"}
+   {:path "Pathway.genes.organism.name",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "Drosophila melanogaster"}],
+  :name "Pathway_Genes",
+  :rank "53",
+  :title "Pathway --> Genes",
+  :comment "",
+  :constraintLogic "B and C and A",
+  :select
+  ["Pathway.identifier"
+   "Pathway.name"
+   "Pathway.genes.secondaryIdentifier"
+   "Pathway.genes.symbol"
+   "Pathway.dataSets.name"],
+  :orderBy [{:Pathway.identifier "ASC"}],
+  :model {:name "genomic"}},
+ :miRNA_Targets
+ {:description
+  "For specified miRNA(s), find all predicted target transcripts and their genes. Show the location of the target sites, the score for each site and the p-value. (Data Source: miRBase).",
+  :tags ["im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "mir-79"}],
+  :name "miRNA_Targets",
+  :rank "33",
+  :joins ["Gene.miRNAtargets.dataSets"],
+  :title "microRNA (miRNA) --> Targets genes",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.miRNAtargets.target.primaryIdentifier"
+   "Gene.miRNAtargets.target.gene.secondaryIdentifier"
+   "Gene.miRNAtargets.target.symbol"
+   "Gene.miRNAtargets.pvalue"
+   "Gene.miRNAtargets.dataSets.name"],
+  :orderBy [{:Gene.miRNAtargets.pvalue "ASC"}],
+  :model {:name "genomic"}},
+ :protein_interactions
+ {:description
+  "For a specified protein, show physical and genetic interaction partners.  Optionally constrain to show just physical or genetic interactions or interactions determined by a specific method.",
+  :tags ["im:aspect:Interactions" "im:public"],
+  :where
+  [{:path "Gene.proteins.uniprotName",
+    :op "=",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "zen1_drome"}],
+  :name "protein_interactions",
+  :rank "40",
+  :title "Protein --> Interactions",
+  :comment "",
+  :constraintLogic "B and C and D",
+  :select
+  ["Gene.proteins.uniprotAccession"
+   "Gene.proteins.uniprotName"
+   "Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.interactions.participant2.primaryIdentifier"
+   "Gene.interactions.participant2.symbol"
+   "Gene.interactions.details.type"
+   "Gene.interactions.details.name"
+   "Gene.interactions.details.role1"
+   "Gene.interactions.details.role2"
+   "Gene.interactions.details.experiment.interactionDetectionMethods.name"
+   "Gene.interactions.details.experiment.name"
+   "Gene.interactions.details.experiment.publication.pubMedId"
+   "Gene.interactions.details.dataSets.name"],
+  :orderBy [{:Gene.proteins.uniprotAccession "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_OverlapppingGenes
+ {:description "For a particular gene, search for overlapping genes.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.overlappingFeatures", :type "Gene"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG11566"}],
+  :name "Gene_OverlapppingGenes",
+  :rank "77",
+  :joins ["Gene.overlappingFeatures"],
+  :title "Gene --> Overlapping genes",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.chromosomeLocation.strand"
+   "Gene.overlappingFeatures.primaryIdentifier"
+   "Gene.overlappingFeatures.symbol"
+   "Gene.overlappingFeatures.chromosomeLocation.start"
+   "Gene.overlappingFeatures.chromosomeLocation.end"
+   "Gene.overlappingFeatures.chromosomeLocation.strand"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :All_Genes_In_Organism_To_Publications
+ {:description
+  "Show the publications for each gene in one organism. References are loaded from FlyBase for all Drosophila species, and from NCBI for D. melanogaster, C. elegans and S. cerevisiae.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "All_Genes_In_Organism_To_Publications",
+  :rank "64",
+  :title "All genes in organism --> Publications",
+  :comment "",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.publications.pubMedId"
+   "Gene.publications.firstAuthor"
+   "Gene.publications.journal"
+   "Gene.publications.year"
+   "Gene.organism.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_transcriptionFactors
+ {:description
+  "Show all known transcription factors for a particular D. melanogaster gene. (Data Source: REDfly, FlyBase).",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "Gene.regulatoryRegions", :type "TFBindingSite"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "dpp"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "Gene_transcriptionFactors",
+  :rank "8",
+  :title "Gene --> Transcription Factors",
+  :comment "",
+  :constraintLogic "A and C",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.regulatoryRegions.primaryIdentifier"
+   "Gene.regulatoryRegions.chromosome.primaryIdentifier"
+   "Gene.regulatoryRegions.chromosomeLocation.end"
+   "Gene.regulatoryRegions.chromosomeLocation.start"
+   "Gene.regulatoryRegions.dataSets.dataSource.name"
+   "Gene.regulatoryRegions.factor.primaryIdentifier"
+   "Gene.regulatoryRegions.factor.symbol"
+   "Gene.regulatoryRegions.sequence.residues"],
+  :orderBy [{:Gene.regulatoryRegions.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_RNAi
+ {:description "Show RNAi phenotypes for a specified gene or genes.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "eve",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_RNAi",
+  :rank "26",
+  :title "Gene --> RNAi phenotypes",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.rnaiResults.phenotype"
+   "Gene.rnaiResults.score"
+   "Gene.rnaiResults.rnaiScreen.scoreType"
+   "Gene.rnaiResults.reagentId"
+   "Gene.rnaiResults.conditions"
+   "Gene.rnaiResults.rnaiScreen.publication.pubMedId"
+   "Gene.rnaiResults.rnaiScreen.name"
+   "Gene.rnaiResults.rnaiScreen.assay"
+   "Gene.rnaiResults.rnaiScreen.bioSourceName"
+   "Gene.rnaiResults.rnaiScreen.bioSourceType"
+   "Gene.rnaiResults.rnaiScreen.method"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_TranscriptExonLocation
+ {:description
+  "For a particular gene, list the transcripts, exons and introns with their chromosomal locations and lengths.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG10016"}],
+  :name "Gene_TranscriptExonLocation",
+  :rank "17",
+  :joins ["Gene.transcripts.exons" "Gene.transcripts.introns"],
+  :title "Gene --> Transcripts + Exons + Introns",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.transcripts.chromosome.primaryIdentifier"
+   "Gene.transcripts.primaryIdentifier"
+   "Gene.transcripts.chromosomeLocation.start"
+   "Gene.transcripts.chromosomeLocation.end"
+   "Gene.transcripts.length"
+   "Gene.transcripts.exons.primaryIdentifier"
+   "Gene.transcripts.exons.chromosomeLocation.start"
+   "Gene.transcripts.exons.chromosomeLocation.end"
+   "Gene.transcripts.exons.length"
+   "Gene.transcripts.introns.primaryIdentifier"
+   "Gene.transcripts.introns.chromosomeLocation.start"
+   "Gene.transcripts.introns.chromosomeLocation.end"
+   "Gene.transcripts.introns.length"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_GO
+ {:description "Search for GO annotations for a particular gene.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Notch"}],
+  :name "Gene_GO",
+  :rank "1",
+  :title "Gene --> GO terms",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :select
+  ["Gene.symbol"
+   "Gene.secondaryIdentifier"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.evidence.code.code"
+   "Gene.goAnnotation.ontologyTerm.namespace"
+   "Gene.goAnnotation.qualifier"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :organism_allGenes
+ {:description "Show all the genes for a specified organism.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "organism_allGenes",
+  :rank "22",
+  :title "Organism --> All Genes",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.chromosomeLocation.strand"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :FlyRegBindingSite_TranscriptionFactor
+ {:description
+  "For a particular transcription factor binding site from REDfly, give the gene, factor, chromosomal location, sequence and pubmed id. (Data Source: REDfly).",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "TFBindingSite.dataSets.name",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "REDfly Drosophila transcription factor binding sites"}
+   {:path "TFBindingSite.primaryIdentifier",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "TF000031"}],
+  :name "FlyRegBindingSite_TranscriptionFactor",
+  :rank "57",
+  :title "REDfly TF binding site --> Gene + Transcription factor",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["TFBindingSite.primaryIdentifier"
+   "TFBindingSite.length"
+   "TFBindingSite.gene.primaryIdentifier"
+   "TFBindingSite.factor.primaryIdentifier"
+   "TFBindingSite.chromosome.primaryIdentifier"
+   "TFBindingSite.chromosomeLocation.start"
+   "TFBindingSite.chromosomeLocation.end"
+   "TFBindingSite.sequence.residues"
+   "TFBindingSite.publications.pubMedId"
+   "TFBindingSite.dataSets.dataSource.name"],
+  :orderBy [{:TFBindingSite.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_BDGPFlyFish
+ {:description
+  "For a specified D. melanogaster gene, show all results from the FlyFISH and the BDGP in situ projects. (Data Source: BDGP, FlyFISH).",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "hunchback"}],
+  :name "Gene_BDGPFlyFish",
+  :rank "58",
+  :title "Gene --> FlyFish + BDGP in situ data",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.mRNAExpressionResults.stageRange"
+   "Gene.mRNAExpressionResults.mRNAExpressionTerms.name"
+   "Gene.mRNAExpressionResults.dataSet.dataSource.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Protein_Publication
+ {:description
+  "This search returns the publications referenced by Uniprot in their annotation of the protein.  It does not provide a comprehensive list of publications for the protein(s).",
+  :tags ["im:public"],
+  :where
+  [{:path "Protein",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "3-hydroxyacyl-CoA dehydrogenase type-2 ",
+    :extraValue "D. melanogaster"}
+   {:path "Protein.organism.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "Protein_Publication",
+  :rank "97",
+  :title "Protein --> Publications (Uniprot)",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Protein.name"
+   "Protein.uniprotAccession"
+   "Protein.uniprotName"
+   "Protein.publications.pubMedId"
+   "Protein.publications.firstAuthor"
+   "Protein.publications.year"
+   "Protein.publications.title"
+   "Protein.primaryAccession"
+   "Protein.primaryIdentifier"],
+  :orderBy [{:Protein.name "ASC"}],
+  :model {:name "genomic"}},
+ :Tissue_Flyatlas
+ {:description
+  "Show gene expression in the following tissue from D. melanogaster and the Affymetrix probes that were used to obtain these data.(Data Source: FlyAtlas).",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "FlyAtlasResult.tissue.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Ovary"}
+   {:path "FlyAtlasResult.affyCall",
+    :op "=",
+    :code "E",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "Up"}],
+  :name "Tissue_Flyatlas",
+  :rank "11",
+  :title "Tissue --> FlyAtlas expression data",
+  :comment "",
+  :constraintLogic "C and B and D and E and A",
+  :select
+  ["FlyAtlasResult.mRNASignal"
+   "FlyAtlasResult.mRNASignalSEM"
+   "FlyAtlasResult.presentCall"
+   "FlyAtlasResult.enrichment"
+   "FlyAtlasResult.affyCall"
+   "FlyAtlasResult.genes.secondaryIdentifier"
+   "FlyAtlasResult.genes.symbol"
+   "FlyAtlasResult.material.primaryIdentifier"
+   "FlyAtlasResult.dataSets.name"],
+  :orderBy [{:FlyAtlasResult.enrichment "DESC"}],
+  :model {:name "genomic"}},
+ :Chromosome_Gene
+ {:description "Show genes located on a particular chromosome.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2L"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "Chromosome_Gene",
+  :rank "4",
+  :title "Chromosome --> All genes",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.chromosomeLocation.strand"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Alleles
+ {:description
+  "Show all alleles for a specific Drosophila gene. Show all available information, eg mutagen, allele class and phenotype linked to each allele. (Data Source: FlyBase)",
+  :tags ["im:aspect:Function" "im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Ubx"}],
+  :name "Gene_Alleles",
+  :rank "42",
+  :title "Gene --> Alleles",
+  :comment "",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.alleles.primaryIdentifier"
+   "Gene.alleles.secondaryIdentifier"
+   "Gene.alleles.alleleClass"
+   "Gene.alleles.phenotypeAnnotations.annotationType"
+   "Gene.alleles.phenotypeAnnotations.description"
+   "Gene.alleles.organism.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_FlyAtlas_TissueList
+ {:description "Show genes expressed in a set of FlyAtlas tissues.",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene.microArrayResults", :type "FlyAtlasResult"}
+   {:path "Gene.microArrayResults.tissue.name",
+    :op "ONE OF",
+    :code "F",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :values
+    ["Adult carcass"
+     "Adult eye"
+     "Adult fat body"
+     "Adult heart"
+     "Brain"
+     "Crop"
+     "Head"
+     "Hindgut"
+     "Larvae hindgut"
+     "Larval CNS"
+     "Larval carcass"
+     "Larval fat body"
+     "Larval midgut"
+     "Larval salivary gland"
+     "Larval trachea"
+     "Larval tubule"
+     "Male accessory glands"
+     "Mated spermatheca"
+     "Midgut"
+     "S2 cells"
+     "Salivary gland"
+     "Testis"
+     "Thoracicoabdominal ganglion"
+     "Tubule"
+     "Virgin spermatheca"
+     "Whole Fly"]}
+   {:path "Gene.microArrayResults.affyCall",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Up"}],
+  :name "Gene_FlyAtlas_TissueList",
+  :rank "46",
+  :title "Genes --> Expression in a set of tissues",
+  :comment "",
+  :constraintLogic "F and A",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.microArrayResults.affyCall"
+   "Gene.microArrayResults.tissue.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Organism_NaturalTransposableElements
+ {:description
+  "For a particular organism list the natural transposable elements.",
+  :tags ["im:public"],
+  :where
+  [{:path "NaturalTransposableElement.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "Organism_NaturalTransposableElements",
+  :rank "110",
+  :title "Organism --> Natural transposable elements",
+  :comment "",
+  :select
+  ["NaturalTransposableElement.primaryIdentifier"
+   "NaturalTransposableElement.symbol"],
+  :orderBy [{:NaturalTransposableElement.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Chromosome_IntergenicSequence
+ {:description
+  "For a specified chromosome show all intergenic regions with their chromosomal locations and lengths. (Data Source: FlyMine).",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "IntergenicRegion.chromosomeLocation.locatedOn",
+    :type "Chromosome"}
+   {:path "IntergenicRegion.organism.shortName",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "D. melanogaster"}
+   {:path
+    "IntergenicRegion.chromosomeLocation.locatedOn.primaryIdentifier",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2L"}],
+  :name "Chromosome_IntergenicSequence",
+  :rank "95",
+  :title "Chromosome --> All intergenic regions",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["IntergenicRegion.chromosomeLocation.start"
+   "IntergenicRegion.chromosomeLocation.end"
+   "IntergenicRegion.chromosomeLocation.locatedOn.primaryIdentifier"
+   "IntergenicRegion.length"
+   "IntergenicRegion.primaryIdentifier"
+   "IntergenicRegion.dataSets.dataSource.name"],
+  :orderBy [{:IntergenicRegion.chromosomeLocation.start "ASC"}],
+  :model {:name "genomic"}},
+ :InterPro_Domain_Family
+ {:description
+  "Search for protein domains and families by name. (Data Source: UniProt).",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "ProteinDomain.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*leucine*"}],
+  :name "InterPro_Domain_Family",
+  :rank "60",
+  :title "InterPro Name--> Protein domains + Families",
+  :comment "",
+  :select
+  ["ProteinDomain.primaryIdentifier"
+   "ProteinDomain.name"
+   "ProteinDomain.type"],
+  :orderBy [{:ProteinDomain.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_transposableElementsOverlappingExons
+ {:description
+  "For a particular gene show the transposon insertions that overlap its exons. (Data Source: FlyBase).",
+  :tags ["im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.exons.overlappingFeatures.dataSets.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "FlyBase data set for Drosophila melanogaster"}
+   {:path "Gene.exons.overlappingFeatures",
+    :type "TransposableElementInsertionSite"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG10011",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_transposableElementsOverlappingExons",
+  :rank "88",
+  :title "Gene --> Transposon insertions overlapping exons",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.exons.primaryIdentifier"
+   "Gene.exons.overlappingFeatures.primaryIdentifier"
+   "Gene.exons.overlappingFeatures.symbol"
+   "Gene.exons.overlappingFeatures.chromosomeLocation.start"
+   "Gene.exons.overlappingFeatures.chromosomeLocation.end"
+   "Gene.exons.overlappingFeatures.chromosomeLocation.strand"
+   "Gene.exons.overlappingFeatures.dataSets.dataSource.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_BDGP
+ {:description
+  "For a certain D. melanogaster gene, show the results from the BDGP in situ project. (Data Source: BDGP).",
+  :tags ["im:aspect:Expression" "im:public" "im:report"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.mRNAExpressionResults.dataSet.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "BDGP in situ data set"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "runt"}],
+  :name "Gene_BDGP",
+  :rank "7",
+  :title "Gene --> BDGP in situ data",
+  :comment "",
+  :constraintLogic "A and C and B",
+  :select
+  ["Gene.name"
+   "Gene.mRNAExpressionResults.stageRange"
+   "Gene.mRNAExpressionResults.expressed"
+   "Gene.mRNAExpressionResults.mRNAExpressionTerms.name"
+   "Gene.mRNAExpressionResults.dataSet.dataSource.name"],
+  :orderBy [{:Gene.name "ASC"}],
+  :model {:name "genomic"}},
+ :Disease_gene_orthologue
+ {:description
+  "Show the human genes associated with a specified disease and their orthologues.  Optionally constrain the organism for which orthologues are shown.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Disease.genes.organism.name",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Homo sapiens"}
+   {:path "Disease.genes.homologues.homologue.organism",
+    :op "!=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Disease.genes.organism"}
+   {:path "Disease.name",
+    :op "CONTAINS",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "parkinson"}],
+  :name "Disease_gene_orthologue",
+  :rank "24",
+  :title "Disease --> Human Gene and Orthologues",
+  :comment "",
+  :constraintLogic "A and B and C and D",
+  :select
+  ["Disease.identifier"
+   "Disease.name"
+   "Disease.genes.symbol"
+   "Disease.genes.name"
+   "Disease.genes.homologues.homologue.primaryIdentifier"
+   "Disease.genes.homologues.type"
+   "Disease.genes.homologues.dataSets.name"
+   "Disease.genes.homologues.homologue.organism.name"],
+  :orderBy [{:Disease.identifier "ASC"}],
+  :model {:name "genomic"}},
+ :protein_domain
+ {:description
+  "Show proteins and corresponding genes which have a specified protein domain or family.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "ProteinDomain.name",
+    :op "CONTAINS",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Homeobox"}],
+  :name "protein_domain",
+  :rank "84",
+  :title "Protein Domain --> Protein + Genes",
+  :comment "",
+  :select
+  ["ProteinDomain.name"
+   "ProteinDomain.primaryIdentifier"
+   "ProteinDomain.type"
+   "ProteinDomain.proteinDomainRegions.start"
+   "ProteinDomain.proteinDomainRegions.end"
+   "ProteinDomain.proteinDomainRegions.identifier"
+   "ProteinDomain.proteinDomainRegions.database"
+   "ProteinDomain.proteinDomainRegions.protein.primaryAccession"
+   "ProteinDomain.proteinDomainRegions.protein.genes.primaryIdentifier"],
+  :orderBy [{:ProteinDomain.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :ChromLocation_RegulatoryRegion
+ {:description
+  "Show all regulatory elements in a particular chromosomal location in the D. melanogaster genome. Regulatory elements can include: CRMs and TF binding sites from REDfly, enhancers from FlyBase and predicted sites from Tiffin. (Data Source: REDfly, FlyBase, Tiffin).",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "RegulatoryRegion.chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "3R"}
+   {:path "RegulatoryRegion.chromosomeLocation.start",
+    :op ">=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "24900000"}
+   {:path "RegulatoryRegion.chromosomeLocation.end",
+    :op "<=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "29200000"}],
+  :name "ChromLocation_RegulatoryRegion",
+  :rank "50",
+  :title "Chromosomal location --> Regulatory elements",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["RegulatoryRegion.chromosome.primaryIdentifier"
+   "RegulatoryRegion.chromosomeLocation.start"
+   "RegulatoryRegion.chromosomeLocation.end"
+   "RegulatoryRegion.primaryIdentifier"
+   "RegulatoryRegion.dataSets.name"],
+  :orderBy [{:RegulatoryRegion.chromosome.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Orth
+ {:description
+  "For a given Gene (or List of Genes) in named organism (default: D. melanogaster) returns the orthologues.  Optionally constrain the organism for which orthologues are shown and the data source from which the orthologue predictions are derived.  Currently  orthologue predictions are available from TreeFam, Panther and the Drosophila 12 genomes project. [keywords: homologue, homolog, paralogue, paralogue, ortholog]",
+  :tags ["im:aspect:Homology" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "cdk1",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_Orth",
+  :rank "20",
+  :title "Gene --> Orthologues",
+  :comment "Added 05.10.11:RL",
+  :constraintLogic "A and B and C",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.homologues.homologue.primaryIdentifier"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.homologue.organism.shortName"
+   "Gene.homologues.dataSets.name"
+   "Gene.homologues.type"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :protein_domains2
+ {:description
+  "Show protein domains and families for a specified protein.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Protein",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "notch",
+    :extraValue "D. melanogaster"}],
+  :name "protein_domains2",
+  :rank "104",
+  :title "Protein --> Domains",
+  :comment "",
+  :select
+  ["Protein.uniprotAccession"
+   "Protein.uniprotName"
+   "Protein.proteinDomainRegions.proteinDomain.name"
+   "Protein.proteinDomainRegions.proteinDomain.primaryIdentifier"
+   "Protein.proteinDomainRegions.proteinDomain.type"
+   "Protein.proteinDomainRegions.start"
+   "Protein.proteinDomainRegions.end"
+   "Protein.proteinDomainRegions.identifier"
+   "Protein.proteinDomainRegions.database"],
+  :orderBy [{:Protein.uniprotAccession "ASC"}],
+  :model {:name "genomic"}},
+ :BDGP_Gene
+ {:description
+  "For a specified ImaGo term and/or stage range, show all the D. melanogaster genes that are associated with it according to the BDGP in situ project. (Data Source: BDGP).",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene.mRNAExpressionResults.dataSet.name",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "BDGP in situ data set"}
+   {:path "Gene.mRNAExpressionResults.expressed",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "true"}
+   {:path "Gene.mRNAExpressionResults.mRNAExpressionTerms.name",
+    :op "=",
+    :code "D",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "*neuron*"}
+   {:path "Gene.mRNAExpressionResults.stageRange",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "stage 11-12 (BDGP in situ)"}],
+  :name "BDGP_Gene",
+  :rank "32",
+  :title "BDGP --> Genes",
+  :comment "",
+  :constraintLogic "C and D and A and B",
+  :select
+  ["Gene.mRNAExpressionResults.mRNAExpressionTerms.name"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.mRNAExpressionResults.stageRange"
+   "Gene.mRNAExpressionResults.expressed"
+   "Gene.mRNAExpressionResults.dataSet.name"],
+  :orderBy
+  [{:Gene.mRNAExpressionResults.mRNAExpressionTerms.name "ASC"}],
+  :model {:name "genomic"}},
+ :GO_GeneOrthologues
+ {:description
+  "For a specified GO term (and children of this term) find all the genes in a particular organism that have an orthologue in another organism",
+  :tags ["im:aspect:Function" "im:public" "im:report"],
+  :where
+  [{:path "Gene.goAnnotation.ontologyTerm", :type "GOTerm"}
+   {:path "Gene.goAnnotation.ontologyTerm.parents", :type "GOTerm"}
+   {:path "Gene.homologues.type",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "orthologue"}
+   {:path "Gene.goAnnotation.ontologyTerm.parents.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "DNA binding"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.homologues.homologue.organism.name",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "Caenorhabditis elegans"}],
+  :name "GO_GeneOrthologues",
+  :rank "97",
+  :title
+  "GO term name (and children of this term) --> Genes in organism1 + Orthologues in organism2",
+  :comment "",
+  :constraintLogic "A and B and C and D",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.goAnnotation.ontologyTerm.parents.name"
+   "Gene.goAnnotation.ontologyTerm.parents.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.homologues.homologue.primaryIdentifier"
+   "Gene.homologues.homologue.secondaryIdentifier"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.type"
+   "Gene.homologues.dataSets.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :TimeCourseData_Gene
+ {:description
+  "Show gene expression data for a particular developmental stage according to the Arbeitman et al data set and filter this data on the median signal ratio. This template allows you to query on the general stage: use LIKE *Embryo*; *Larvae*; *Metamorphosis*; *Adult female* or *Adult male*. The templates Microarray Time course data from Arbeitman et al (filter on specific stage (and ratio)) --> Genes [D. melanogaster], allow you to filter on more specific stages.   Note that the reference sample in this experiment is pooled mRNA representing all stages of the life cycle.",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene.microArrayResults.assays.experiment.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value
+    "Arbeitman M: Gene Expression During the Life Cycle of Drosophila melanogaster"}
+   {:path "Gene.microArrayResults.assays.sample2",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*Embryo*"}
+   {:path "Gene.microArrayResults.value",
+    :op ">=",
+    :code "D",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "2.0"}],
+  :name "TimeCourseData_Gene",
+  :rank "25",
+  :title
+  "Microarray Time course data from Arbeitman et al. (filter on stage and ratio) --> Genes ",
+  :comment "",
+  :constraintLogic "B and D and A",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.microArrayResults.type"
+   "Gene.microArrayResults.value"
+   "Gene.microArrayResults.isControl"
+   "Gene.microArrayResults.assays.sample2"
+   "Gene.microArrayResults.assays.sample1"
+   "Gene.microArrayResults.assays.experiment.name"
+   "Gene.microArrayResults.assays.experiment.publication.pubMedId"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :DrosDel_GeneLocation
+ {:description
+  "Find all D. melanogaster genes interrupted by a specific DrosDel deletion. Show the chromosomal locations of the deletion and the genes. (Data Source: FlyBase).",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "ChromosomalDeletion.overlappingFeatures", :type "Gene"}
+   {:path "ChromosomalDeletion.secondaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Df(1)LB6"}],
+  :name "DrosDel_GeneLocation",
+  :rank "103",
+  :joins
+  ["ChromosomalDeletion.overlappingFeatures.chromosomeLocation"],
+  :title "DrosDel deletion --> Genes",
+  :comment "",
+  :select
+  ["ChromosomalDeletion.primaryIdentifier"
+   "ChromosomalDeletion.secondaryIdentifier"
+   "ChromosomalDeletion.chromosome.primaryIdentifier"
+   "ChromosomalDeletion.chromosomeLocation.start"
+   "ChromosomalDeletion.chromosomeLocation.end"
+   "ChromosomalDeletion.overlappingFeatures.primaryIdentifier"
+   "ChromosomalDeletion.overlappingFeatures.symbol"
+   "ChromosomalDeletion.overlappingFeatures.secondaryIdentifier"
+   "ChromosomalDeletion.overlappingFeatures.chromosomeLocation.start"
+   "ChromosomalDeletion.overlappingFeatures.chromosomeLocation.end"],
+  :orderBy [{:ChromosomalDeletion.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :GOterm_genesDrosDelDeletion
+ {:description
+  "Show all D. melanogaster genes that have been annotated with a particular GO term and the DrosDel deletions which would delete these genes.  Show whether the deletion is available. (Data Source: GO, FlyBase, DrosDel).",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.goAnnotation.ontologyTerm", :type "GOTerm"}
+   {:path "Gene.overlappingFeatures", :type "ChromosomalDeletion"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.goAnnotation.ontologyTerm.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "gap junction"}],
+  :name "GOterm_genesDrosDelDeletion",
+  :rank "78",
+  :title "GO term name --> All genes with DrosDel deletions",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.overlappingFeatures.secondaryIdentifier"
+   "Gene.overlappingFeatures.available"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_IntronChromosome
+ {:description
+  "For a particular gene, list the introns with their intron chromosomal locations and lengths. To show introns for all genes, turn off the constraint on the gene name.  ",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "CG10016"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "Drosophila melanogaster"}],
+  :name "Gene_IntronChromosome",
+  :rank "54",
+  :title "Gene --> Introns",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.transcripts.introns.primaryIdentifier"
+   "Gene.transcripts.introns.length"
+   "Gene.transcripts.introns.chromosome.primaryIdentifier"
+   "Gene.transcripts.introns.chromosomeLocation.start"
+   "Gene.transcripts.introns.chromosomeLocation.end"
+   "Gene.transcripts.introns.chromosomeLocation.strand"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Organism_NaturalTransposableElementsandSites
+ {:description
+  "For a particular organism show the natural transposable elements and their chromosomal insertion sites.",
+  :tags ["im:public"],
+  :where
+  [{:path "TransposableElement.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "Organism_NaturalTransposableElementsandSites",
+  :rank "101",
+  :joins
+  ["TransposableElement.chromosome"
+   "TransposableElement.chromosomeLocation"],
+  :title
+  "Organism --> Natural transposable elements and their insertion sites",
+  :comment "",
+  :select
+  ["TransposableElement.insertedElement.primaryIdentifier"
+   "TransposableElement.insertedElement.symbol"
+   "TransposableElement.primaryIdentifier"
+   "TransposableElement.symbol"
+   "TransposableElement.length"
+   "TransposableElement.chromosome.primaryIdentifier"
+   "TransposableElement.chromosomeLocation.start"
+   "TransposableElement.chromosomeLocation.end"
+   "TransposableElement.chromosomeLocation.strand"],
+  :orderBy
+  [{:TransposableElement.insertedElement.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :GeneTissue_FlyAtlas
+ {:description
+  "For a given D. melanogaster gene, show expression data for a particular tissue from FlyAtlas.(Data Source: FlyAtlas).",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene.microArrayResults", :type "FlyAtlasResult"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.organism.taxonId",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "7227"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG9652"}
+   {:path "Gene.microArrayResults.tissue.name",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Brain"}],
+  :name "GeneTissue_FlyAtlas",
+  :rank "36",
+  :title "Gene + Tissue --> FlyAtlas expression data",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :constraintLogic "B and A and D and C",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.microArrayResults.material.primaryIdentifier"
+   "Gene.microArrayResults.presentCall"
+   "Gene.microArrayResults.enrichment"
+   "Gene.microArrayResults.affyCall"
+   "Gene.microArrayResults.dataSets.name"
+   "Gene.microArrayResults.tissue.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Insertion
+ {:description
+  "For a particular Drosophila gene, search for overlapping insertions. (Data Source: FlyBase).",
+  :tags ["im:public"],
+  :where
+  [{:path "Gene.overlappingFeatures",
+    :type "TransposableElementInsertionSite"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG4722",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_Insertion",
+  :rank "74",
+  :title "Gene --> Transposon insertions",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.overlappingFeatures.primaryIdentifier"
+   "Gene.overlappingFeatures.name"
+   "Gene.overlappingFeatures.chromosomeLocation.start"
+   "Gene.overlappingFeatures.chromosomeLocation.end"
+   "Gene.overlappingFeatures.chromosomeLocation.strand"
+   "Gene.overlappingFeatures.dataSets.dataSource.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Protein_GOterms_1
+ {:description
+  "Show the GO annotations for a protein or proteins from a specifc GO ontology (cellular_component, molecular_function, biological_process).",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Protein.primaryAccession",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "P04755"}
+   {:path "Protein.genes.goAnnotation.ontologyTerm.namespace",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "cellular_component"}],
+  :name "Protein_GOterms_1",
+  :rank "79",
+  :title "Protein --&gt; GO terms",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Protein.primaryAccession"
+   "Protein.genes.symbol"
+   "Protein.genes.goAnnotation.ontologyTerm.identifier"
+   "Protein.genes.goAnnotation.ontologyTerm.name"
+   "Protein.genes.goAnnotation.ontologyTerm.namespace"],
+  :orderBy [{:Protein.primaryAccession "ASC"}],
+  :model {:name "genomic"}},
+ :GOterm_gene_report
+ {:description
+  "For a specified GO term, show the set of genes with this annotation.",
+  :tags ["im:public" "im:report"],
+  :where
+  [{:path "GOTerm.identifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "GO:0001965"}],
+  :name "GOterm_gene_report",
+  :rank "85",
+  :title "GO term --> Genes",
+  :comment "",
+  :select
+  ["GOTerm.name"
+   "GOTerm.ontologyAnnotations.subject.primaryIdentifier"
+   "GOTerm.ontologyAnnotations.subject.symbol"],
+  :orderBy [{:GOTerm.name "ASC"}],
+  :model {:name "genomic"}},
+ :Dataset_TF_BindingSites
+ {:description
+  "Show all the binding sites for the transcription factors according to the REDfly dataset.",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "TFBindingSite.chromosomeLocation.locatedOn",
+    :type "Chromosome"}
+   {:path "TFBindingSite.dataSets.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "REDfly Drosophila transcription factor binding sites"}],
+  :name "Dataset_TF_BindingSites",
+  :rank "92",
+  :joins ["TFBindingSite.sequence"],
+  :title "Dataset --> All binding sites",
+  :comment "",
+  :select
+  ["TFBindingSite.factor.primaryIdentifier"
+   "TFBindingSite.factor.symbol"
+   "TFBindingSite.secondaryIdentifier"
+   "TFBindingSite.chromosomeLocation.locatedOn.primaryIdentifier"
+   "TFBindingSite.chromosomeLocation.start"
+   "TFBindingSite.chromosomeLocation.end"
+   "TFBindingSite.gene.secondaryIdentifier"
+   "TFBindingSite.gene.symbol"
+   "TFBindingSite.sequence.residues"
+   "TFBindingSite.dataSets.name"],
+  :orderBy [{:TFBindingSite.factor.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_agLifecycleExpression
+ {:description
+  "For a particular A. gambiae gene, show its expression according to the data of Koutsos et al at a particular developmental stage. This template allows you to query on the general stage: use LIKE embryo; larva; pupa; adult female; adult male; or adult. The templates Gene [A. gambiae] -> Life cycle expression data (filter on specific stage (and ratio)) allow you to filter on more specific stages.  Note that the reference sample in this experiment is pooled RNA produced in vitro from ESTs that were used as substrates to produce amplicons for the spotted microarrays.  ",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene.microArrayResults", :type "AGambiaeLifeCycle"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Anopheles gambiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "AGAP000008"}
+   {:path "Gene.microArrayResults.assays.sample2",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "stage: 12-14_h_embryo_mixed sex"}],
+  :name "Gene_agLifecycleExpression",
+  :rank "103",
+  :title
+  "Gene [A. gambiae] --> Microarray time course data from Koutsos et al. (filter on stage)",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.microArrayResults.value"
+   "Gene.microArrayResults.standardError"
+   "Gene.microArrayResults.type"
+   "Gene.microArrayResults.assays.sample2"
+   "Gene.microArrayResults.assays.sample1"
+   "Gene.microArrayResults.material.primaryIdentifier"
+   "Gene.microArrayResults.assays.experiment.name"
+   "Gene.microArrayResults.assays.experiment.publication.firstAuthor"
+   "Gene.microArrayResults.assays.experiment.publication.pubMedId"],
+  :model {:name "genomic"}},
+ :Pathway_GenesOrthol_new2
+ {:description
+  "Show all the genes known to be involved in a specific KEGG, REACTOME or FlyReactome pathway and their orthologous genes in one specific organism. (Data Source: KEGG, Reactome, FlyReactome, inParanoid, Drosophila consortium).",
+  :tags ["im:aspect:Function" "im:aspect:Homology" "im:public"],
+  :where
+  [{:path "Pathway.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Pentose phosphate pathway"}
+   {:path "Pathway.genes.organism.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Pathway.genes.homologues.homologue.organism.name",
+    :op "=",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Anopheles gambiae"}
+   {:path "Pathway.dataSets.name",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "KEGG pathways data set"}],
+  :name "Pathway_GenesOrthol_new2",
+  :rank "68",
+  :title "Pathway --> Genes + Orthologues in one specific organism",
+  :comment "",
+  :constraintLogic "A and B and C and D",
+  :select
+  ["Pathway.genes.secondaryIdentifier"
+   "Pathway.genes.symbol"
+   "Pathway.genes.homologues.homologue.secondaryIdentifier"
+   "Pathway.genes.homologues.homologue.symbol"
+   "Pathway.identifier"
+   "Pathway.name"],
+  :orderBy [{:Pathway.genes.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Disease_gene2
+ {:description
+  "Show the human genes associated with a specified disease.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Disease.name",
+    :op "CONTAINS",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "parkinson"}],
+  :name "Disease_gene2",
+  :rank "55",
+  :title "Disease --> Human Gene",
+  :comment "",
+  :select
+  ["Disease.identifier"
+   "Disease.name"
+   "Disease.genes.primaryIdentifier"
+   "Disease.genes.symbol"
+   "Disease.genes.name"],
+  :orderBy [{:Disease.identifier "ASC"}],
+  :model {:name "genomic"}},
+ :ChromLocation_CRM
+ {:description
+  "For a specific chromosomal location of D. melanogaster, show all Cis-Regulatory Modules from REDfly with their length and chromosomal coordinates. (Data Source:REDfly).",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "CRM.chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "3L"}
+   {:path "CRM.chromosomeLocation.start",
+    :op ">=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1500000"}
+   {:path "CRM.chromosomeLocation.end",
+    :op "<=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "10000000"}],
+  :name "ChromLocation_CRM",
+  :rank "106",
+  :title "Chromosomal location --> CRMs",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["CRM.chromosome.primaryIdentifier"
+   "CRM.chromosomeLocation.start"
+   "CRM.chromosomeLocation.end"
+   "CRM.primaryIdentifier"
+   "CRM.length"
+   "CRM.publications.pubMedId"],
+  :orderBy [{:CRM.chromosome.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_PointMutationLocation
+ {:description
+  "For a particular D. melanogaster gene, search for overlapping point mutations with their chromosomal coordinates. (Data Source: FlyBase). ",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.overlappingFeatures", :type "PointMutation"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG10021",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_PointMutationLocation",
+  :rank "91",
+  :title "Gene --> Point mutations",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.overlappingFeatures.primaryIdentifier"
+   "Gene.overlappingFeatures.chromosome.primaryIdentifier"
+   "Gene.overlappingFeatures.chromosomeLocation.start"
+   "Gene.overlappingFeatures.chromosomeLocation.end"
+   "Gene.overlappingFeatures.dataSets.dataSource.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Publication_Genes
+ {:description
+  "Show all genes that were mentioned in a specific publication. References are loaded from FlyBase for all Drosophila species, and from NCBI for D. melanogaster, C. elegans and S. cerevisiae.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.publications.pubMedId",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "11875036"}],
+  :name "Publication_Genes",
+  :rank "65",
+  :title "Publication --> Genes",
+  :comment "",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.publications.pubMedId"
+   "Gene.publications.title"
+   "Gene.publications.firstAuthor"
+   "Gene.publications.year"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Location
+ {:description
+  "Show the chromosome and the chromosome location of a particular gene.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.locations.locatedOn", :type "Chromosome"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG1046"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "Gene_Location",
+  :rank "10",
+  :title "Gene --> Chromosomal location",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.locations.start"
+   "Gene.locations.end"
+   "Gene.locations.strand"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :AllGene_Chromosome
+ {:description
+  "For a specified organism, show the chromosomal location and sequence length for all genes.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "AllGene_Chromosome",
+  :rank "61",
+  :title "All genes in organism --> All chromosomal locations",
+  :comment "",
+  :select
+  ["Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.strand"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.length"
+   "Gene.symbol"
+   "Gene.secondaryIdentifier"],
+  :orderBy [{:Gene.chromosome.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Chromosome_GeneInsertionLocation
+ {:description
+  "For a particular chromosome, show genes that have an insertion.  Show the coordinates of each gene and each insertion. (Data Source: FlyBase). NOTE:  Can be slow to run.",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "Gene.overlappingFeatures",
+    :type "TransposableElementInsertionSite"}
+   {:path "Gene.chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2L"}],
+  :name "Chromosome_GeneInsertionLocation",
+  :rank "73",
+  :title "Chromosome --> All genes with insertions",
+  :comment "",
+  :select
+  ["Gene.chromosome.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.overlappingFeatures.primaryIdentifier"
+   "Gene.overlappingFeatures.symbol"
+   "Gene.overlappingFeatures.chromosomeLocation.start"
+   "Gene.overlappingFeatures.chromosomeLocation.end"
+   "Gene.overlappingFeatures.dataSets.dataSource.name"],
+  :orderBy [{:Gene.chromosome.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :geneInteractiongene
+ {:description
+  "For a given Gene A (or List A of Genes) show any interactions that occur with gene B (or List B of Genes)",
+  :tags ["im:aspect:Interactions" "im:public"],
+  :where
+  [{:path "Gene.interactions.participant2", :type "Gene"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "notch",
+    :extraValue "D. melanogaster"}
+   {:path "Gene.interactions.participant2",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Abl",
+    :extraValue "D. melanogaster"}],
+  :name "geneInteractiongene",
+  :rank "49",
+  :title "Gene A --> Interaction <-- Gene B",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.interactions.participant2.primaryIdentifier"
+   "Gene.interactions.participant2.symbol"
+   "Gene.interactions.details.type"
+   "Gene.interactions.details.role1"
+   "Gene.interactions.details.role2"
+   "Gene.interactions.details.experiment.interactionDetectionMethods.name"
+   "Gene.interactions.details.experiment.publication.pubMedId"
+   "Gene.interactions.details.dataSets.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_AdjacentGenes
+ {:description
+  "For a particular gene, find the upstream and the downstream adjacent genes.  ",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.upstreamIntergenicRegion.adjacentGenes",
+    :op "!=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Gene"}
+   {:path "Gene.downstreamIntergenicRegion.adjacentGenes",
+    :op "!=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Gene"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG10021"}],
+  :name "Gene_AdjacentGenes",
+  :rank "48",
+  :title "Gene --> Adjacent genes (upstream and downstream)",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.downstreamIntergenicRegion.adjacentGenes.primaryIdentifier"
+   "Gene.downstreamIntergenicRegion.adjacentGenes.symbol"
+   "Gene.upstreamIntergenicRegion.adjacentGenes.primaryIdentifier"
+   "Gene.upstreamIntergenicRegion.adjacentGenes.symbol"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Interactions2
+ {:description
+  "For a specified gene, show physical and genetic interaction partners.  Optionally constrain to show just physical or genetic interactions or interactions determined by a specific method.",
+  :tags ["im:aspect:Interactions" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "notch",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_Interactions2",
+  :rank "18",
+  :title "Gene --> Interactions",
+  :comment "",
+  :constraintLogic "A and C and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.interactions.participant2.primaryIdentifier"
+   "Gene.interactions.participant2.symbol"
+   "Gene.interactions.details.type"
+   "Gene.interactions.details.name"
+   "Gene.interactions.details.role1"
+   "Gene.interactions.details.role2"
+   "Gene.interactions.details.experiment.interactionDetectionMethods.name"
+   "Gene.interactions.details.experiment.name"
+   "Gene.interactions.details.experiment.publication.pubMedId"
+   "Gene.interactions.details.dataSets.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Orth_seq
+ {:description
+  "For a given Gene (or List of Genes) in named organism (default: D. melanogaster) returns the orthologues and the sequence of the gene(s) and orthologous genes.  Optionally constrain the organism for which orthologues are shown and the data source from which the orthologue predictions are derived.  Currently  orthologue predictions are available from TreeFam, Panther and the Drosophila 12 genomes project. [keywords: homologue, homolog, paralogue, paralogue, ortholog]",
+  :tags ["im:aspect:Homology" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "cdc2",
+    :extraValue "D. melanogaster"}],
+  :name "Gene_Orth_seq",
+  :rank "14",
+  :title "Gene --> Orthologues + Sequence",
+  :comment "Added 05.10.11:RL",
+  :constraintLogic "A and B and C",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.homologues.homologue.primaryIdentifier"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.homologue.organism.shortName"
+   "Gene.homologues.evidence.evidenceCode.name"
+   "Gene.homologues.dataSets.name"
+   "Gene.sequence.residues"
+   "Gene.homologues.homologue.sequence.residues"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :Organism_Protein
+ {:description "Show all the proteins from a particular organism.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Protein.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "Organism_Protein",
+  :rank "30",
+  :title "Organism --> All proteins",
+  :comment "",
+  :select ["Protein.primaryIdentifier" "Protein.primaryAccession"],
+  :orderBy [{:Protein.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :TranscriptionFactor_Genes
+ {:description
+  "For specified transcription factor(s) show the genes associated binding sites",
+  :tags ["im:aspect:Regulation" "im:public" "im:report"],
+  :where
+  [{:path "Gene.regulatoryRegions", :type "TFBindingSite"}
+   {:path "Gene.regulatoryRegions.factor",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CG2328"}],
+  :name "TranscriptionFactor_Genes",
+  :rank "12",
+  :title
+  "TranscriptionFactor --> Genes that have binding sites for this factor",
+  :comment
+  "this is redundant since we have Protein_TFBindingSiteChromosomeGene, no?",
+  :select
+  ["Gene.regulatoryRegions.factor.secondaryIdentifier"
+   "Gene.regulatoryRegions.factor.symbol"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.chromosomeLocation.strand"],
+  :orderBy
+  [{:Gene.regulatoryRegions.factor.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_FlyAtlas
+ {:description
+  "For a given D. melanogaster gene, show expression data from FlyAtlas.",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene.microArrayResults", :type "FlyAtlasResult"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "FBgn0011582"}
+   {:path "Gene.microArrayResults.affyCall",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "Up"}],
+  :name "Gene_FlyAtlas",
+  :rank "13",
+  :title "Gene --> FlyAtlas expression data",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :constraintLogic "A and B and C and D and E and F",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.microArrayResults.mRNASignal"
+   "Gene.microArrayResults.mRNASignalSEM"
+   "Gene.microArrayResults.presentCall"
+   "Gene.microArrayResults.enrichment"
+   "Gene.microArrayResults.affyCall"
+   "Gene.microArrayResults.dataSets.name"
+   "Gene.microArrayResults.tissue.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Organism_5UTR
+ {:description "Show all 5' UTRs for a particular organism.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene.UTRs", :type "FivePrimeUTR"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "Organism_5UTR",
+  :rank "82",
+  :title "Organism --> All 5' UTRs",
+  :comment
+  "03.12.07 - Tags temporarily removed until UTR problem fixed - Rachel.",
+  :select
+  ["Gene.UTRs.primaryIdentifier"
+   "Gene.UTRs.length"
+   "Gene.UTRs.chromosomeLocation.start"
+   "Gene.UTRs.chromosomeLocation.end"
+   "Gene.secondaryIdentifier"],
+  :orderBy [{:Gene.UTRs.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :RNA_seq_Genes
+ {:description
+  "Show RNA_seq expression data for all genes at a specified developmental stage.  Optionally also filter on expression level or expression score.  Data source:  modENCODE RNA_seq data analysed by FlyBase. Note: The expression scores are binned into the expression levels as follows: No/Extremely low expression: 0-0; Very low expression: 1-3; Low expression: 4-10; Moderate expression: 11-25; Moderately high expression: 26-50; High expression: 51-100; Very high expression: 101-1000; Extremely high expression: >1000;",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "RNASeqResult.stage",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "embryo 02-04hr"}],
+  :name "RNA_seq_Genes",
+  :rank "56",
+  :title "RNA_seq expression --> Genes",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["RNASeqResult.stage"
+   "RNASeqResult.expressionLevel"
+   "RNASeqResult.expressionScore"
+   "RNASeqResult.gene.primaryIdentifier"
+   "RNASeqResult.gene.symbol"],
+  :orderBy [{:RNASeqResult.stage "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_TimeCourseExpression
+ {:description
+  "For a particular Drosophila gene show results from Arbeitman et al (2002) microarray time course expression.  Optionally constrain by a specific stage and filter on the median signal ratio.  Note that the reference sample in this experiment is pooled mRNA representing all stages of the life cycle.  To query general stages change = to LIKE and enter e.g. *Embryo* or *Adult*.",
+  :tags ["im:aspect:Expression" "im:public" "im:report"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.microArrayResults.assays.experiment.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value
+    "Arbeitman M: Gene Expression During the Life Cycle of Drosophila melanogaster"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "bib"}],
+  :name "Gene_TimeCourseExpression",
+  :rank "15",
+  :title
+  "Gene [D. melanogaster] --> Microarray Time course expression data from Arbeitman et al.",
+  :comment "",
+  :constraintLogic "B and C and D and A and E",
+  :select
+  ["Gene.symbol"
+   "Gene.microArrayResults.assays.sample2"
+   "Gene.microArrayResults.value"
+   "Gene.microArrayResults.type"
+   "Gene.microArrayResults.isControl"
+   "Gene.microArrayResults.assays.experiment.name"
+   "Gene.microArrayResults.assays.experiment.publication.pubMedId"],
+  :orderBy [{:Gene.microArrayResults.value "ASC"}],
+  :model {:name "genomic"}},
+ :RNAiScreen_genes
+ {:description
+  "Show phenotypes for genes identified in a specified RNAi screen.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "RNAiScreen.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "RNAi pathway"}],
+  :name "RNAiScreen_genes",
+  :rank "35",
+  :title "RNAi screen --> Genes + Phenotypes",
+  :comment "",
+  :select
+  ["RNAiScreen.rnaiResults.gene.primaryIdentifier"
+   "RNAiScreen.rnaiResults.gene.secondaryIdentifier"
+   "RNAiScreen.rnaiResults.phenotype"
+   "RNAiScreen.rnaiResults.gene.symbol"
+   "RNAiScreen.rnaiResults.score"
+   "RNAiScreen.scoreType"
+   "RNAiScreen.rnaiResults.reagentId"
+   "RNAiScreen.reagentType"
+   "RNAiScreen.name"
+   "RNAiScreen.assay"
+   "RNAiScreen.method"
+   "RNAiScreen.publication.pubMedId"
+   "RNAiScreen.rnaiResults.conditions"],
+  :orderBy [{:RNAiScreen.rnaiResults.phenotype "ASC"}],
+  :model {:name "genomic"}},
+ :OrganismGO_GenePointMutation
+ {:description
+  "Show all D. melanogaster genes that have been annotated with a particular GO term and the point mutations which overlap these genes. (Data Source: GO Consortium, FlyBase).",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.overlappingFeatures", :type "PointMutation"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path "Gene.goAnnotation.ontologyTerm.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "*ion channel*"}],
+  :name "OrganismGO_GenePointMutation",
+  :rank "104",
+  :title "GO term name [D. melanogaster] --> Genes + Point mutations.",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.overlappingFeatures.primaryIdentifier"
+   "Gene.overlappingFeatures.dataSets.dataSource.name"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Genes_Publications
+ {:description
+  "Show the publications for each gene in one organism. References are loaded from FlyBase for all Drosophila species, and from NCBI for D. melanogaster, C. elegans and S. cerevisiae.",
+  :tags ["im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila pseudoobscura"}],
+  :name "Genes_Publications",
+  :rank "96",
+  :title "All genes in organism --> Publications",
+  :comment "",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.publications.pubMedId"
+   "Gene.publications.firstAuthor"
+   "Gene.publications.journal"
+   "Gene.publications.year"
+   "Gene.organism.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_ExonLocation2
+ {:description
+  "For a specific gene, show its exons with their chromosomal locations and lengths.  To show exons for all genes, turn off the constraint on the gene name.  ",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "CG1046"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "Drosophila melanogaster"}],
+  :name "Gene_ExonLocation2",
+  :rank "62",
+  :title "Gene --> Exons",
+  :comment
+  "07.02.07:re-written to work from gene identifier -Rachel. 06.06.07 updated to work from gene class - Philip",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.exons.primaryIdentifier"
+   "Gene.exons.length"
+   "Gene.exons.chromosome.primaryIdentifier"
+   "Gene.exons.chromosomeLocation.start"
+   "Gene.exons.chromosomeLocation.end"
+   "Gene.exons.chromosomeLocation.strand"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :ChromLocation_Gene
+ {:description
+  "Show the genes located between two points on a chromosome. (Data Source: FlyBase, Ensembl).",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "Chromosome.locatedFeatures.feature.chromosomeLocation",
+    :type "Location"}
+   {:path "Chromosome.locatedFeatures.feature", :type "Gene"}
+   {:path "Chromosome.organism", :type "Organism"}
+   {:path "Chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2L"}
+   {:path "Chromosome.organism.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}
+   {:path
+    "Chromosome.locatedFeatures.feature.chromosomeLocation.start",
+    :op ">",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1"}
+   {:path "Chromosome.locatedFeatures.feature.chromosomeLocation.end",
+    :op "<",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "50000"}],
+  :name "ChromLocation_Gene",
+  :rank "43",
+  :title "Chromosomal location --> All genes",
+  :comment "",
+  :constraintLogic "A and B and C and D",
+  :select
+  ["Chromosome.locatedFeatures.feature.primaryIdentifier"
+   "Chromosome.locatedFeatures.feature.symbol"
+   "Chromosome.primaryIdentifier"
+   "Chromosome.locatedFeatures.feature.chromosomeLocation.start"
+   "Chromosome.locatedFeatures.feature.chromosomeLocation.end"
+   "Chromosome.locatedFeatures.feature.chromosomeLocation.strand"],
+  :orderBy
+  [{:Chromosome.locatedFeatures.feature.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Transcriptionfactor_TFBindingSiteGene
+ {:description
+  "For specified D. melanogaster transcription factor(s), show the binding sites, chromosomal locations, genes where the sites are located and give the sequence of the binding site, if any. (Data Source: Redfly).",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "TFBindingSite.dataSets.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "REDfly Drosophila transcription factor binding sites"}
+   {:path "TFBindingSite.chromosomeLocation.locatedOn",
+    :type "Chromosome"}
+   {:path "TFBindingSite.factor",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "E(spl)",
+    :extraValue "D. melanogaster"}],
+  :name "Transcriptionfactor_TFBindingSiteGene",
+  :rank "6",
+  :joins ["TFBindingSite.sequence"],
+  :title
+  "Transcription factor --> TF binding sites + Binding site sequence",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["TFBindingSite.factor.primaryIdentifier"
+   "TFBindingSite.factor.symbol"
+   "TFBindingSite.secondaryIdentifier"
+   "TFBindingSite.chromosomeLocation.locatedOn.primaryIdentifier"
+   "TFBindingSite.chromosomeLocation.start"
+   "TFBindingSite.chromosomeLocation.end"
+   "TFBindingSite.gene.secondaryIdentifier"
+   "TFBindingSite.gene.symbol"
+   "TFBindingSite.sequence.residues"
+   "TFBindingSite.dataSets.name"],
+  :orderBy [{:TFBindingSite.factor.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Organism_transposableElementInsertionSites
+ {:description
+  "Show all transposable element insertion sites for a particular organism.",
+  :tags ["im:aspect:Genes" "im:public"],
+  :where
+  [{:path "TransposableElementInsertionSite.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Drosophila melanogaster"}],
+  :name "Organism_transposableElementInsertionSites",
+  :rank "99",
+  :joins
+  ["TransposableElementInsertionSite.chromosome"
+   "TransposableElementInsertionSite.chromosomeLocation"],
+  :title "Organism --> Transposable element insertion sites",
+  :comment "",
+  :select
+  ["TransposableElementInsertionSite.primaryIdentifier"
+   "TransposableElementInsertionSite.cytoLocation"
+   "TransposableElementInsertionSite.chromosome.primaryIdentifier"
+   "TransposableElementInsertionSite.chromosomeLocation.start"
+   "TransposableElementInsertionSite.chromosomeLocation.end"
+   "TransposableElementInsertionSite.chromosomeLocation.strand"],
+  :orderBy
+  [{:TransposableElementInsertionSite.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}}}

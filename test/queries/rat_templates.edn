@@ -1,0 +1,1309 @@
+{:pw_id_to_genes
+ {:description
+  "Returns the genes annotated to a given Pathway Ontology identifier.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.pwAnnotation.ontologyTerm.identifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PW:0000363"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "R. norvegicus"}],
+  :name "pw_id_to_genes",
+  :rank "29",
+  :joins ["Gene.chromosome" "Gene.chromosomeLocation"],
+  :title "Pathway Ontology ID -> Genes",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.organism.shortName"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :do_id_and_children_to_genes
+ {:description
+  "Find all genes that are annotated to a particular Disease ontology ID. This template will return genes that have been assigned the given Disease ID as well as genes that belong to subcategories of that disease.",
+  :tags
+  ["im:aspect:Function" "im:aspect:Genes" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene.doAnnotation.ontologyTerm.parents", :type "DOTerm"}
+   {:path "Gene.doAnnotation.ontologyTerm", :type "DOTerm"}
+   {:path "Gene.doAnnotation.ontologyTerm.parents.identifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "RDO:0002847"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "R. norvegicus"}],
+  :name "do_id_and_children_to_genes",
+  :rank "14",
+  :title
+  "Disease Term Identifier [and children of this term] -> Genes",
+  :comment "Edited version of GO template",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.doAnnotation.ontologyTerm.parents.identifier"
+   "Gene.doAnnotation.ontologyTerm.name"
+   "Gene.doAnnotation.ontologyTerm.identifier"
+   "Gene.organism.shortName"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :go_term_chrom_to_genes
+ {:description
+  "Generate a list of genes from a gene ontology term and a chromosome.",
+  :tags ["im:aspect:Function" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene.chromosome.primaryIdentifier",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1"}
+   {:path "Gene.goAnnotation.ontologyTerm.name",
+    :op "CONTAINS",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "mitochondrion"}],
+  :name "go_term_chrom_to_genes",
+  :rank "39",
+  :title "GO Term and Chromosome --> Genes",
+  :comment "",
+  :constraintLogic "B and A",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.organism.shortName"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.qualifier"
+   "Gene.goAnnotation.subject.primaryIdentifier"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Protein_GeneChromosomeLength
+ {:description
+  "Show the gene that codes for the following protein, with its chromosomal location and length.",
+  :tags ["im:aspect:Genomics" "im:aspect:Proteomics" "im:public"],
+  :where
+  [{:path "Protein",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "P63164"}],
+  :name "Protein_GeneChromosomeLength",
+  :rank "13",
+  :title "Protein --> Gene.",
+  :comment "06.06.07 updated to work from protein class - Philip",
+  :select
+  ["Protein.primaryAccession"
+   "Protein.genes.primaryIdentifier"
+   "Protein.genes.symbol"
+   "Protein.genes.chromosome.primaryIdentifier"
+   "Protein.genes.chromosomeLocation.start"
+   "Protein.genes.chromosomeLocation.end"
+   "Protein.genes.chromosomeLocation.strand"
+   "Protein.genes.length"],
+  :orderBy [{:Protein.primaryAccession "ASC"}],
+  :model {:name "genomic"}},
+ :mp_chrom_to_genes
+ {:description
+  "Create a list of genes from the Mammalian Phenotype Ontology and a Chromosome.",
+  :tags ["im:aspect:Function" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene.mpAnnotation.ontologyTerm", :type "MPTerm"}
+   {:path "Gene.chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1"}
+   {:path "Gene.mpAnnotation.ontologyTerm.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "obese"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "R. norvegicus"}],
+  :name "mp_chrom_to_genes",
+  :rank "35",
+  :title "Mammalian Phenotype and Chromosome --> Genes",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.organism.shortName"
+   "Gene.mpAnnotation.ontologyTerm.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :go_term_to_genes_in_specific_organism
+ {:description
+  "Search for genes in a specified organism that is associated with a particular GO annotation.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.goAnnotation.ontologyTerm", :type "GOTerm"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Rattus norvegicus"}
+   {:path "Gene.goAnnotation.ontologyTerm.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "DNA binding"}],
+  :name "go_term_to_genes_in_specific_organism",
+  :rank "19",
+  :title "GO term name --> Genes in one specific organism",
+  :comment "Copied from flymine",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :author_to_publications
+ {:description
+  "Returns a list of curated publications for a given author. Enter either the surname eg. Rapp, Smith, etc. or a combination of surname and initials, eg. Rapp JP.",
+  :tags ["im:aspect:Publication" "im:frontpage" "im:public"],
+  :where
+  [{:path "Publication.authors.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*Jacob*"}],
+  :name "author_to_publications",
+  :rank "39",
+  :title "Author --> Publications",
+  :comment "",
+  :select
+  ["Publication.firstAuthor"
+   "Publication.authors.name"
+   "Publication.title"
+   "Publication.year"
+   "Publication.journal"
+   "Publication.volume"
+   "Publication.pages"
+   "Publication.pubMedId"],
+  :orderBy [{:Publication.firstAuthor "ASC"}],
+  :model {:name "genomic"}},
+ :da_range_to_proteins_genes
+ {:description
+  "Return a list of Proteins and Genes given a Protein Product weight range.",
+  :tags
+  ["im:aspect:Proteomics" "im:favourite" "im:frontpage" "im:public"],
+  :where
+  [{:path "Protein.molecularWeight",
+    :op ">",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1"}
+   {:path "Protein.molecularWeight",
+    :op "<",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "10000"}],
+  :name "da_range_to_proteins_genes",
+  :rank "22",
+  :title "Protein Mass --> Protein and Gene",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Protein.primaryIdentifier"
+   "Protein.primaryAccession"
+   "Protein.organism.name"
+   "Protein.genes.primaryIdentifier"
+   "Protein.genes.symbol"
+   "Protein.genes.name"],
+  :orderBy [{:Protein.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :im_available_gene
+ {:description "test if a specific gene is in mine",
+  :tags ["im:admin" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "eve"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "D. melanogaster"}],
+  :name "im_available_gene",
+  :rank "38",
+  :title "im_available_gene",
+  :comment "",
+  :constraintLogic "A and B",
+  :select ["Gene.primaryIdentifier" "Gene.symbol"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :ontTerm_to_genes
+ {:description
+  "Returns a list of Genes annotated to a particular ontology term",
+  :tags ["im:public"],
+  :where
+  [{:path "OntologyAnnotation.subject", :type "Gene"}
+   {:path "OntologyAnnotation.ontologyTerm",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PW:0000198"}],
+  :name "ontTerm_to_genes",
+  :rank "34",
+  :joins
+  ["OntologyAnnotation.subject.chromosome"
+   "OntologyAnnotation.subject.chromosomeLocation"],
+  :title "Ontology Term --> Genes",
+  :comment "",
+  :select
+  ["OntologyAnnotation.subject.primaryIdentifier"
+   "OntologyAnnotation.subject.symbol"
+   "OntologyAnnotation.subject.name"
+   "OntologyAnnotation.subject.chromosome.primaryIdentifier"
+   "OntologyAnnotation.subject.chromosomeLocation.start"
+   "OntologyAnnotation.subject.chromosomeLocation.end"
+   "OntologyAnnotation.ontologyTerm.identifier"
+   "OntologyAnnotation.ontologyTerm.name"
+   "OntologyAnnotation.ontologyTerm.namespace"],
+  :orderBy [{:OntologyAnnotation.subject.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :gene_to_rdoterms
+ {:description
+  "Returns disease terms for a given gene or list of genes.",
+  :tags ["im:aspect:Function" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Snrpn"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "R. norvegicus"}],
+  :name "gene_to_rdoterms",
+  :rank "3",
+  :joins ["Gene.doAnnotation.evidence.publications"],
+  :title "Gene --> Disease Ontology",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.doAnnotation.qualifier"
+   "Gene.doAnnotation.evidence.code.code"
+   "Gene.doAnnotation.ontologyTerm.identifier"
+   "Gene.doAnnotation.ontologyTerm.name"
+   "Gene.doAnnotation.ontologyTerm.obsolete"
+   "Gene.doAnnotation.evidence.publications.pubMedId"
+   "Gene.doAnnotation.evidence.publications.title"
+   "Gene.organism.shortName"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :pw_and_children_to_genes
+ {:description
+  "Returns a list of genes annotated to a given Pathway Ontology Term, and to its child pathways (if applicable) ",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.pwAnnotation.ontologyTerm.parents", :type "PWTerm"}
+   {:path "Gene.pwAnnotation.ontologyTerm", :type "PWTerm"}
+   {:path "Gene.pwAnnotation.ontologyTerm.parents.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "leptin system pathway"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "R. norvegicus"}],
+  :name "pw_and_children_to_genes",
+  :rank "36",
+  :title "Pathway Term [and children of this pathway] -> Genes",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.pwAnnotation.ontologyTerm.parents.name"
+   "Gene.pwAnnotation.ontologyTerm.parents.identifier"
+   "Gene.pwAnnotation.ontologyTerm.name"
+   "Gene.pwAnnotation.ontologyTerm.identifier"
+   "Gene.organism.shortName"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :gene_to_mpterms
+ {:description
+  "Returns Mammalian Phenotype Terms for a give gene or list of genes",
+  :tags ["im:aspect:Function" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Gcgr"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "R. norvegicus"}],
+  :name "gene_to_mpterms",
+  :rank "10",
+  :joins ["Gene.mpAnnotation.evidence.publications"],
+  :title "Gene --> Mammalian Phenotype Ontology",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.mpAnnotation.qualifier"
+   "Gene.mpAnnotation.evidence.code.code"
+   "Gene.mpAnnotation.ontologyTerm.identifier"
+   "Gene.mpAnnotation.ontologyTerm.name"
+   "Gene.mpAnnotation.ontologyTerm.description"
+   "Gene.mpAnnotation.ontologyTerm.obsolete"
+   "Gene.mpAnnotation.evidence.publications.pubMedId"
+   "Gene.mpAnnotation.evidence.publications.title"
+   "Gene.organism.shortName"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :qtls_on_chromosome_to_qtl
+ {:description
+  "Returns a list of QTLs for a given chromosome and list of QTLs.",
+  :tags ["im:aspect:Genomics" "im:public"],
+  :where
+  [{:path "QTL",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Bp258"}
+   {:path "QTL.chromosome.primaryIdentifier",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2"}
+   {:path "QTL.organism.name",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Rattus norvegicus"}],
+  :name "qtls_on_chromosome_to_qtl",
+  :rank "37",
+  :joins ["QTL.chromosomeLocation"],
+  :title "QTLs and Chromosome --> QTLs",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["QTL.primaryIdentifier"
+   "QTL.symbol"
+   "QTL.secondaryIdentifier"
+   "QTL.organism.name"
+   "QTL.chromosome.primaryIdentifier"
+   "QTL.chromosomeLocation.start"
+   "QTL.chromosomeLocation.end"
+   "QTL.chromosomeLocation.strand"],
+  :model {:name "genomic"}},
+ :Gene_Protein
+ {:description "Show the proteins for a particular gene.",
+  :tags
+  ["im:aspect:Genomics"
+   "im:aspect:Proteomics"
+   "im:frontpage"
+   "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Snrpn"}],
+  :name "Gene_Protein",
+  :rank "9",
+  :title "Gene --> Proteins.",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.proteins.primaryIdentifier"
+   "Gene.proteins.primaryAccession"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :pw_to_genes
+ {:description "Returns the genes annotated to the selected pathway",
+  :tags ["im:aspect:Function" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene.pwAnnotation.ontologyTerm", :type "PWTerm"}
+   {:path "Gene.pwAnnotation.ontologyTerm.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Notch signaling pathway"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "R. norvegicus"}],
+  :name "pw_to_genes",
+  :rank "17",
+  :joins ["Gene.chromosome" "Gene.chromosomeLocation"],
+  :title "Pathway Term -> Genes",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.organism.shortName"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :chromosome_and_do_children_to_genes
+ {:description
+  "Find all genes that are associated with a particular Disease term and all child terms. This template will return genes that have been assigned the given Disease term as well as genes that belong to subcategories of that disease.",
+  :tags ["im:aspect:Function" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene.doAnnotation.ontologyTerm", :type "DOTerm"}
+   {:path "Gene.doAnnotation.ontologyTerm.parents", :type "DOTerm"}
+   {:path "Gene.chromosome.primaryIdentifier",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1"}
+   {:path "Gene.doAnnotation.ontologyTerm.parents.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Hypertension"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "R. norvegicus"}],
+  :name "chromosome_and_do_children_to_genes",
+  :rank "28",
+  :title "Chromosome and Disease [and child terms] --> Genes",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.doAnnotation.ontologyTerm.parents.name"
+   "Gene.doAnnotation.ontologyTerm.parents.identifier"
+   "Gene.doAnnotation.ontologyTerm.name"
+   "Gene.doAnnotation.ontologyTerm.identifier"
+   "Gene.organism.shortName"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :qtl_to_candidate_genes
+ {:description
+  "Returns a list of candidate genes for the provided QTL.",
+  :tags ["im:aspect:Genomics" "im:public" "im:report"],
+  :where
+  [{:path "QTL",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Ept5"}],
+  :name "qtl_to_candidate_genes",
+  :rank "27",
+  :title "QTL --> Candidate Genes",
+  :comment "",
+  :select
+  ["QTL.candidateGenes.primaryIdentifier"
+   "QTL.candidateGenes.symbol"
+   "QTL.candidateGenes.name"
+   "QTL.candidateGenes.organism.shortName"],
+  :orderBy [{:QTL.candidateGenes.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :go_term_and_children_to_genes
+ {:description
+  "Find all genes that are associated with a particular GO term. This template will return genes that have been assigned the given GO term as well as genes that have a more specific GO term.",
+  :tags ["im:aspect:Function" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene.goAnnotation.ontologyTerm.parents", :type "GOTerm"}
+   {:path "Gene.goAnnotation.ontologyTerm", :type "GOTerm"}
+   {:path "Gene.goAnnotation.ontologyTerm.parents.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "DNA binding"}],
+  :name "go_term_and_children_to_genes",
+  :rank "6",
+  :title "GO term name [and children of this term] --> Genes",
+  :comment "edited version of Flymine template",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.goAnnotation.ontologyTerm.parents.name"
+   "Gene.goAnnotation.ontologyTerm.parents.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.identifier"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :gene_organism_2
+ {:description "Returns a list of all genes for a organism",
+  :tags
+  ["im:aspect:Genomics" "im:favourite" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene.symbol",
+    :op "IS NOT NULL",
+    :code "E",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NOT NULL"}
+   {:path "Gene.primaryIdentifier",
+    :op "IS NOT NULL",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NOT NULL"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Rattus norvegicus"}],
+  :name "gene_organism_2",
+  :rank "26",
+  :title "Gene --> Organism",
+  :comment "",
+  :constraintLogic "A and B and E",
+  :select
+  ["Gene.primaryIdentifier" "Gene.symbol" "Gene.organism.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :gene_to_homologue_do
+ {:description
+  "Returns the RGD Disease Ontology Annotations to homologous genes.",
+  :tags ["im:aspect:Function" "im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "acp5",
+    :extraValue "R. norvegicus"}],
+  :name "gene_to_homologue_do",
+  :rank "21",
+  :title "Gene --> Homologue Disease Annotations",
+  :comment "",
+  :select
+  ["Gene.homologues.homologue.primaryIdentifier"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.homologue.organism.name"
+   "Gene.homologues.homologue.doAnnotation.ontologyTerm.identifier"
+   "Gene.homologues.homologue.doAnnotation.ontologyTerm.name"
+   "Gene.homologues.homologue.doAnnotation.qualifier"],
+  :model {:name "genomic"}},
+ :gene_to_overlapping_qtls
+ {:description
+  "Returns a list of QTL regions that overlap a given gene or genes",
+  :tags ["im:aspect:Genomics" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene.overlappingFeatures", :type "QTL"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "3539"}],
+  :name "gene_to_overlapping_qtls",
+  :rank "5",
+  :joins ["Gene.overlappingFeatures.chromosomeLocation"],
+  :title "Gene --> Overlapping QTLs",
+  :comment "tweak title slightly",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.overlappingFeatures.primaryIdentifier"
+   "Gene.overlappingFeatures.symbol"
+   "Gene.overlappingFeatures.name"
+   "Gene.overlappingFeatures.chromosomeLocation.start"
+   "Gene.overlappingFeatures.chromosomeLocation.end"],
+  :orderBy [{:Gene.overlappingFeatures.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :do_term_chrom_to_genes
+ {:description
+  "Create a list of genes from RGD's Disease Ontology and a Chromosome.",
+  :tags
+  ["im:aspect:Function"
+   "im:aspect:Genomics"
+   "im:frontpage"
+   "im:public"],
+  :where
+  [{:path "Gene.doAnnotation.ontologyTerm", :type "DOTerm"}
+   {:path "Gene.chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1"}
+   {:path "Gene.doAnnotation.ontologyTerm.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Hypertension"}],
+  :name "do_term_chrom_to_genes",
+  :rank "15",
+  :title "Disease Term and Chromosome --> Genes",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.organism.shortName"
+   "Gene.doAnnotation.ontologyTerm.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :pubmedid_to_bioentity_list
+ {:description
+  "Returns a list of all the objects in Ratmine that are associated with a given PubMed ID - Genes, Proteins, QTL, SNPs, etc.",
+  :tags ["im:aspect:Literature" "im:public"],
+  :where
+  [{:path "BioEntity.publications",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "17218081"}],
+  :name "pubmedid_to_bioentity_list",
+  :rank "20",
+  :title "Publication PMID --> All associated objects",
+  :comment "",
+  :select
+  ["BioEntity.primaryIdentifier"
+   "BioEntity.name"
+   "BioEntity.publications.firstAuthor"
+   "BioEntity.publications.title"
+   "BioEntity.publications.year"
+   "BioEntity.publications.journal"
+   "BioEntity.publications.volume"
+   "BioEntity.publications.pages"
+   "BioEntity.publications.pubMedId"],
+  :orderBy [{:BioEntity.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :pw_chrom_to_genes
+ {:description
+  "Create a list of genes from a Pathway Ontology Term and a Chromosome.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.pwAnnotation.ontologyTerm", :type "PWTerm"}
+   {:path "Gene.chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1"}
+   {:path "Gene.pwAnnotation.ontologyTerm.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "insulin signaling pathway"}],
+  :name "pw_chrom_to_genes",
+  :rank "37",
+  :title "Pathway Term and Chromosome --> Genes",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.organism.shortName"
+   "Gene.pwAnnotation.ontologyTerm.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :gene_to_GO_biological_process
+ {:description
+  "Lists the GO biological process annotations for a given gene.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.goAnnotation.ontologyTerm.namespace",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "biological_process"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "A2m"}],
+  :name "gene_to_GO_biological_process",
+  :rank "12",
+  :title "Gene -> GO Biological Process",
+  :comment "initial query by Simon.",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.description"],
+  :orderBy [{:Gene.goAnnotation.ontologyTerm.identifier "ASC"}],
+  :model {:name "genomic"}},
+ :qtl_id_to_genes
+ {:description
+  "For a given QTL, identified by its RGD ID, this returns a list of genes that fall within the QTL region. ",
+  :tags ["im:aspect:Genomics" "im:public"],
+  :where
+  [{:path "QTL.overlappingFeatures", :type "Gene"}
+   {:path "QTL",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "631548"}],
+  :name "qtl_id_to_genes",
+  :rank "37",
+  :joins
+  ["QTL.overlappingFeatures.chromosome"
+   "QTL.overlappingFeatures.chromosomeLocation"],
+  :title "QTL RGD Identifier --> Genes in Region",
+  :comment "updated to add info about Identifier",
+  :select
+  ["QTL.overlappingFeatures.primaryIdentifier"
+   "QTL.overlappingFeatures.symbol"
+   "QTL.overlappingFeatures.name"
+   "QTL.overlappingFeatures.chromosome.primaryIdentifier"
+   "QTL.overlappingFeatures.chromosomeLocation.start"
+   "QTL.overlappingFeatures.chromosomeLocation.end"],
+  :orderBy [{:QTL.overlappingFeatures.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :mp_and_children_to_genes2
+ {:description
+  "Find all genes that are associated with a particular Mammalian Phenotype (MP) term. This template will return genes that have been assigned the given MP term as well as genes that have a more specific MP term.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.mpAnnotation.ontologyTerm.parents", :type "MPTerm"}
+   {:path "Gene.mpAnnotation.ontologyTerm", :type "MPTerm"}
+   {:path "Gene.mpAnnotation.ontologyTerm.parents",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "increased blood pressure"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "R. norvegicus"}],
+  :name "mp_and_children_to_genes2",
+  :rank "23",
+  :title
+  "Mammalian Phenoype term name [and children of this term] --> Genes",
+  :comment "uses lookup",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.mpAnnotation.ontologyTerm.parents.name"
+   "Gene.mpAnnotation.ontologyTerm.parents.identifier"
+   "Gene.mpAnnotation.ontologyTerm.name"
+   "Gene.mpAnnotation.ontologyTerm.identifier"
+   "Gene.organism.shortName"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :gene_to_goterm
+ {:description "Lists the GO annotations for a given gene.",
+  :tags ["im:aspect:Function" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "A2m"}],
+  :name "gene_to_goterm",
+  :rank "2",
+  :title "Gene --> GO Terms",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.goAnnotation.qualifier"
+   "Gene.goAnnotation.evidence.code.code"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.description"
+   "Gene.goAnnotation.ontologyTerm.obsolete"],
+  :orderBy [{:Gene.goAnnotation.ontologyTerm.identifier "ASC"}],
+  :model {:name "genomic"}},
+ :qtl_symbol_to_genes_in_region
+ {:description
+  "Returns the genes located with a particular QTL region",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "QTL.overlappingFeatures", :type "Gene"}
+   {:path "QTL",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Mcs1"}],
+  :name "qtl_symbol_to_genes_in_region",
+  :rank "16",
+  :title "QTL --> Genes in QTL region",
+  :comment "",
+  :select
+  ["QTL.overlappingFeatures.primaryIdentifier"
+   "QTL.overlappingFeatures.symbol"
+   "QTL.overlappingFeatures.name"
+   "QTL.overlappingFeatures.chromosome.primaryIdentifier"
+   "QTL.overlappingFeatures.chromosomeLocation.start"
+   "QTL.overlappingFeatures.chromosomeLocation.end"],
+  :orderBy [{:QTL.overlappingFeatures.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :gene_to_homologue_mp
+ {:description
+  "Returns the RGD Mammalian Phenotype Annotations to homologous genes.",
+  :tags ["im:aspect:Function" "im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "h6pd",
+    :extraValue "R. norvegicus"}],
+  :name "gene_to_homologue_mp",
+  :rank "11",
+  :title "Gene --> Homologue Mammalian Phenotype",
+  :comment "",
+  :select
+  ["Gene.homologues.homologue.primaryIdentifier"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.homologue.organism.name"
+   "Gene.homologues.homologue.mpAnnotation.ontologyTerm.identifier"
+   "Gene.homologues.homologue.mpAnnotation.ontologyTerm.name"
+   "Gene.homologues.homologue.mpAnnotation.qualifier"],
+  :orderBy [{:Gene.homologues.homologue.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :go_term_name_to_go_term_identifier
+ {:description "Find the GO identifier for a specific term.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "GOTerm.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "mitochondrion"}],
+  :name "go_term_name_to_go_term_identifier",
+  :rank "33",
+  :title "GO term name --> GO term identifier",
+  :comment "Copied from flymine",
+  :select ["GOTerm.name" "GOTerm.identifier" "GOTerm.description"],
+  :orderBy [{:GOTerm.name "ASC"}],
+  :model {:name "genomic"}},
+ :GeneListDescription_1
+ {:description "Returns description for a gene or a list of genes.",
+  :tags ["im:aspect:Genomics" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Snrpn"}],
+  :name "GeneListDescription_1",
+  :rank "25",
+  :title "GeneSymbol s--> Description",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.description"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :gene_to_phosphoprotein
+ {:description
+  "Returns a list of gene products that have been found to exist as phosphoproteins (Source Uniprot Keywords).",
+  :tags ["im:aspect:Genomics" "im:public"],
+  :where
+  [{:path "Gene.proteins.keywords.name",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Phosphoprotein"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Atp2b1",
+    :extraValue "R. norvegicus"}],
+  :name "gene_to_phosphoprotein",
+  :rank "31",
+  :title "Gene --> Phosphophorylated gene products (Phosphoproteins)",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.proteins.primaryIdentifier"
+   "Gene.proteins.primaryAccession"
+   "Gene.proteins.keywords.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :gene_to_glycoproteins
+ {:description
+  "Returns a list of all gene products which have been found to be glycosylated (Source Uniprot Keywords)",
+  :tags ["im:aspect:Genomics" "im:public"],
+  :where
+  [{:path "Gene.proteins.keywords.name",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Glycoprotein"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "A2m",
+    :extraValue "R. norvegicus"}],
+  :name "gene_to_glycoproteins",
+  :rank "32",
+  :title "Gene --> Glycosylated gene products (Glycoproteins)",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.proteins.primaryIdentifier"
+   "Gene.proteins.primaryAccession"
+   "Gene.proteins.keywords.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :gene_to_location
+ {:description "Returns the location for a given gene.",
+  :tags ["im:aspect:Genomics" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Snrpn"}],
+  :name "gene_to_location",
+  :rank "8",
+  :title "Gene --> Location",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.chromosomeLocation.strand"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :protein_to_features
+ {:description
+  "Returns a list of UniProt features for a given protein.",
+  :tags ["im:aspect:Function" "im:public" "im:report"],
+  :where
+  [{:path "Protein",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "RSMN_RAT"}],
+  :name "protein_to_features",
+  :rank "30",
+  :title "Protein --> UniProt Features",
+  :comment "",
+  :select
+  ["Protein.primaryIdentifier"
+   "Protein.features.type"
+   "Protein.features.begin"
+   "Protein.features.end"
+   "Protein.features.description"],
+  :orderBy [{:Protein.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :gene_to_homologue_pathway
+ {:description
+  "Returns the RGD Pathway Annotations to homologous genes.",
+  :tags ["im:aspect:Function" "im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "acadm",
+    :extraValue "R. norvegicus"}],
+  :name "gene_to_homologue_pathway",
+  :rank "18",
+  :title "Gene --> Homologue RGD Pathway Annotation",
+  :comment "",
+  :select
+  ["Gene.homologues.homologue.primaryIdentifier"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.homologue.organism.name"
+   "Gene.homologues.homologue.pwAnnotation.ontologyTerm.identifier"
+   "Gene.homologues.homologue.pwAnnotation.ontologyTerm.name"
+   "Gene.homologues.homologue.pwAnnotation.qualifier"],
+  :orderBy [{:Gene.homologues.homologue.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :genes_on_chromosome
+ {:description "Find all genes on a chromosome",
+  :tags
+  ["im:aspect:Genomics" "im:favourite" "im:frontpage" "im:public"],
+  :where
+  [{:path "Chromosome.locatedFeatures.feature", :type "Gene"}
+   {:path "Chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1"}],
+  :name "genes_on_chromosome",
+  :rank "1",
+  :title "Chromosome --> All genes",
+  :comment "",
+  :select
+  ["Chromosome.locatedFeatures.feature.primaryIdentifier"
+   "Chromosome.locatedFeatures.feature.symbol"
+   "Chromosome.primaryIdentifier"],
+  :orderBy [{:Chromosome.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :im_available_organisms
+ {:description
+  "For all genes, list the taxonIds available.  Used by webservice to construct links to other intermines.",
+  :tags ["im:admin" "im:public"],
+  :where
+  [{:path "Gene.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*"}],
+  :name "im_available_organisms",
+  :rank "36",
+  :title "All genes --> TaxonId",
+  :comment "used for displaying links to other intermines",
+  :select ["Gene.organism.shortName"],
+  :orderBy [{:Gene.organism.shortName "ASC"}],
+  :model {:name "genomic"}},
+ :do_term_and_children_to_genes
+ {:description
+  "Find all genes that are associated with a particular Disease term. This template will return genes that have been assigned the given Disease term as well as genes that belong to subcategories of that disease.",
+  :tags
+  ["im:aspect:Function" "im:aspect:Genes" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene.doAnnotation.ontologyTerm.parents", :type "DOTerm"}
+   {:path "Gene.doAnnotation.ontologyTerm", :type "DOTerm"}
+   {:path "Gene.doAnnotation.ontologyTerm.parents.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Hypertension"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "R. norvegicus"}],
+  :name "do_term_and_children_to_genes",
+  :rank "7",
+  :title "Disease Term [and children of this term] -> Genes",
+  :comment "edited version of Flymine template",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.doAnnotation.ontologyTerm.parents.name"
+   "Gene.doAnnotation.ontologyTerm.parents.identifier"
+   "Gene.doAnnotation.ontologyTerm.name"
+   "Gene.doAnnotation.ontologyTerm.identifier"
+   "Gene.organism.shortName"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :gene_to_pwterms
+ {:description
+  "Returns the RGD Pathway Terms for the given gene or list of genes.",
+  :tags ["im:aspect:Function" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Chek1"}],
+  :name "gene_to_pwterms",
+  :rank "4",
+  :joins ["Gene.pwAnnotation.evidence.publications"],
+  :title "Gene --> RGD Pathway Ontology",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.pwAnnotation.qualifier"
+   "Gene.pwAnnotation.evidence.code.code"
+   "Gene.pwAnnotation.ontologyTerm.identifier"
+   "Gene.pwAnnotation.ontologyTerm.name"
+   "Gene.pwAnnotation.ontologyTerm.description"
+   "Gene.pwAnnotation.evidence.publications.pubMedId"
+   "Gene.pwAnnotation.evidence.publications.title"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :protein_to_keywords
+ {:description "Returns a list of keywords for the given protein.",
+  :tags ["im:aspect:Proteomics" "im:public" "im:report"],
+  :where
+  [{:path "Protein",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "RSMN_RAT"}],
+  :name "protein_to_keywords",
+  :rank "24",
+  :title "Protein --> Keywords",
+  :comment "",
+  :select ["Protein.primaryIdentifier" "Protein.keywords.name"],
+  :orderBy [{:Protein.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}}}

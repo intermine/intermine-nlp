@@ -1,0 +1,208 @@
+QUERY =
+  VIEW
+  | VIEW 'where' CONSTR
+  | VIEW 'with' CONSTR
+  | VIEW 'in which' CONSTR
+  | VIEW 'for which' CONSTR
+  | VIEW 'have' CONSTR
+  | VIEW 'are' CONSTR
+  | VIEW 'is' CONSTR
+  | VIEW 'have' CONSTR
+  | VIEW CONSTR
+  | 'show' QUERY
+  | 'show me' QUERY
+  | 'show I' QUERY
+  | 'show all' QUERY
+  | 'show the' QUERY
+  | 'which' QUERY
+  | 'all' QUERY
+  | 'all the' QUERY
+  | 'all of the' QUERY
+  | 'for' QUERY
+  | 'list' QUERY
+  | 'list all' QUERY
+  | 'what is' QUERY
+  | 'I want to see' QUERY
+  | QUERY 'sort' SORT
+  | QUERY 'sort by' SORT
+  | QUERY "?"
+  | QUERY "."
+  | QUERY "!"
+
+VIEW =
+  VIEW 'and' VIEW
+  | CLASS
+  | CLASS FIELD
+  | FIELD
+  | ORGANISM
+  | ORGANISM ',' CLASS
+  | ORGANISM ',' CLASS FIELD
+  | ORGANISM 'show the' CLASS
+  | ORGANISM 'show the' FIELD
+  | ORGANISM 'show the' CLASS FIELD
+
+
+CONSTR =
+  CONSTR 'and' CONSTR
+  | CONSTR 'or' CONSTR
+  | VALUE
+  | CLASS 'exists'
+  | FIELD COMPARE VALUE
+  | VALUE COMPARE FIELD
+  | FIELD VALUE
+  | VALUE FIELD
+  | FIELD MULTI_COMPARE VALUES
+  | VALUES MULTI_COMPARE FIELD
+  | UNARY_OP FIELD
+  | FIELD UNARY_OP
+
+
+COMPARE =
+  STR_COMP
+  | MATH_COMP
+  | LIST_COMP
+
+STR_COMP =
+  EQ
+  | NEQ
+  | CONTAINS
+  | LIKE
+  | NLIKE
+
+CONTAINS =
+  "contains"
+  | "contain"
+  | "has"
+  | "in"
+
+LIKE =
+  "like"
+  | "similar to"
+  | "resembles"
+
+NLIKE =
+  "not" LIKE
+  | "isn't" LIKE
+
+MATH_COMP =
+  EQ
+  | NEQ
+  | GT
+  | LT
+  | GEQ
+  | LEQ
+
+EQ =
+  'EQ'
+  | 'equal'
+  | 'equal to'
+  | 'equals'
+  | '='
+
+
+NEQ =
+  'NEQ'
+  | 'not equal'
+  | 'not equal to'
+  | 'doesn\'t equal'
+  | 'does not equal'
+  | '!='
+
+GT =
+  'GT'
+  | 'greater'
+  | 'greater than'
+  | 'over'
+  | 'more than'
+  | '>'
+
+LT =
+  'LT'
+  | 'lesser'
+  | 'less'
+  | 'lesser than'
+  | 'less than'
+  | 'below'
+  | 'under'
+  | '<'
+
+GEQ =
+  GT 'or' EQ
+  | '>='
+
+LEQ =
+  LT 'or' EQ
+  | '<='
+
+
+LIST_COMP =
+  "%NOT IMPLEMENTED"
+
+MULTI_COMPARE =
+  M_ONE_OF
+  | M_NONE_OF
+  | M_OVERLAPS
+  | M_NOVERLAPS
+  | M_OUTSIDE
+  | M_WITHIN
+  | M_CONTAINS
+  | M_NCONTAINS
+
+M_ONE_OF =
+  "one of"
+  | "contained in"
+  | "in"
+  | "either"
+
+M_NONE_OF =
+  "not" M_ONE_OF
+  | "isn't" M_ONE_OF
+  | "neither"
+
+M_OVERLAPS =
+  "between"
+  | "in between"
+
+M_NOVERLAPS =
+  "not" M_OVERLAPS
+  | "isn't" M_OVERLAPS
+
+M_OUTSIDE =
+  "%NOT IMPLEMENTED"
+
+M_WITHIN =
+  "%NOT IMPLEMENTED"
+
+M_CONTAINS =
+  "%NOT IMPLEMENTED"
+
+M_NCONTAINS =
+  "%NOT IMPLEMENTED"
+
+UNARY_OP =
+  NULL
+  | NNULL
+
+NULL =
+  "null"
+  | "empty"
+
+NNULL =
+  "not null"
+  | "isn't null"
+  | "not empty"
+  | "isn't empty"
+
+SORT =
+  SORT SORT
+  | VALUE 'descend'
+  | VALUE 'ascend'
+
+VALUES =
+  VALUE VALUE+
+
+VALUE =
+  #"[0-9a-zA-Z]+"
+
+ORGANISM =
+  'Fly'

@@ -1,0 +1,4032 @@
+{:GeneFactor_GeneTarget
+ {:description
+  "Retrieve <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a> that are targets of a given regulator gene.",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "Gene.regulatoryRegions", :type "TFBindingSite"}
+   {:path "Gene.regulatoryRegions.regulator",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "GAL4",
+    :extraValue "S. cerevisiae"}],
+  :name "GeneFactor_GeneTarget",
+  :rank "67",
+  :title "Gene (regulator) --> Gene (targets)",
+  :comment "",
+  :constraintLogic "B and A",
+  :select
+  ["Gene.regulatoryRegions.regulator.symbol"
+   "Gene.regulatoryRegions.regulator.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.secondaryIdentifier"
+   "Gene.regulatoryRegions.regEvidence.ontologyTerm.name"
+   "Gene.regulatoryRegions.regEvidence.ontologyTerm.identifier"
+   "Gene.regulatoryRegions.experimentCondition"
+   "Gene.regulatoryRegions.strainBackground"
+   "Gene.regulatoryRegions.regulationDirection"
+   "Gene.regulatoryRegions.publications.pubMedId"
+   "Gene.regulatoryRegions.datasource"
+   "Gene.regulatoryRegions.annotationType"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Chromosome_Gene_FeatureType
+ {:description "Retrieve features located on chromosome.",
+  :tags ["im:aspect:Genome" "im:public" "im:report"],
+  :where
+  [{:path "Gene.qualifier",
+    :op "!=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.status",
+    :op "=",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.status",
+    :op "IS NULL",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ORF"}
+   {:path "Gene.chromosome.primaryIdentifier",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "chrI"}],
+  :name "Chromosome_Gene_FeatureType",
+  :rank "65",
+  :title "Chromosome-->Genes of a selected Feature Type",
+  :comment "",
+  :constraintLogic "A and B and (C or D) and (E or F)",
+  :select
+  ["Gene.chromosome.primaryIdentifier"
+   "Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.featureType"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.organism.shortName"
+   "Gene.description"],
+  :orderBy [{:Gene.featureType "ASC"}],
+  :model {:name "genomic"}},
+ :Protein_Aggregation
+ {:tags ["im:aspect:Proteins" "im:public"],
+  :where
+  [{:path "Protein.organism.shortName",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "S. cerevisiae"}],
+  :name "Protein_Aggregation",
+  :rank "71",
+  :title "Retrieve proteins with aggregation information.",
+  :comment "",
+  :select
+  ["Protein.primaryIdentifier"
+   "Protein.primaryAccession"
+   "Protein.symbol"
+   "Protein.proteinProperties.source"
+   "Protein.proteinProperties.condition"
+   "Protein.proteinProperties.location"
+   "Protein.proteinProperties.isReversible"
+   "Protein.proteinProperties.propertyName"
+   "Protein.proteinProperties.publication.pubMedId"],
+  :orderBy [{:Protein.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Genes_Proteins_pI
+ {:description
+  "Retrieve <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a> of a selected <a href = \"http://www.yeastgenome.org/yeastmine-help-page#type\">feature type</a> that encode proteins of the selected calculated protein pI range.",
+  :tags ["im:aspect:Proteins" "im:public" "im:report"],
+  :where
+  [{:path "Gene.featureType",
+    :op "=",
+    :code "J",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "intein_encoding_region"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "I",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "blocked_reading_frame"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ORF"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "H",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "transposable_element_gene"}
+   {:path "Gene.status",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.qualifier",
+    :op "!=",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.proteins.pI",
+    :op ">=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "4.0"}
+   {:path "Gene.proteins.pI",
+    :op "<=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "8.0"}],
+  :name "Genes_Proteins_pI",
+  :rank "51",
+  :title "Retrieve-->Proteins in a pI range",
+  :comment "",
+  :constraintLogic "(A or H or I or J) and D and (E or F) and B and C",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.featureType"
+   "Gene.proteins.symbol"
+   "Gene.proteins.molecularWeight"
+   "Gene.organism.shortName"
+   "Gene.description"
+   "Gene.proteins.pI"],
+  :orderBy [{:Gene.proteins.pI "DESC"}],
+  :model {:name "genomic"}},
+ :Gene_OverlappingGenes
+ {:description
+  "Retrieve all overlapping <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a>. Caution: since the relationships are reciprocal, each gene in an overlapping pair has a separate line in the output file.",
+  :tags ["im:aspect:Genome" "im:public" "im:report"],
+  :where
+  [{:path "Gene.overlappingFeatures", :type "Gene"}
+   {:path "Gene.overlappingFeatures.status",
+    :op "=",
+    :code "G",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.overlappingFeatures.featureType",
+    :op "!=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "not in systematic sequence of S288C"}
+   {:path "Gene.status",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.featureType",
+    :op "!=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "not in systematic sequence of S288C"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}],
+  :name "Gene_OverlappingGenes",
+  :rank "48",
+  :title "Retrieve --> All overlapping genes",
+  :comment "",
+  :constraintLogic "A and C and G and B and D",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.qualifier"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.chromosomeLocation.strand"
+   "Gene.overlappingFeatures.primaryIdentifier"
+   "Gene.overlappingFeatures.secondaryIdentifier"
+   "Gene.overlappingFeatures.symbol"
+   "Gene.overlappingFeatures.qualifier"
+   "Gene.overlappingFeatures.chromosomeLocation.start"
+   "Gene.overlappingFeatures.chromosomeLocation.end"
+   "Gene.overlappingFeatures.chromosomeLocation.strand"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :GeneTarget_GeneFactor
+ {:description
+  "Retrieve genes that are regulators of a given target gene.",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "Gene.regulatoryRegions", :type "TFBindingSite"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "HIS3",
+    :extraValue "S. cerevisiae"}],
+  :name "GeneTarget_GeneFactor",
+  :rank "70",
+  :title "Gene (target) --> Gene (regulators)",
+  :comment "",
+  :select
+  ["Gene.regulatoryRegions.regulator.symbol"
+   "Gene.regulatoryRegions.regulator.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.secondaryIdentifier"
+   "Gene.regulatoryRegions.regEvidence.ontologyTerm.name"
+   "Gene.regulatoryRegions.regEvidence.ontologyTerm.identifier"
+   "Gene.regulatoryRegions.experimentCondition"
+   "Gene.regulatoryRegions.strainBackground"
+   "Gene.regulatoryRegions.regulationDirection"
+   "Gene.regulatoryRegions.publications.pubMedId"
+   "Gene.regulatoryRegions.regulatorType"
+   "Gene.regulatoryRegions.datasource"
+   "Gene.regulatoryRegions.annotationType"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :GoSlimTerm_Gene
+ {:description
+  "Retrieve all <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a> that are annotated to the selected GO Slim term and children of that selected GO Slim Term. Only manually curated and high-throughput GO annotations are included.",
+  :tags ["im:aspect:Function" "im:frontpage" "im:public" "im:report"],
+  :where
+  [{:path "Gene.goAnnotation.ontologyTerm.parents", :type "GOSlimTerm"}
+   {:path "Gene.goAnnotation.evidence.code.annotType",
+    :op "=",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "manually curated"}
+   {:path "Gene.goAnnotation.evidence.code.annotType",
+    :op "=",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "high-throughput"}
+   {:path "Gene.goAnnotation.qualifier",
+    :op "IS NULL",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.goAnnotation.qualifier",
+    :op "!=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "NOT"}
+   {:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.qualifier",
+    :op "!=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.goAnnotation.ontologyTerm.parents.name",
+    :op "=",
+    :code "G",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "DNA binding"}],
+  :name "GoSlimTerm_Gene",
+  :rank "59",
+  :title "GO Slim Term --> Gene",
+  :comment "",
+  :constraintLogic "(A or B) and (C or D) and (E or F) and G",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.featureType"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.namespace"
+   "Gene.goAnnotation.evidence.code.code"
+   "Gene.goAnnotation.qualifier"
+   "Gene.goAnnotation.evidence.code.withText"
+   "Gene.goAnnotation.annotationExtension"
+   "Gene.goAnnotation.evidence.code.annotType"
+   "Gene.goAnnotation.ontologyTerm.parents.identifier"
+   "Gene.goAnnotation.ontologyTerm.parents.name"
+   "Gene.goAnnotation.evidence.publications.pubMedId"
+   "Gene.goAnnotation.evidence.publications.citation"],
+  :orderBy [{:Gene.featureType "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_SpellExpressionScores
+ {:description
+  "Retrieve expression data for a specified <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a> within the score range.",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "acr1",
+    :extraValue "S. cerevisiae"}
+   {:path "Gene.expressionScores.score",
+    :op ">=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2.0"}],
+  :name "Gene_SpellExpressionScores",
+  :rank "30",
+  :title "Gene--> Expression Scores",
+  :comment "",
+  :constraintLogic "A and B and C and D",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.sgdAlias"
+   "Gene.organism.shortName"
+   "Gene.expressionScores.score"
+   "Gene.expressionScores.expressioncondition.conditionname"
+   "Gene.expressionScores.expressioncondition.expressiondataset.name"
+   "Gene.expressionScores.expressioncondition.expressiondataset.author"
+   "Gene.expressionScores.expressioncondition.expressiondataset.title"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Chromosome_AllFeatures
+ {:description
+  "Retrieve all <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine \">feature types</a> for the specified chromosome.",
+  :tags ["im:aspect:Genome" "im:public"],
+  :where
+  [{:path "SequenceFeature.status",
+    :op "=",
+    :code "U",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "S",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "transposable_element_gene"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "R",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "telomeric_repeat"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "Q",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "telomere"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "P",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "tRNA_gene"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "O",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "snoRNA_gene"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "N",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "snRNA_gene"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "M",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "LTR_retrotransposon"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "L",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "rRNA_gene"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "K",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "pseudogene"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "H",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ncRNA_gene"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "G",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "long_terminal_repeat"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "centromere"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Y_prime_element"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "X_element"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "X_element_combinatorial_repeat"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ARS"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ORF"}
+   {:path "SequenceFeature.organism.name",
+    :op "=",
+    :code "T",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Saccharomyces cerevisiae"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "I",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "tRNA_gene"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "J",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "blocked_reading_frame"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "V",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "intein_encoding_region"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "W",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "telomerase_RNA_gene"}
+   {:path "SequenceFeature.chromosome.primaryIdentifier",
+    :op "=",
+    :code "X",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "chrIII"}],
+  :name "Chromosome_AllFeatures",
+  :rank "72",
+  :title "Chromosome --> All features",
+  :comment "",
+  :constraintLogic
+  "(A or B or C or D or E or F or G or H or K or L or M or N or O or P or Q or R or S or I or J or V or W) and T and U and X",
+  :select
+  ["SequenceFeature.chromosome.primaryIdentifier"
+   "SequenceFeature.primaryIdentifier"
+   "SequenceFeature.featureType"
+   "SequenceFeature.secondaryIdentifier"
+   "SequenceFeature.description"
+   "SequenceFeature.sgdAlias"],
+  :orderBy [{:SequenceFeature.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Phenotype
+ {:description
+  "Retrieve all phenotypes for a specified <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags ["im:aspect:Phenotypes" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "rad54"}],
+  :name "Gene_Phenotype",
+  :rank "10",
+  :title "Gene --> Phenotype",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.secondaryIdentifier"
+   "Gene.sgdAlias"
+   "Gene.qualifier"
+   "Gene.phenotypes.experimentType"
+   "Gene.phenotypes.mutantType"
+   "Gene.phenotypes.observable"
+   "Gene.phenotypes.qualifier"
+   "Gene.phenotypes.allele"
+   "Gene.phenotypes.alleleComment"
+   "Gene.phenotypes.strainBackground"
+   "Gene.phenotypes.chemical"
+   "Gene.phenotypes.condition"
+   "Gene.phenotypes.details"
+   "Gene.phenotypes.reporter"
+   "Gene.phenotypes.publications.pubMedId"
+   "Gene.phenotypes.publications.citation"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_ChromosomeLocation
+ {:description
+  "Retrieve the chromosomal location for a specified <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags ["im:aspect:Genome" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "act1"}],
+  :name "Gene_ChromosomeLocation",
+  :rank "18",
+  :title "Gene --> Chromosomal location",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.organism.shortName"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.chromosomeLocation.strand"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_RegulationSummary
+ {:description
+  "Retrieve regulation summary and references for a regulator <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "GAL4"}],
+  :name "Gene_RegulationSummary",
+  :rank "40",
+  :joins ["Gene.regulationSummary.publications"],
+  :title "Gene --> Regulation Summary + References",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.sgdAlias"
+   "Gene.regulationSummary.summaryParagraph"
+   "Gene.regulationSummary.publications.pubMedId"
+   "Gene.regulationSummary.publications.citation"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_UpstreamIntergenic
+ {:description
+  "Retrieve upstream intergenic region with its length and chromosomal location for a specified <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags ["im:aspect:Genome" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "act1"}],
+  :name "Gene_UpstreamIntergenic",
+  :rank "50",
+  :title "Gene-->Upstream intergenic region",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.upstreamIntergenicRegion.primaryIdentifier"
+   "Gene.upstreamIntergenicRegion.length"
+   "Gene.upstreamIntergenicRegion.chromosome.primaryIdentifier"
+   "Gene.upstreamIntergenicRegion.chromosomeLocation.start"
+   "Gene.upstreamIntergenicRegion.chromosomeLocation.end"
+   "Gene.upstreamIntergenicRegion.chromosomeLocation.strand"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :GOTerm_Genes
+ {:description
+  "Retrieve all <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a> (excluding dubious ORFs) annotated to a specified GO Term. Manually curated, high-throughput, and computational GO annotations are included. To also retrieve annotations to child terms use the <a href=\"https://yeastmine.yeastgenome.org/yeastmine/template.do?name=GOTerm_GeneOrganism&scope=global\"> GO Term name [and children of this  term] -->All genes template</a>.",
+  :tags ["im:aspect:Function" "im:public" "im:report"],
+  :where
+  [{:path "Gene.goAnnotation.ontologyTerm", :type "GOTerm"}
+   {:path "Gene.goAnnotation.qualifier",
+    :op "!=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "NOT"}
+   {:path "Gene.goAnnotation.qualifier",
+    :op "IS NULL",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.goAnnotation.ontologyTerm.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Pseudohyphal Growth"}],
+  :name "GOTerm_Genes",
+  :rank "2",
+  :title "GO Term --> All genes",
+  :comment "",
+  :constraintLogic "A and (B or C)",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.featureType"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.namespace"
+   "Gene.goAnnotation.evidence.code.code"
+   "Gene.goAnnotation.qualifier"
+   "Gene.goAnnotation.evidence.code.withText"
+   "Gene.goAnnotation.annotationExtension"
+   "Gene.goAnnotation.evidence.code.annotType"
+   "Gene.goAnnotation.evidence.publications.pubMedId"
+   "Gene.goAnnotation.evidence.publications.citation"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :Literature_GO
+ {:description
+  "Retrieve GO annotations made from a specified PubMed ID (PMID).",
+  :tags ["im:aspect:Function" "im:aspect:Literature" "im:public"],
+  :where
+  [{:path "Gene.goAnnotation.evidence.publications",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "17118118"}],
+  :name "Literature_GO",
+  :rank "54",
+  :title "Literature --> GO annotations",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.featureType"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.namespace"
+   "Gene.goAnnotation.evidence.code.code"
+   "Gene.goAnnotation.qualifier"
+   "Gene.goAnnotation.evidence.code.withText"
+   "Gene.goAnnotation.annotationExtension"
+   "Gene.goAnnotation.evidence.code.annotType"
+   "Gene.goAnnotation.evidence.publications.pubMedId"
+   "Gene.goAnnotation.evidence.publications.citation"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Topic_Literature
+ {:description
+  "Retrieve references associated with the selected literature topic for a given <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags
+  ["im:aspect:Literature" "im:frontpage" "im:public" "im:report"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "HEM2"}
+   {:path "Gene.publicationAnnotations.literatureTopics.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Function/Process"}],
+  :name "Gene_Topic_Literature",
+  :rank "45",
+  :title "Gene-->Topic-->Literature",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["Gene.publicationAnnotations.publication.pubMedId"
+   "Gene.publicationAnnotations.publication.citation"
+   "Gene.publicationAnnotations.publication.year"
+   "Gene.publicationAnnotations.literatureTopics.name"
+   "Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Flanking_Sequence
+ {:description
+  "For a given gene(s), get a chosen length of upstream and/or downstream sequence along with the gene sequence. Choose to retrieve 0.5 kb, 1.0 kb, or 2.0 kb of upstream or downstream flanking regions, or both. To retrieve only flanking regions without the coding sequence, select “false” for the “Gene Flanking Region > Include Gene” option (for this option, you must select only “upstream” or “downstream” flanking regions, not “both”).",
+  :tags ["im:aspect:Genome" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "act1",
+    :extraValue "S. cerevisiae"}
+   {:path "Gene.flankingRegions.direction",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "both"}
+   {:path "Gene.flankingRegions.distance",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1.0kb"}
+   {:path "Gene.flankingRegions.includeGene",
+    :op "=",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "true"}],
+  :name "Gene_Flanking_Sequence",
+  :rank "46",
+  :title "Gene --> Sequence Upstream and Downstream (+/-) Kb.",
+  :comment "",
+  :constraintLogic "A and B and C and D",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.length"
+   "Gene.flankingRegions.direction"
+   "Gene.flankingRegions.sequence.length"
+   "Gene.flankingRegions.sequence.residues"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :GOname_GOidentifier
+ {:description
+  "Retrieve the GO term identifier (GOID) and description for a specified GO term name.  Wild card queries (such as *ascospore*) are supported.",
+  :tags ["im:aspect:Function" "im:public" "im:report"],
+  :where
+  [{:path "GOTerm.obsolete",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "false"}
+   {:path "GOTerm.obsolete",
+    :op "IS NULL",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "GOTerm.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*ascospore*"}],
+  :name "GOname_GOidentifier",
+  :rank "44",
+  :title "GO Term name --> GO Term Identifier.",
+  :comment "",
+  :constraintLogic "A and (B or C)",
+  :select
+  ["GOTerm.name"
+   "GOTerm.identifier"
+   "GOTerm.description"
+   "GOTerm.namespace"],
+  :orderBy [{:GOTerm.name "ASC"}],
+  :model {:name "genomic"}},
+ :Qualifier_ORF
+ {:description
+  "Retrieve ORFs of a specified <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">qualifier</a> type.",
+  :tags ["im:aspect:Genome" "im:public"],
+  :where
+  [{:path "ORF.organism.shortName",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "ORF.status",
+    :op "IS NULL",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "ORF.status",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "ORF.qualifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Verified"}],
+  :name "Qualifier_ORF",
+  :rank "63",
+  :title "Qualifier --> ORFs of selected type",
+  :comment "",
+  :constraintLogic "A and (B or C) and D",
+  :select
+  ["ORF.primaryIdentifier"
+   "ORF.secondaryIdentifier"
+   "ORF.symbol"
+   "ORF.sgdAlias"
+   "ORF.featureType"
+   "ORF.qualifier"
+   "ORF.name"
+   "ORF.description"],
+  :orderBy [{:ORF.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Pathways
+ {:description
+  "Retrieve all pathways in which the specified <a href = \"http://www.yeastgenome.org/yeastmine-help-page#gene\">gene</a> is involved.",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "fas1"}],
+  :name "Gene_Pathways",
+  :rank "17",
+  :title "Gene-->Pathways",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.secondaryIdentifier"
+   "Gene.sgdAlias"
+   "Gene.name"
+   "Gene.organism.shortName"
+   "Gene.pathways.identifier"
+   "Gene.pathways.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Protein
+ {:description
+  "Retrieve length, molecular weight, calculated pI and sequence for a specified <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags ["im:aspect:Proteins" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "act1"}],
+  :name "Gene_Protein",
+  :rank "19",
+  :title "Gene --> Proteins",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :constraintLogic "B and A",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.proteins.symbol"
+   "Gene.sgdAlias"
+   "Gene.proteins.length"
+   "Gene.proteins.molecularWeight"
+   "Gene.proteins.pI"
+   "Gene.featureType"
+   "Gene.qualifier"
+   "Gene.description"
+   "Gene.proteins.sequence.residues"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :FeatureType_Gene
+ {:description
+  "Retrieve genes of a selected <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">feature type</a>. ",
+  :tags ["im:aspect:Genome" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.qualifier",
+    :op "!=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.status",
+    :op "IS NULL",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.status",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ORF"}],
+  :name "FeatureType_Gene",
+  :rank "38",
+  :joins ["Gene.chromosome" "Gene.chromosomeLocation"],
+  :title "FeatureType-->Genes",
+  :comment "",
+  :constraintLogic "(A or B) and C and (D or E) and F",
+  :select
+  ["Gene.chromosome.primaryIdentifier"
+   "Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.featureType"
+   "Gene.name"
+   "Gene.sgdAlias"
+   "Gene.organism.shortName"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.chromosomeLocation.strand"
+   "Gene.description"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Literature_Phenotype
+ {:description
+  "Retrieve phenotypes from a specified PubMed ID (PMID).",
+  :tags ["im:aspect:Literature" "im:aspect:Phenotypes" "im:public"],
+  :where
+  [{:path "Gene.phenotypes.publications",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "7744777"}],
+  :name "Literature_Phenotype",
+  :rank "49",
+  :title "Literature --> Phenotype",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.phenotypes.publications.pubMedId"
+   "Gene.phenotypes.experimentType"
+   "Gene.phenotypes.mutantType"
+   "Gene.phenotypes.observable"
+   "Gene.phenotypes.qualifier"
+   "Gene.phenotypes.allele"
+   "Gene.phenotypes.alleleComment"
+   "Gene.phenotypes.strainBackground"
+   "Gene.phenotypes.chemical"
+   "Gene.phenotypes.condition"
+   "Gene.phenotypes.details"
+   "Gene.phenotypes.reporter"
+   "Gene.phenotypes.publications.citation"
+   "Gene.sgdAlias"
+   "Gene.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :GOTerm_GeneOrganism
+ {:description
+  "Retrieve all <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a> that are annotated to the specified GO term and children of that specified GO Term. Wild card queries (such as *ascospore*) are supported. Only manually curated and high-throughput GO annotations are included. ",
+  :tags ["im:aspect:Function" "im:public" "im:report"],
+  :where
+  [{:path "Gene.goAnnotation.ontologyTerm", :type "GOTerm"}
+   {:path "Gene.goAnnotation.ontologyTerm.parents", :type "GOTerm"}
+   {:path "Gene.goAnnotation.evidence.code.annotType",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "high-throughput"}
+   {:path "Gene.goAnnotation.evidence.code.annotType",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "manually curated"}
+   {:path "Gene.goAnnotation.qualifier",
+    :op "!=",
+    :code "I",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "NOT"}
+   {:path "Gene.goAnnotation.qualifier",
+    :op "IS NULL",
+    :code "J",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.status",
+    :op "=",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.status",
+    :op "IS NULL",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.qualifier",
+    :op "!=",
+    :code "G",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "H",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Saccharomyces cerevisiae"}
+   {:path "Gene.goAnnotation.ontologyTerm.parents.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "pseudohyphal growth"}],
+  :name "GOTerm_GeneOrganism",
+  :rank "12",
+  :title "GO Term name [and children of this term] -->All genes",
+  :comment "",
+  :constraintLogic
+  "A and B and (C or D) and (E or F) and (G or H) and (I or J)",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.featureType"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.namespace"
+   "Gene.goAnnotation.evidence.code.code"
+   "Gene.goAnnotation.qualifier"
+   "Gene.goAnnotation.evidence.code.withText"
+   "Gene.goAnnotation.annotationExtension"
+   "Gene.goAnnotation.evidence.code.annotType"
+   "Gene.goAnnotation.ontologyTerm.parents.identifier"
+   "Gene.goAnnotation.ontologyTerm.parents.name"
+   "Gene.goAnnotation.evidence.publications.pubMedId"
+   "Gene.goAnnotation.evidence.publications.citation"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :FeatureType_SequenceFeature
+ {:description
+  "Retrieve all <a href =\"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">chromosomal features</a> of a selected <a href=\"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">feature type</a>.",
+  :tags ["im:aspect:Genome" "im:public"],
+  :where
+  [{:path "SequenceFeature.status",
+    :op "=",
+    :code "U",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "SequenceFeature.qualifier",
+    :op "!=",
+    :code "V",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "SequenceFeature.qualifier",
+    :op "IS NULL",
+    :code "W",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "SequenceFeature.organism.name",
+    :op "=",
+    :code "T",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Saccharomyces cerevisiae"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "Q",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "telomere"}],
+  :name "FeatureType_SequenceFeature",
+  :rank "11",
+  :title "Feature Type --> Features of a selected feature Type",
+  :comment "",
+  :constraintLogic "Q and T and U and (V or W)",
+  :select
+  ["SequenceFeature.primaryIdentifier"
+   "SequenceFeature.secondaryIdentifier"
+   "SequenceFeature.symbol"
+   "SequenceFeature.sgdAlias"
+   "SequenceFeature.description"
+   "SequenceFeature.featureType"],
+  :orderBy [{:SequenceFeature.description "ASC"}],
+  :model {:name "genomic"}},
+ :Organism_Genes
+ {:description
+  "Retrieve all <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a>, their chromosomal locations, nomenclature, sequence lengths, and descriptions, in the reference genome of <i>S. cerevisiae</i>",
+  :tags ["im:aspect:Genome" "im:public"],
+  :where
+  [{:path "Gene.status",
+    :op "IS NULL",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.status",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.qualifier",
+    :op "!=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.dataSets.name",
+    :op "=",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "SGD data set"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "E",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Saccharomyces cerevisiae"}],
+  :name "Organism_Genes",
+  :rank "64",
+  :joins ["Gene.chromosome" "Gene.chromosomeLocation"],
+  :title "Retrieve --> All chromosomal locations",
+  :comment "",
+  :constraintLogic "(A or B) and (C or D) and E and F",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.length"
+   "Gene.qualifier"
+   "Gene.sgdAlias"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.chromosomeLocation.strand"
+   "Gene.organism.name"
+   "Gene.description"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :AllGene_ChromosomalFeatures
+ {:description
+  "Retrieve all <a href=\"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine \">chromosomal features</a> for the reference genome of S. cerevisiae. ",
+  :tags ["im:aspect:Genome" "im:frontpage" "im:public" "im:report"],
+  :where
+  [{:path "SequenceFeature.featureType",
+    :op "=",
+    :code "Z",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "telomerase_RNA_gene"}
+   {:path "SequenceFeature.qualifier",
+    :op "IS NULL",
+    :code "W",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "SequenceFeature.qualifier",
+    :op "!=",
+    :code "V",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "SequenceFeature.status",
+    :op "=",
+    :code "U",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "S",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "transposable_element_gene"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "R",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "telomeric_repeat"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "Q",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "telomere"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "P",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "tRNA_gene"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "O",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "snoRNA_gene"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "N",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "snRNA_gene"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "M",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "LTR_retrotransposon"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "L",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "rRNA_gene"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "K",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "pseudogene"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "J",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "not physically mapped"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "I",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "not in systematic sequence of S288C"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "H",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ncRNA_gene"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "G",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "long_terminal_repeat"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "centromere"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Y_prime_element"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "X_element"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "X_element_combinatorial_repeat"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ARS"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ORF"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "X",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "blocked_reading_frame"}
+   {:path "SequenceFeature.featureType",
+    :op "=",
+    :code "Y",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "intein_encoding_region"}
+   {:path "SequenceFeature.organism.name",
+    :op "=",
+    :code "T",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Saccharomyces cerevisiae"}],
+  :name "AllGene_ChromosomalFeatures",
+  :rank "56",
+  :title "All genes in organism --> All Chromosomal Features",
+  :comment "",
+  :constraintLogic
+  "(A or B or C or D or E or F or G or H or I or J or K or L or M or N or O or P or Q or R or S or X or Y or Z) and T and U and (V or W)",
+  :select
+  ["SequenceFeature.primaryIdentifier"
+   "SequenceFeature.featureType"
+   "SequenceFeature.secondaryIdentifier"
+   "SequenceFeature.symbol"
+   "SequenceFeature.description"
+   "SequenceFeature.sgdAlias"],
+  :orderBy [{:SequenceFeature.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_CrossRefs
+ {:description
+  "Retrieve external database identifiers (e.g. UniProtKB ID, E.C. #) for a specified <i>S. cerevisiae</i> <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags ["im:aspect:Genome" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "act1"}],
+  :name "Gene_CrossRefs",
+  :rank "42",
+  :title "Gene --> External IDs",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.sgdAlias"
+   "Gene.crossReferences.identifier"
+   "Gene.crossReferences.source.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Introns
+ {:description
+  "Retrieve <a href=\"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a> that have introns. ",
+  :tags ["im:aspect:Genome" "im:public" "im:report"],
+  :where
+  [{:path "Gene.introns.status",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.introns.status",
+    :op "IS NULL",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.introns.primaryIdentifier",
+    :op "IS NOT NULL",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NOT NULL"}
+   {:path "Gene.qualifier",
+    :op "!=",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.status",
+    :op "=",
+    :code "G",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.status",
+    :op "IS NULL",
+    :code "H",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "I",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Saccharomyces cerevisiae"}],
+  :name "Gene_Introns",
+  :rank "39",
+  :title "Retrieve-->All genes that have introns",
+  :comment "",
+  :constraintLogic "(A or B) and C and (E or F) and (G or H) and I",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.organism.shortName"
+   "Gene.featureType"
+   "Gene.qualifier"
+   "Gene.description"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_YeastParalogs
+ {:description
+  "Retrieve paralogs for a specified S. cerevisiae gene(s).",
+  :tags ["im:aspect:Homology" "im:public"],
+  :where
+  [{:path "Gene.homologues.dataSets.dataSource.name",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable true,
+    :switched "ON",
+    :value "SGD"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "dog2, kcc4, aac3",
+    :extraValue "S. cerevisiae"}],
+  :name "Gene_YeastParalogs",
+  :rank "34",
+  :title "Organism --> All S. cerevisiae Paralogs",
+  :comment "",
+  :constraintLogic "C and A",
+  :select
+  ["Gene.symbol"
+   "Gene.secondaryIdentifier"
+   "Gene.name"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.homologue.secondaryIdentifier"
+   "Gene.homologues.homologue.name"
+   "Gene.homologues.type"
+   "Gene.homologues.source"
+   "Gene.homologues.publication.pubMedId"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :HumanGene_YeastHomolog_Disease
+ {:description
+  "For a given human gene(s) retrieve associated OMIM disease phenotype(s) and yeast homolog(s).",
+  :tags ["im:aspect:Homology" "im:public"],
+  :where
+  [{:path "Gene.crossReferences.source.name",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "MIM"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "H. sapiens"}
+   {:path "Gene.homologues.homologue.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "POMT1"}],
+  :name "HumanGene_YeastHomolog_Disease",
+  :rank "5",
+  :joins ["Gene.diseases"],
+  :title "Human Gene -> Yeast Homolog(s) -> OMIM Disease Phenotype",
+  :comment "",
+  :constraintLogic "A and B and C and D",
+  :select
+  ["Gene.symbol"
+   "Gene.name"
+   "Gene.primaryIdentifier"
+   "Gene.crossReferences.identifier"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.homologue.secondaryIdentifier"
+   "Gene.homologues.homologue.name"
+   "Gene.diseases.identifier"
+   "Gene.diseases.name"
+   "Gene.homologues.dataSets.dataSource.name"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :ChromosomeRegion_AllGenes
+ {:description
+  "Retrieve all <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a> located within the specified chromosome and coordinate range.",
+  :tags ["im:aspect:Genome" "im:public" "im:report"],
+  :where
+  [{:path "Gene.status",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.status",
+    :op "IS NULL",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.qualifier",
+    :op "!=",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "G",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.featureType",
+    :op "!=",
+    :code "I",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "not in systematic sequence of S288C"}
+   {:path "Gene.chromosome.primaryIdentifier",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "chrXIV"}
+   {:path "Gene.chromosomeLocation.start",
+    :op ">=",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1"}
+   {:path "Gene.chromosomeLocation.end",
+    :op "<=",
+    :code "E",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "20000"}],
+  :name "ChromosomeRegion_AllGenes",
+  :rank "6",
+  :title "Chromosomal Region --> All genes",
+  :comment "",
+  :constraintLogic "(A or B) and C and D and E and (F or G) and I",
+  :select
+  ["Gene.chromosome.primaryIdentifier"
+   "Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.featureType"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.sgdAlias"
+   "Gene.organism.shortName"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.chromosomeLocation.strand"
+   "Gene.description"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Chromosome_Gene_1
+ {:description
+  "Retrieve all <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a> located on a specified chromosome.",
+  :tags ["im:aspect:Genome" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene.qualifier",
+    :op "!=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.status",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.status",
+    :op "IS NULL",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "chrIII"}],
+  :name "Chromosome_Gene_1",
+  :rank "57",
+  :title "Chromosome --> All genes.",
+  :comment "",
+  :constraintLogic "A and (B or C) and (D or E) and F",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.sgdAlias"
+   "Gene.description"
+   "Gene.featureType"
+   "Gene.qualifier"
+   "Gene.status"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.end"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.strand"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Complements
+ {:description
+  "For a given yeast gene(s), retrieve information about cross-species functional complementation between yeast and another species.",
+  :tags ["im:aspect:Homology" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CLN1",
+    :extraValue "S. cerevisiae"}],
+  :name "Gene_Complements",
+  :rank "15",
+  :joins ["Gene.complements.complement.crossReferences"],
+  :title "Gene --> Functional Complementation ",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.organism.shortName"
+   "Gene.complements.complement.primaryIdentifier"
+   "Gene.complements.complement.symbol"
+   "Gene.complements.complement.organism.shortName"
+   "Gene.complements.complement.crossReferences.identifier"
+   "Gene.complements.complement.crossReferences.source.name"
+   "Gene.complements.direction"
+   "Gene.complements.publication.pubMedId"
+   "Gene.complements.source"
+   "Gene.complements.notes"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Pathway_Genes
+ {:description
+  "Retrieve all <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a> that are involved in a specified pathway.",
+  :tags ["im:aspect:Function" "im:public" "im:report"],
+  :where
+  [{:path "Pathway.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "4-aminobutyrate degradation"}],
+  :name "Pathway_Genes",
+  :rank "29",
+  :title "Pathway-->Genes",
+  :comment "",
+  :select
+  ["Pathway.identifier"
+   "Pathway.name"
+   "Pathway.genes.secondaryIdentifier"
+   "Pathway.genes.symbol"
+   "Pathway.genes.sgdAlias"
+   "Pathway.genes.organism.shortName"],
+  :orderBy [{:Pathway.identifier "ASC"}],
+  :model {:name "genomic"}},
+ :Genes_Proteins_MolWt
+ {:description
+  "Retrieve <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a> that encode proteins of the selected molecular weight range.",
+  :tags ["im:aspect:Proteins" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene.featureType",
+    :op "=",
+    :code "I",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "intein_encoding_region"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "G",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "blocked_reading_frame"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ORF"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "H",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "transposable_element_gene"}
+   {:path "Gene.status",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.qualifier",
+    :op "!=",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.proteins.molecularWeight",
+    :op ">=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "30000"}
+   {:path "Gene.proteins.molecularWeight",
+    :op "<=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "50000"}],
+  :name "Genes_Proteins_MolWt",
+  :rank "8",
+  :title "Retrieve-->Proteins in a molecular weight range",
+  :comment "",
+  :constraintLogic "A and B and (C or H or G or I) and D and (E or F)",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.organism.shortName"
+   "Gene.proteins.symbol"
+   "Gene.proteins.molecularWeight"
+   "Gene.proteins.pI"
+   "Gene.featureType"
+   "Gene.description"],
+  :orderBy [{:Gene.proteins.molecularWeight "DESC"}],
+  :model {:name "genomic"}},
+ :Gene_Complex_New
+ {:description
+  "Retrieve the complex details including other members that are part of the complex for a given gene.",
+  :tags ["im:aspect:Interactions" "im:public"],
+  :where
+  [{:path "Complex.allInteractors.participant", :type "Protein"}
+   {:path "Complex.allInteractors.participant.genes",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "pep8",
+    :extraValue "S. cerevisiae"}],
+  :name "Gene_Complex_New",
+  :rank "36",
+  :joins ["Complex.publications" "Complex.goAnnotation"],
+  :title "Gene --> Complex + Details",
+  :comment "",
+  :select
+  ["Complex.name"
+   "Complex.function"
+   "Complex.systematicName"
+   "Complex.allInteractors.participant.symbol"
+   "Complex.allInteractors.participant.genes.briefDescription"
+   "Complex.allInteractors.participant.secondaryIdentifier"
+   "Complex.allInteractors.biologicalRole"
+   "Complex.allInteractors.stoichiometry"
+   "Complex.allInteractors.participant.genes.secondaryIdentifier"
+   "Complex.allInteractors.type"
+   "Complex.goAnnotation.id"
+   "Complex.goAnnotation.qualifier"
+   "Complex.publications.pubMedId"],
+  :orderBy [{:Complex.name "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_RegulationSummary_All
+ {:description "Retrieve all Regulators and their Summary Paragraphs.",
+  :tags ["im:aspect:Regulation" "im:public"],
+  :name "Gene_RegulationSummary_All",
+  :rank "22",
+  :joins ["Gene.regulationSummary.publications"],
+  :title "Retrieve all Regulators and their Summary Paragraphs",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.sgdAlias"
+   "Gene.regulationSummary.summaryParagraph"
+   "Gene.regulationSummary.publications.pubMedId"
+   "Gene.regulationSummary.publications.citation"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_OMIM_Disease
+ {:description
+  "Retrieve human homolog(s) of yeast gene(s) and and any of their associated OMIM disease phenotypes.",
+  :tags ["im:aspect:Homology" "im:public"],
+  :where
+  [{:path "Gene.homologues.homologue.crossReferences.source.name",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "MIM"}
+   {:path "Gene.homologues.homologue.organism.shortName",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "H. sapiens"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PMT3"}],
+  :name "Gene_OMIM_Disease",
+  :rank "1",
+  :joins ["Gene.homologues.homologue.diseases"],
+  :title
+  "Yeast gene --> OMIM human homolog(s) --> OMIM Disease Phenotype(s)",
+  :comment "",
+  :constraintLogic "A and B and C and D",
+  :select
+  ["Gene.symbol"
+   "Gene.secondaryIdentifier"
+   "Gene.name"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.homologue.name"
+   "Gene.homologues.homologue.organism.shortName"
+   "Gene.homologues.homologue.primaryIdentifier"
+   "Gene.homologues.homologue.crossReferences.identifier"
+   "Gene.homologues.homologue.diseases.identifier"
+   "Gene.homologues.homologue.diseases.name"
+   "Gene.homologues.dataSets.dataSource.name"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Protein_Half_Life
+ {:description
+  "Retrieve Protein half-life for a given gene(s). This study had reported value of >=100 hours for the most stable proteins. To facilitate sorting and searching this values have been substituted  '10000' hours.",
+  :tags ["im:aspect:Proteins" "im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "act1",
+    :extraValue "S. cerevisiae"}],
+  :name "Gene_Protein_Half_Life",
+  :rank "32",
+  :title "Gene --> Protein Half-life",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.description"
+   "Gene.proteins.symbol"
+   "Gene.proteins.proteinHalfLife.experiment"
+   "Gene.proteins.proteinHalfLife.value"
+   "Gene.proteins.proteinHalfLife.units"
+   "Gene.proteins.proteinHalfLife.publication.pubMedId"
+   "Gene.organism.shortName"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Organism_IntergenicRegions
+ {:description
+  "Retrieve all intergenic regions with their chromosomal locations, lengths and adjacent genes.",
+  :tags ["im:aspect:Genome" "im:public" "im:report"],
+  :where
+  [{:path "IntergenicRegion.adjacentGenes.featureType",
+    :op "!=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "not in systematic sequence of S288C"}
+   {:path "IntergenicRegion.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Saccharomyces cerevisiae"}
+   {:path "IntergenicRegion.length",
+    :op "<=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "10000"}],
+  :name "Organism_IntergenicRegions",
+  :rank "60",
+  :joins ["IntergenicRegion.adjacentGenes"],
+  :title "Retrieve-->All intergenic regions",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["IntergenicRegion.primaryIdentifier"
+   "IntergenicRegion.length"
+   "IntergenicRegion.chromosome.primaryIdentifier"
+   "IntergenicRegion.chromosomeLocation.start"
+   "IntergenicRegion.chromosomeLocation.end"
+   "IntergenicRegion.adjacentGenes.primaryIdentifier"
+   "IntergenicRegion.chromosomeLocation.strand"
+   "IntergenicRegion.adjacentGenes.secondaryIdentifier"
+   "IntergenicRegion.adjacentGenes.symbol"],
+  :orderBy [{:IntergenicRegion.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :GOID_Gene
+ {:description
+  "Retrieve all <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a> annotated to a particular GO ID with a particular <a href = \"http://www.geneontology.org/GO.evidence.shtml\">evidence code</a>.",
+  :tags ["im:aspect:Function" "im:public" "im:report"],
+  :where
+  [{:path "Gene.goAnnotation.ontologyTerm",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "GO:0000182"}],
+  :name "GOID_Gene",
+  :rank "27",
+  :title "GO ID --> Genes.",
+  :comment
+  "which also have a 'with' annotation (The 'with' field holds an additional identifier for annotations using certain evidence codes) ",
+  :constraintLogic "B and A",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.featureType"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.namespace"
+   "Gene.goAnnotation.evidence.code.code"
+   "Gene.goAnnotation.qualifier"
+   "Gene.goAnnotation.evidence.code.withText"
+   "Gene.goAnnotation.annotationExtension"
+   "Gene.goAnnotation.evidence.code.annotType"
+   "Gene.goAnnotation.evidence.publications.pubMedId"
+   "Gene.goAnnotation.evidence.publications.citation"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_ProteinSequence
+ {:description
+  "Retrieve protein sequence for a specified <a href = \"http://www.yeastgenome.org/yeastmine-help-page#gene\">gene</a>.",
+  :tags ["im:aspect:Genome" "im:aspect:Proteins" "im:public"],
+  :where
+  [{:path "Gene.featureType",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "transposable_element_gene"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "pseudogene"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ORF"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "rad54",
+    :extraValue "S. cerevisiae"}],
+  :name "Gene_ProteinSequence",
+  :rank "9",
+  :title "Gene --> Protein Sequence",
+  :comment "",
+  :constraintLogic "B and (A or C or D)",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.sgdAlias"
+   "Gene.proteins.sequence.residues"
+   "Gene.proteins.sequence.length"
+   "Gene.featureType"
+   "Gene.proteins.symbol"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_ProteinMods_Ntermini
+ {:description
+  "Retrieve N-terminal modifications of the protein for a specified <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags ["im:aspect:Proteins" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene.proteins.proteinModificationSites.category",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "N-terminus"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "cor1, cha1"}],
+  :name "Gene_ProteinMods_Ntermini",
+  :rank "37",
+  :title
+  "Gene --> Experimental N-termini and N-terminal modifications",
+  :comment "",
+  :constraintLogic "B and A and C",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.proteins.symbol"
+   "Gene.secondaryIdentifier"
+   "Gene.proteins.length"
+   "Gene.proteins.molecularWeight"
+   "Gene.proteins.pI"
+   "Gene.proteins.proteinModificationSites.experimentalNterminalSite"
+   "Gene.proteins.proteinModificationSites.modificationType"
+   "Gene.proteins.proteinModificationSites.modificationSite"
+   "Gene.proteins.proteinModificationSites.experimentalNterminalSequence"
+   "Gene.proteins.proteinModificationSites.category"
+   "Gene.proteins.proteinModificationSites.publication.pubMedId"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :AGR_Yeast_Genes
+ {:description "Retrieve Yeast Gene Information",
+  :tags ["im:aspect:Genome" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}],
+  :name "AGR_Yeast_Genes",
+  :rank "55",
+  :title "Organism --> All genes",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.sgdAlias"
+   "Gene.briefDescription"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.chromosomeLocation.strand"
+   "Gene.organism.shortName"
+   "Gene.featureType"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :AllGenes_Topic_Literature
+ {:description "Show all genes associated with a certain topic.",
+  :tags
+  ["im:aspect:Literature" "im:frontpage" "im:public" "im:report"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene.publicationAnnotations.literatureTopics.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Omics"}],
+  :name "AllGenes_Topic_Literature",
+  :rank "62",
+  :title "All genes in organism -->Topic-->Literature",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.sgdAlias"
+   "Gene.organism.shortName"
+   "Gene.publicationAnnotations.publication.pubMedId"
+   "Gene.publicationAnnotations.publication.citation"
+   "Gene.publicationAnnotations.publication.title"
+   "Gene.publicationAnnotations.publication.journal"
+   "Gene.publicationAnnotations.literatureTopics.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Phenotype_Genes
+ {:description
+  "Retrieve <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a> that are annotated to a specified phenotype.",
+  :tags ["im:aspect:Phenotypes" "im:public" "im:report"],
+  :where
+  [{:path "Phenotype.observable",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Protein secretion"}],
+  :name "Phenotype_Genes",
+  :rank "3",
+  :title "Phenotype --> Genes",
+  :comment "",
+  :select
+  ["Phenotype.genes.primaryIdentifier"
+   "Phenotype.genes.secondaryIdentifier"
+   "Phenotype.genes.symbol"
+   "Phenotype.genes.qualifier"
+   "Phenotype.genes.sgdAlias"
+   "Phenotype.experimentType"
+   "Phenotype.mutantType"
+   "Phenotype.observable"
+   "Phenotype.qualifier"
+   "Phenotype.allele"
+   "Phenotype.alleleComment"
+   "Phenotype.strainBackground"
+   "Phenotype.chemical"
+   "Phenotype.condition"
+   "Phenotype.details"
+   "Phenotype.reporter"
+   "Phenotype.publications.pubMedId"
+   "Phenotype.publications.citation"],
+  :orderBy [{:Phenotype.experimentType "ASC"}],
+  :model {:name "genomic"}},
+ :Literature_Gene
+ {:description
+  "Retrieve all <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a> curated to a PubMed ID (PMID).",
+  :tags
+  ["im:aspect:Literature" "im:frontpage" "im:public" "im:report"],
+  :where
+  [{:path "PublicationAnnotation.publication",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "20424846"}],
+  :name "Literature_Gene",
+  :rank "47",
+  :title "Literature-->Genes",
+  :comment "",
+  :select
+  ["PublicationAnnotation.genes.primaryIdentifier"
+   "PublicationAnnotation.genes.secondaryIdentifier"
+   "PublicationAnnotation.genes.symbol"
+   "PublicationAnnotation.genes.sgdAlias"
+   "PublicationAnnotation.genes.name"
+   "PublicationAnnotation.publication.pubMedId"
+   "PublicationAnnotation.publication.citation"
+   "PublicationAnnotation.publication.year"],
+  :orderBy [{:PublicationAnnotation.genes.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_GO
+ {:description
+  "Retrieve all GO annotations for a specified <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>. Wild card queries (such as *YAL*) are supported.  Manually curated, high-throughput, and computational GO annotations are included. ",
+  :tags ["im:aspect:Function" "im:frontpage" "im:public" "im:summary"],
+  :where
+  [{:path "Gene.status",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.status",
+    :op "IS NULL",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.qualifier",
+    :op "!=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "YAL018C"}],
+  :name "Gene_GO",
+  :rank "4",
+  :title "Gene --> GO Terms.",
+  :comment "",
+  :constraintLogic "(B or C) and (D or E) and F and A",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.featureType"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.namespace"
+   "Gene.goAnnotation.evidence.code.code"
+   "Gene.goAnnotation.qualifier"
+   "Gene.goAnnotation.evidence.code.withText"
+   "Gene.goAnnotation.annotationExtension"
+   "Gene.goAnnotation.evidence.code.annotType"
+   "Gene.goAnnotation.evidence.publications.pubMedId"
+   "Gene.goAnnotation.evidence.publications.citation"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_FeatureType_Introns
+ {:description
+  "Retrieve <a href = \"http://www.yeastgenome.org/yeastmine-help-page#gene\">genes</a> of a selected <a href = \"http://www.yeastgenome.org/yeastmine-help-page#type\">feature type</a> that have introns.",
+  :tags ["im:aspect:Genome" "im:public" "im:report"],
+  :where
+  [{:path "Gene.status",
+    :op "IS NULL",
+    :code "G",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.status",
+    :op "=",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.qualifier",
+    :op "!=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.introns.status",
+    :op "IS NULL",
+    :code "I",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.introns.status",
+    :op "=",
+    :code "H",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.introns.primaryIdentifier",
+    :op "IS NOT NULL",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NOT NULL"}
+   {:path "Gene.organism.name",
+    :op "=",
+    :code "J",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Saccharomyces cerevisiae"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ORF"}],
+  :name "Gene_FeatureType_Introns",
+  :rank "14",
+  :title "All genes of a selected Feature Type-->Genes with introns",
+  :comment "",
+  :constraintLogic
+  "B and C and (D or E) and (F or G) and (H or I) and J",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.name"
+   "Gene.description"
+   "Gene.featureType"
+   "Gene.qualifier"
+   "Gene.sgdAlias"
+   "Gene.organism.shortName"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :SpellDataSet_Genes
+ {:description
+  "Retrieve expression data by author name, PubMed ID, condition, or Dataset name. Queries can be further restricted by specifying an upper, lower or window of allowable expression scores. If querying by PubMed ID, condition, or Dataset name be sure to turn OFF the author option in addition to turning ON the option of interest. Results cannot be returned by specifying score alone.",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path
+    "Gene.expressionScores.expressioncondition.expressiondataset.author",
+    :op "=",
+    :code "E",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Spellman PT"}
+   {:path "Gene.expressionScores.score",
+    :op ">=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2.0"}],
+  :name "SpellDataSet_Genes",
+  :rank "28",
+  :title "ExpressionDataSet-->ExpressionScore-->Genes",
+  :comment "",
+  :constraintLogic "A and B and C and D and E and F and G",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.sgdAlias"
+   "Gene.expressionScores.score"
+   "Gene.expressionScores.expressioncondition.conditionname"
+   "Gene.expressionScores.expressioncondition.expressiondataset.author"
+   "Gene.expressionScores.expressioncondition.expressiondataset.name"
+   "Gene.expressionScores.expressioncondition.expressiondataset.pubmedID"
+   "Gene.expressionScores.expressioncondition.expressiondataset.title"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :GenomeWide_Papers
+ {:description
+  "Show publications associated with genome-wide analysis topic both associated with and without a gene.",
+  :tags ["im:aspect:Literature" "im:public"],
+  :where
+  [{:path "Publication.literatureTopics.name",
+    :op "ONE OF",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :values
+    ["Comparative genomic hybridization"
+     "Computational analysis"
+     "Genomic co-immunoprecipitation study"
+     "Genomic expression study"
+     "Large-scale genetic interaction"
+     "Large-scale phenotype analysis"
+     "Large-scale protein detection"
+     "Large-scale protein interaction"
+     "Large-scale protein localization"
+     "Large-scale protein modification"
+     "Omics"
+     "Other genomic analysis"
+     "Other large-scale proteomic analysis"]}],
+  :name "GenomeWide_Papers",
+  :rank "66",
+  :title
+  "Retrieve all Publications associated with genome-wide analysis topics.",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Publication.literatureTopics.name"
+   "Publication.firstAuthor"
+   "Publication.year"
+   "Publication.pubMedId"
+   "Publication.sgdDbXrefId"
+   "Publication.title"],
+  :orderBy [{:Publication.year "DESC"}],
+  :model {:name "genomic"}},
+ :HumaGene_YeastGene_Complement
+ {:description
+  "For a given human gene(s), enter gene name or Entrez GeneID and retrieve information about cross-species functional complementation between yeast and humans.",
+  :tags ["im:aspect:Homology" "im:public"],
+  :where
+  [{:path "Gene.complements.complement",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CCND1",
+    :extraValue "H. sapiens"}],
+  :name "HumaGene_YeastGene_Complement",
+  :rank "31",
+  :joins ["Gene.complements.complement.crossReferences"],
+  :title "Human Gene --> Functional Complementation",
+  :comment "",
+  :select
+  ["Gene.complements.complement.symbol"
+   "Gene.complements.complement.organism.shortName"
+   "Gene.complements.complement.crossReferences.identifier"
+   "Gene.complements.complement.crossReferences.source.name"
+   "Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.organism.shortName"
+   "Gene.complements.direction"
+   "Gene.complements.publication.pubMedId"
+   "Gene.complements.source"
+   "Gene.complements.notes"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :GOtermidentifier_name
+ {:description
+  "Retrieve the GO term names and descriptions for a specified GO term identifier (GOID).  Note that the query must contain either an entire identifier (such as GO:0007350) or the numerical value preceded by a wild card (such as *30437).",
+  :tags ["im:aspect:Function" "im:public" "im:report"],
+  :where
+  [{:path "GOTerm.obsolete",
+    :op "IS NULL",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "GOTerm.obsolete",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "false"}
+   {:path "GOTerm.identifier",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "GO:0030437"}],
+  :name "GOtermidentifier_name",
+  :rank "75",
+  :title "GO Term identifier --> GO Term Name.",
+  :comment "",
+  :constraintLogic "A and (B or C)",
+  :select
+  ["GOTerm.identifier"
+   "GOTerm.name"
+   "GOTerm.namespace"
+   "GOTerm.description"
+   "GOTerm.obsolete"],
+  :orderBy [{:GOTerm.identifier "ASC"}],
+  :model {:name "genomic"}},
+ :Disease_Human_Yeast
+ {:description
+  "Specify <a href= http://www.omim.org target=\"_blank\">OMIM </a> phenotype(s) (by keyword or name) and retrieve all associated human gene(s) and the yeast homologs of these gene(s).",
+  :tags ["im:aspect:Homology" "im:public"],
+  :where
+  [{:path "Disease.genes.crossReferences.source.name",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "MIM"}
+   {:path "Disease.genes.organism.shortName",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "H. sapiens"}
+   {:path "Disease.genes.homologues.homologue.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Disease.name",
+    :op "CONTAINS",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "diabetes"}],
+  :name "Disease_Human_Yeast",
+  :rank "23",
+  :title
+  "OMIM Disease Phenotype -->  human gene(s) --> yeast homolog(s)",
+  :comment "",
+  :constraintLogic "B and C and D and A",
+  :select
+  ["Disease.name"
+   "Disease.identifier"
+   "Disease.genes.symbol"
+   "Disease.genes.name"
+   "Disease.genes.primaryIdentifier"
+   "Disease.genes.crossReferences.identifier"
+   "Disease.genes.homologues.homologue.symbol"
+   "Disease.genes.homologues.homologue.secondaryIdentifier"
+   "Disease.genes.homologues.homologue.name"
+   "Disease.genes.homologues.dataSets.dataSource.name"],
+  :orderBy [{:Disease.genes.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_ProteinHalfLife_Range
+ {:description
+  "Retrieve proteins with half-lives ranging from minutes to >100 hours. To facilitate sorting and searching for the most stable proteins, where half-lives were reported as >=100 hours, values were substituted with '10000' hours.  <br> <b>For the complete set, combine results via saved Lists of min (0.0 - 60) and hr (1 - 10000) template queries.</b>",
+  :tags ["im:aspect:Proteins" "im:public"],
+  :where
+  [{:path "Gene.proteins.proteinHalfLife.units",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "min"}
+   {:path "Gene.proteins.proteinHalfLife.value",
+    :op ">=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "0.5"}
+   {:path "Gene.proteins.proteinHalfLife.value",
+    :op "<=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "100"}],
+  :name "Gene_ProteinHalfLife_Range",
+  :rank "58",
+  :title "Retrieve --> Proteins with half-life in a given range",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.description"
+   "Gene.proteins.symbol"
+   "Gene.proteins.proteinHalfLife.experiment"
+   "Gene.proteins.proteinHalfLife.value"
+   "Gene.proteins.proteinHalfLife.units"
+   "Gene.proteins.proteinHalfLife.publication.pubMedId"
+   "Gene.organism.shortName"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Chromosome_IntergenicSequence
+ {:description
+  "Retrieve all intergenic regions (with their chromosomal locations and lengths) for a specified chromosome.",
+  :tags ["im:aspect:Genome" "im:public" "im:report"],
+  :where
+  [{:path "IntergenicRegion.chromosomeLocation.locatedOn",
+    :type "Chromosome"}
+   {:path "IntergenicRegion.adjacentGenes.featureType",
+    :op "!=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "not in systematic sequence of S288C"}
+   {:path "IntergenicRegion.organism.shortName",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path
+    "IntergenicRegion.chromosomeLocation.locatedOn.primaryIdentifier",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "chrI"}
+   {:path "IntergenicRegion.length",
+    :op "<=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "10000"}],
+  :name "Chromosome_IntergenicSequence",
+  :rank "53",
+  :joins ["IntergenicRegion.adjacentGenes"],
+  :title "Chromosome-->All intergenic regions.",
+  :comment "",
+  :constraintLogic "A and B and C and D",
+  :select
+  ["IntergenicRegion.primaryIdentifier"
+   "IntergenicRegion.length"
+   "IntergenicRegion.chromosomeLocation.locatedOn.primaryIdentifier"
+   "IntergenicRegion.chromosomeLocation.start"
+   "IntergenicRegion.chromosomeLocation.end"
+   "IntergenicRegion.chromosomeLocation.strand"
+   "IntergenicRegion.adjacentGenes.primaryIdentifier"
+   "IntergenicRegion.adjacentGenes.secondaryIdentifier"
+   "IntergenicRegion.adjacentGenes.symbol"],
+  :orderBy [{:IntergenicRegion.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Interaction
+ {:description
+  "Retrieve all interactions for a specified <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags ["im:aspect:Interactions" "im:public"],
+  :where
+  [{:path "Gene.interactions.participant2", :type "Gene"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "act1",
+    :extraValue "S. cerevisiae"}],
+  :name "Gene_Interaction",
+  :rank "21",
+  :title "Gene --> Interaction",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.secondaryIdentifier"
+   "Gene.sgdAlias"
+   "Gene.name"
+   "Gene.organism.shortName"
+   "Gene.interactions.details.annotationType"
+   "Gene.interactions.details.phenotype"
+   "Gene.interactions.details.role1"
+   "Gene.interactions.participant2.symbol"
+   "Gene.interactions.participant2.secondaryIdentifier"
+   "Gene.interactions.details.experiment.interactionDetectionMethods.identifier"
+   "Gene.interactions.details.experiment.name"
+   "Gene.interactions.details.relationshipType"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_GenomicDNA
+ {:description
+  "Retrieve genomic DNA (DNA sequence with introns) for the specified <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags ["im:aspect:Genome" "im:public"],
+  :where
+  [{:path "Gene.qualifier",
+    :op "!=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.status",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.status",
+    :op "IS NULL",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "E",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "rad54",
+    :extraValue "S. cerevisiae"}],
+  :name "Gene_GenomicDNA",
+  :rank "26",
+  :title "Gene-->Genomic DNA",
+  :comment "",
+  :constraintLogic "(A or B) and (C or D) and E",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.sgdAlias"
+   "Gene.organism.shortName"
+   "Gene.sequence.length"
+   "Gene.sequence.residues"
+   "Gene.description"
+   "Gene.qualifier"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_ProteinMods
+ {:description
+  "Retrieve protein modifications of the protein for a specified <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags ["im:aspect:Proteins" "im:public" "im:report"],
+  :where
+  [{:path "Gene.proteins.proteinModificationSites.category",
+    :op "IS NULL",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "act1"}],
+  :name "Gene_ProteinMods",
+  :rank "25",
+  :joins ["Gene.proteins.proteinModificationSites.modifier"],
+  :title "Gene --> Post-translational Modifications",
+  :comment "",
+  :constraintLogic "B and A and C",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.proteins.symbol"
+   "Gene.secondaryIdentifier"
+   "Gene.proteins.length"
+   "Gene.proteins.molecularWeight"
+   "Gene.proteins.pI"
+   "Gene.proteins.proteinModificationSites.modificationSite"
+   "Gene.proteins.proteinModificationSites.modificationType"
+   "Gene.proteins.proteinModificationSites.modifier.symbol"
+   "Gene.proteins.proteinModificationSites.publication.pubMedId"
+   "Gene.description"
+   "Gene.proteins.sequence.residues"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Homologs
+ {:description
+  "Retrieve all TreeFam, PantherDB, Homologene homologs for a specified <i>S. cerevisiae</i> <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags ["im:aspect:Genome" "im:aspect:Homology" "im:public"],
+  :where
+  [{:path "Gene.homologues.dataSets.dataSource.name",
+    :op "ONE OF",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :values ["Ensembl" "HomoloGene" "Panther" "TreeFam"]}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ACT1"}],
+  :name "Gene_Homologs",
+  :rank "13",
+  :title "Gene --> Non-Fungal and S. cerevisiae Homologs",
+  :comment "",
+  :constraintLogic "A and B and D",
+  :select
+  ["Gene.symbol"
+   "Gene.secondaryIdentifier"
+   "Gene.name"
+   "Gene.sgdAlias"
+   "Gene.homologues.homologue.organism.shortName"
+   "Gene.homologues.homologue.primaryIdentifier"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.type"
+   "Gene.homologues.dataSets.dataSource.name"],
+  :orderBy [{:Gene.homologues.homologue.organism.shortName "ASC"}],
+  :model {:name "genomic"}},
+ :Genes_Proteins_Length
+ {:description
+  "Retrieve length, molecular weight, calculated pI for a specified <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags ["im:aspect:Proteins" "im:public" "im:report"],
+  :where
+  [{:path "Gene.featureType",
+    :op "=",
+    :code "I",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "intein_encoding_region"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "G",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "blocked_reading_frame"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ORF"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "H",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "transposable_element_gene"}
+   {:path "Gene.status",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.qualifier",
+    :op "!=",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.proteins.length",
+    :op ">=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "500"}
+   {:path "Gene.proteins.length",
+    :op "<=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "1000"}],
+  :name "Genes_Proteins_Length",
+  :rank "35",
+  :title "Retrieve-->Proteins in a size range",
+  :comment "",
+  :constraintLogic "(A or H or G or I) and B and C and D and (E or F)",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.organism.shortName"
+   "Gene.featureType"
+   "Gene.proteins.primaryIdentifier"
+   "Gene.proteins.secondaryIdentifier"
+   "Gene.proteins.symbol"
+   "Gene.proteins.molecularWeight"
+   "Gene.proteins.pI"
+   "Gene.proteins.length"],
+  :orderBy [{:Gene.proteins.length "DESC"}],
+  :model {:name "genomic"}},
+ :Gene_ProteinAbundance
+ {:description
+  "Retrieve protein abundance of the protein for a specified <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags ["im:aspect:Proteins" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "tfc3"}],
+  :name "Gene_ProteinAbundance",
+  :rank "76",
+  :title "Gene --> Protein Abundance",
+  :comment "",
+  :constraintLogic "B and A",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.proteins.symbol"
+   "Gene.secondaryIdentifier"
+   "Gene.proteins.length"
+   "Gene.proteins.molecularWeight"
+   "Gene.proteins.proteinAbundance.abundance"
+   "Gene.proteins.proteinAbundance.units"
+   "Gene.proteins.proteinAbundance.publication.pubMedId"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Complex_Participant_Details
+ {:description
+  " For a given macromolecular complex, retrieve Gene Ontology annotations and references for the complex as a whole; also retrieve the subunits of the complex, their stoichiometry, and their biological roles in the complex.",
+  :tags ["im:aspect:Interactions" "im:public"],
+  :where
+  [{:path
+    "Complex.allInteractors.interactions.participant1.locatedFeatures.feature",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Complex.allInteractors.interactions.participant2"}
+   {:path "Complex.name",
+    :op "CONTAINS",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "retromer"}],
+  :name "Complex_Participant_Details",
+  :rank "52",
+  :joins
+  ["Complex.goAnnotation"
+   "Complex.publications"
+   "Complex.allInteractors.interactions"],
+  :title "Complex --> Details + Participants",
+  :comment "",
+  :constraintLogic "B and C",
+  :select
+  ["Complex.name"
+   "Complex.identifier"
+   "Complex.systematicName"
+   "Complex.goAnnotation.ontologyTerm.name"
+   "Complex.goAnnotation.ontologyTerm.identifier"
+   "Complex.publications.pubMedId"
+   "Complex.function"
+   "Complex.properties"
+   "Complex.allInteractors.participant.primaryIdentifier"
+   "Complex.allInteractors.participant.secondaryIdentifier"
+   "Complex.allInteractors.participant.symbol"
+   "Complex.allInteractors.stoichiometry"
+   "Complex.allInteractors.type"
+   "Complex.allInteractors.biologicalRole"],
+  :orderBy [{:Complex.identifier "ASC"}],
+  :model {:name "genomic"}},
+ :Genes_Proteins_AbundanceRange
+ {:description
+  "Retrieve <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a> that encode proteins of the selected molecular abundance.",
+  :tags ["im:aspect:Proteins" "im:public"],
+  :where
+  [{:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.qualifier",
+    :op "!=",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.status",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "H",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "transposable_element_gene"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ORF"}
+   {:path "Gene.featureType",
+    :op "!=",
+    :code "G",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "pseudogene"}
+   {:path "Gene.proteins.proteinAbundance.abundance",
+    :op ">=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "100"}
+   {:path "Gene.proteins.proteinAbundance.abundance",
+    :op "<=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "500"}],
+  :name "Genes_Proteins_AbundanceRange",
+  :rank "69",
+  :title "Retrieve-->Proteins in a given abundance range",
+  :comment "",
+  :constraintLogic "(C or H) and G and D and (E or F) and A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.proteins.symbol"
+   "Gene.proteins.molecularWeight"
+   "Gene.proteins.proteinAbundance.abundance"
+   "Gene.proteins.proteinAbundance.units"
+   "Gene.proteins.proteinAbundance.publication.pubMedId"
+   "Gene.proteins.pI"
+   "Gene.featureType"
+   "Gene.description"
+   "Gene.organism.shortName"],
+  :orderBy [{:Gene.proteins.proteinAbundance.abundance "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Literature
+ {:description
+  "Retrieve all references and literature topics associated with a specified <a href=\"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags ["im:aspect:Literature" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "HEM2",
+    :extraValue "S. cerevisiae"}],
+  :name "Gene_Literature",
+  :rank "33",
+  :title "Gene-->Literature",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.publicationAnnotations.publication.pubMedId"
+   "Gene.publicationAnnotations.publication.citation"
+   "Gene.publicationAnnotations.publication.year"
+   "Gene.publicationAnnotations.literatureTopics.name"
+   "Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.secondaryIdentifier"
+   "Gene.sgdAlias"
+   "Gene.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :GOSlimTerm_FeatureType_Gene
+ {:description
+  "Retrieve <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a> of a selected <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\"> feature type</a> that are annotated to a selected GO Slim term and children of that selected GO Slim Term. Only manually curated and high-throughput GO annotations are included. ",
+  :tags ["im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.qualifier",
+    :op "IS NULL",
+    :code "H",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.qualifier",
+    :op "!=",
+    :code "G",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Gene.status",
+    :op "IS NULL",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.status",
+    :op "=",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Gene.goAnnotation.qualifier",
+    :op "IS NULL",
+    :code "J",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Gene.goAnnotation.qualifier",
+    :op "!=",
+    :code "I",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "NOT"}
+   {:path "Gene.goAnnotation.evidence.code.annotType",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "manually curated"}
+   {:path "Gene.goAnnotation.evidence.code.annotType",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "high-throughput"}
+   {:path "Gene.goAnnotation.ontologyTerm.parents", :type "GOSlimTerm"}
+   {:path "Gene.goAnnotation.ontologyTerm.parents.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "DNA binding"}
+   {:path "Gene.featureType",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ORF"}],
+  :name "GOSlimTerm_FeatureType_Gene",
+  :rank "68",
+  :title "GO SlimTerm-->Genes of a selected Feature Type",
+  :comment "",
+  :constraintLogic
+  "A and B and (C or D) and (E or F) and (G or H) and (I or J)",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.featureType"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.namespace"
+   "Gene.goAnnotation.evidence.code.code"
+   "Gene.goAnnotation.qualifier"
+   "Gene.goAnnotation.evidence.code.withText"
+   "Gene.goAnnotation.annotationExtension"
+   "Gene.goAnnotation.evidence.code.annotType"
+   "Gene.goAnnotation.ontologyTerm.parents.identifier"
+   "Gene.goAnnotation.ontologyTerm.parents.name"
+   "Gene.goAnnotation.evidence.publications.pubMedId"
+   "Gene.goAnnotation.evidence.publications.citation"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Transcript
+ {:description
+  "Retrieve <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">transcript</a> iso-forms for a given  gene. ",
+  :tags ["im:aspect:Expression" "im:aspect:Genome" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene.transcripts", :type "MRNA"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "YHR191C"}],
+  :name "Gene_Transcript",
+  :rank "16",
+  :title "Gene --> Transcripts",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.transcripts.primaryIdentifier"
+   "Gene.transcripts.symbol"
+   "Gene.transcripts.chromosome.primaryIdentifier"
+   "Gene.transcripts.chromosomeLocation.start"
+   "Gene.transcripts.chromosomeLocation.end"
+   "Gene.transcripts.chromosomeLocation.strand"
+   "Gene.transcripts.fivePrimeDataSet"
+   "Gene.transcripts.threePrimeDataSet"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :gene_overlapping_flanking_regions
+ {:description
+  "Retrieve any annotated flanking features at least partially overlapping within a specified distance from the 5' or 3' end of a given gene.",
+  :tags ["im:aspect:Genome" "im:frontpage" "im:public" "im:report"],
+  :where
+  [{:path "GeneFlankingRegion.organism.shortName",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "GeneFlankingRegion.overlappingFeatures", :type "Gene"}
+   {:path "GeneFlankingRegion.gene",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "his3",
+    :extraValue "S. cerevisiae"}
+   {:path "GeneFlankingRegion.direction",
+    :op "=",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "upstream"}
+   {:path "GeneFlankingRegion.overlappingFeatures.featureType",
+    :op "=",
+    :code "E",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ORF"}
+   {:path "GeneFlankingRegion.length",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2000"}],
+  :name "gene_overlapping_flanking_regions",
+  :rank "7",
+  :title " Gene-->Flanking features within a specific distance",
+  :comment "",
+  :constraintLogic "B and D and E and A and C",
+  :select
+  ["GeneFlankingRegion.gene.primaryIdentifier"
+   "GeneFlankingRegion.gene.secondaryIdentifier"
+   "GeneFlankingRegion.gene.symbol"
+   "GeneFlankingRegion.overlappingFeatures.primaryIdentifier"
+   "GeneFlankingRegion.overlappingFeatures.secondaryIdentifier"
+   "GeneFlankingRegion.overlappingFeatures.symbol"
+   "GeneFlankingRegion.overlappingFeatures.featureType"
+   "GeneFlankingRegion.direction"
+   "GeneFlankingRegion.length"],
+  :orderBy [{:GeneFlankingRegion.gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Chromosome_Telomeres
+ {:description
+  "Retrieve telomeres and telomeric regions on a specified chromosome.",
+  :tags ["im:aspect:Genome" "im:public" "im:report"],
+  :where
+  [{:path "Telomere.chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "chrI"}],
+  :name "Chromosome_Telomeres",
+  :rank "61",
+  :title "Chromosome-->Telomeric Regions",
+  :comment "",
+  :select
+  ["Telomere.chromosome.primaryIdentifier"
+   "Telomere.primaryIdentifier"
+   "Telomere.secondaryIdentifier"
+   "Telomere.featureType"
+   "Telomere.organism.shortName"
+   "Telomere.chromosomeLocation.start"
+   "Telomere.chromosomeLocation.end"
+   "Telomere.chromosomeLocation.strand"
+   "Telomere.description"],
+  :orderBy [{:Telomere.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Publications_Literature
+ {:description
+  "Retrieve publications associated with a specified topic.",
+  :tags ["im:aspect:Literature" "im:public" "im:report"],
+  :where
+  [{:path "Publication.literatureTopics.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Genomic co-immunoprecipitation study"}],
+  :name "Publications_Literature",
+  :rank "41",
+  :title "Topic-->Literature",
+  :comment "",
+  :select
+  ["Publication.pubMedId"
+   "Publication.citation"
+   "Publication.title"
+   "Publication.journal"
+   "Publication.literatureTopics.name"],
+  :orderBy [{:Publication.pubMedId "ASC"}],
+  :model {:name "genomic"}},
+ :Organism_Protein
+ {:description
+  "Retrieve length, molecular weight, calculated pI for all proteins encoded by the <i>S. cerevisiae</i> <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">genes</a>. ",
+  :tags ["im:aspect:Proteins" "im:public" "im:report"],
+  :where
+  [{:path "Protein.genes.featureType",
+    :op "=",
+    :code "H",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "intein_encoding_region"}
+   {:path "Protein.genes.featureType",
+    :op "=",
+    :code "E",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "blocked_reading_frame"}
+   {:path "Protein.genes.qualifier",
+    :op "!=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Dubious"}
+   {:path "Protein.genes.qualifier",
+    :op "IS NULL",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IS NULL"}
+   {:path "Protein.genes.status",
+    :op "=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Active"}
+   {:path "Protein.genes.featureType",
+    :op "=",
+    :code "F",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ORF"}
+   {:path "Protein.genes.featureType",
+    :op "=",
+    :code "G",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "transposable_element_gene"}
+   {:path "Protein.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Saccharomyces cerevisiae"}],
+  :name "Organism_Protein",
+  :rank "20",
+  :title "Retrieve --> All proteins",
+  :comment "",
+  :constraintLogic "A and (B or C) and D and (F or G or E or H)",
+  :select
+  ["Protein.genes.primaryIdentifier"
+   "Protein.genes.secondaryIdentifier"
+   "Protein.symbol"
+   "Protein.length"
+   "Protein.molecularWeight"
+   "Protein.pI"
+   "Protein.genes.featureType"
+   "Protein.genes.sgdAlias"
+   "Protein.genes.description"],
+  :orderBy [{:Protein.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :Publication_DateRange
+ {:tags ["im:aspect:Literature" "im:public"],
+  :where
+  [{:path "Publication.dateCreated",
+    :op ">=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2017-11-18"}
+   {:path "Publication.dateCreated",
+    :op "<=",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "2017-12-18"}],
+  :name "Publication_DateRange",
+  :rank "unranked",
+  :title "Retrieve references for a given date range.",
+  :comment "",
+  :constraintLogic "C and D",
+  :select
+  ["Publication.sgdDbXrefId"
+   "Publication.pubMedId"
+   "Publication.firstAuthor"
+   "Publication.year"
+   "Publication.title"
+   "Publication.dateCreated"],
+  :orderBy [{:Publication.dateCreated "DESC"}],
+  :model {:name "genomic"}},
+ :Literature_Interaction
+ {:description
+  "Retrieve all the interactions curated from the specified PubMed ID (PMID).",
+  :tags ["im:aspect:Interactions" "im:aspect:Literature" "im:public"],
+  :where
+  [{:path "Gene.interactions.participant2", :type "Gene"}
+   {:path "Gene.interactions.details.experiment.publication",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "16554755"}],
+  :name "Literature_Interaction",
+  :rank "73",
+  :title "Literature --> Interaction",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.sgdAlias"
+   "Gene.interactions.details.annotationType"
+   "Gene.interactions.details.phenotype"
+   "Gene.interactions.details.role1"
+   "Gene.interactions.details.experiment.publication.pubMedId"
+   "Gene.interactions.details.experiment.publication.citation"
+   "Gene.interactions.details.experiment.publication.title"
+   "Gene.interactions.details.experiment.publication.journal"
+   "Gene.interactions.participant2.symbol"
+   "Gene.interactions.participant2.secondaryIdentifier"
+   "Gene.interactions.details.experiment.interactionDetectionMethods.identifier"
+   "Gene.interactions.details.experiment.name"
+   "Gene.interactions.details.relationshipType"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Domain_Protein_Gene
+ {:description "Retrieve Proteins/Genes that have a given domain.",
+  :tags ["im:aspect:Proteins" "im:public"],
+  :where
+  [{:path "Gene.proteins.proteinDomains.description",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "WD40-repeat-containing domain"}],
+  :name "Domain_Protein_Gene",
+  :rank "74",
+  :title "Domain --> Proteins",
+  :comment "",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.proteins.secondaryIdentifier"
+   "Gene.proteins.symbol"
+   "Gene.proteins.proteinDomains.name"
+   "Gene.proteins.proteinDomains.description"
+   "Gene.proteins.proteinDomains.start"
+   "Gene.proteins.proteinDomains.end"
+   "Gene.proteins.proteinDomains.method"
+   "Gene.proteins.proteinDomains.id"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_UTRs
+ {:description
+  "Retrieve UTR location information for a given gene by taking the differences between the gene and  <a href = \"http://www.yeastgenome.org/yeastmine-help-page#output\"> transcript </a> start locations and the gene and transcript end locations.  Transcripts are based on Pelechano et al, 2013; confirming dataset information is shown in ‘Transcripts Five Prime Data Set’ and ‘Transcripts Three Prime Data Set’ columns.  ",
+  :tags ["im:aspect:Expression" "im:aspect:Genome" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene.transcripts", :type "MRNA"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "YHR191C"}],
+  :name "Gene_UTRs",
+  :rank "43",
+  :title "Gene --> UTRs",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.transcripts.primaryIdentifier"
+   "Gene.transcripts.symbol"
+   "Gene.transcripts.chromosome.primaryIdentifier"
+   "Gene.transcripts.UTRs.chromosomeLocation.start"
+   "Gene.transcripts.UTRs.chromosomeLocation.end"
+   "Gene.chromosomeLocation.strand"
+   "Gene.transcripts.fivePrimeDataSet"
+   "Gene.transcripts.threePrimeDataSet"
+   "Gene.transcripts.UTRs.primaryIdentifier"
+   "Gene.transcripts.UTRs.sequence.residues"],
+  :orderBy [{:Gene.transcripts.UTRs.sequence.residues "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_FungalHomologs
+ {:description
+  "Retrieve fungal homologs for a specified <i>S. cerevisiae</i> <a href = \"https://sites.google.com/view/yeastgenome-help/analyze-help/yeastmine\">gene</a>.",
+  :tags ["im:aspect:Homology" "im:public"],
+  :where
+  [{:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "S. cerevisiae"}
+   {:path "Gene.homologues.homologue.organism.shortName",
+    :op "ONE OF",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :values
+    ["A. flavus NRRL3357"
+     "A. fumigatus Af293"
+     "A. nidulans FGSC A4"
+     "A. niger ATCC 1015"
+     "C. albicans SC5314"
+     "C. albicans WO-1"
+     "C. dubliniensis CD36"
+     "C. gattii R265"
+     "C. gattii WM276"
+     "C. glabrata CBS 138"
+     "C. immitis H538.4"
+     "C. immitis RS"
+     "C. neoformans var. grubii H99"
+     "C. neoformans var. neoformans JEC21"
+     "C. parapsilosis CDC317"
+     "C. posadasii C735 delta SOWgp"
+     "M. oryzae 70-15"
+     "N. crassa OR74A"
+     "S. cerevisiae"
+     "S. pombe"
+     "T. marneffei ATCC 18224"
+     "U. maydis 521"]}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ACT1"}],
+  :name "Gene_FungalHomologs",
+  :rank "24",
+  :title "Gene --> Fungal Homologs",
+  :comment "",
+  :constraintLogic "A and C and B",
+  :select
+  ["Gene.symbol"
+   "Gene.secondaryIdentifier"
+   "Gene.name"
+   "Gene.sgdAlias"
+   "Gene.homologues.homologue.organism.shortName"
+   "Gene.homologues.homologue.primaryIdentifier"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.dataSets.dataSource.name"
+   "Gene.homologues.homologue.briefDescription"
+   "Gene.homologues.homologue.sgdAlias"
+   "Gene.homologues.type"],
+  :orderBy [{:Gene.homologues.homologue.organism.shortName "ASC"}],
+  :model {:name "genomic"}}}

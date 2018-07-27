@@ -1,0 +1,289 @@
+{:Gene_Homologues
+ {:description "Show the paralog or ortholog for a given gene(s).",
+  :tags
+  ["im:aspect:Genomics"
+   "im:aspect:Homology"
+   "im:frontpage"
+   "im:public"],
+  :where
+  [{:path "Gene.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Medtr2g013640"}],
+  :name "Gene_Homologues",
+  :rank "3",
+  :title "Gene --> Homologs",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.briefDescription"
+   "Gene.homologues.type"
+   "Gene.homologues.homologue.organism.shortName"
+   "Gene.homologues.homologue.primaryIdentifier"
+   "Gene.homologues.evidence.evidenceCode.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Search_Term_Genes_RNAseq_Expression
+ {:description
+  "Show the Cufflinks computed gene expression level (FPKM) for genes and transcripts",
+  :tags ["im:aspect:Expression" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "NIP*",
+    :extraValue "M. truncatula"}
+   {:path "Gene.RNASeqExpressions.expressionLevel",
+    :op ">=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "0.0"}],
+  :name "Search_Term_Genes_RNAseq_Expression",
+  :rank "1",
+  :title "Gene --> RNA-seq Expression",
+  :comment "",
+  :constraintLogic "B and A",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.RNASeqExpressions.expressionLevel"
+   "Gene.RNASeqExpressions.experiment.SRAaccession"
+   "Gene.RNASeqExpressions.experiment.tissue"
+   "Gene.RNASeqExpressions.unit"],
+  :orderBy [{:Gene.RNASeqExpressions.expressionLevel "DESC"}],
+  :model {:name "genomic"}},
+ :Gene_Pathways
+ {:description
+  "Show all the KEGG pathways associated with given gene(s).",
+  :tags ["im:aspect:Function" "im:frontpage" "im:public"],
+  :where
+  [{:path "Pathway.genes.briefDescription",
+    :op "CONTAINS",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "cysteine-rich"}],
+  :name "Gene_Pathways",
+  :rank "6",
+  :title "Gene --> Pathways",
+  :comment "",
+  :select
+  ["Pathway.genes.primaryIdentifier"
+   "Pathway.dataSets.name"
+   "Pathway.name"
+   "Pathway.identifier"
+   "Pathway.genes.chromosome.primaryIdentifier"],
+  :orderBy [{:Pathway.identifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Protein
+ {:description "Show the proteins for a particular gene.",
+  :tags
+  ["im:aspect:Genes"
+   "im:aspect:Genomics"
+   "im:aspect:Proteins"
+   "im:frontpage"
+   "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "CYP*",
+    :extraValue "M. truncatula"}],
+  :name "Gene_Protein",
+  :rank "2",
+  :joins ["Gene.synonyms"],
+  :title "Gene --> Proteins",
+  :comment "06.06.07 updated to work from gene class - Philip",
+  :select
+  ["Gene.proteins.primaryIdentifier"
+   "Gene.proteins.primaryAccession"
+   "Gene.synonyms.value"
+   "Gene.primaryIdentifier"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_noncodingRNA
+ {:description "List all noncoding RNAs in Mt4.0v2. ",
+  :tags ["im:aspect:Genomics" "im:frontpage" "im:public"],
+  :where
+  [{:path "Transcript.sequenceOntologyTerm.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "tRNA"}],
+  :name "Gene_noncodingRNA",
+  :rank "7",
+  :title "Gene --> Noncoding RNA",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Transcript.primaryIdentifier"
+   "Transcript.sequenceOntologyTerm.name"
+   "Transcript.briefDescription"],
+  :orderBy [{:Transcript.sequenceOntologyTerm.name "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_ProteinCodingGene
+ {:description
+  "By default list all protein-coding genes in Mt4.0v2. To restrict to a specific gene or list, switch on the selector and enter the gene ID (e.g. Medtr2g036650) or specify a list. ",
+  :tags ["im:aspect:Genomics" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Medicago truncatula"}
+   {:path "Gene.sequenceOntologyTerm.name",
+    :op "!=",
+    :code "D",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "transposable_element_gene"}],
+  :name "Gene_ProteinCodingGene",
+  :rank "5",
+  :title "Gene --> Protein-Coding Genes",
+  :comment "",
+  :constraintLogic "A and B and C and D",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.briefDescription"
+   "Gene.chromosome.primaryIdentifier"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :ProteinDomain_Genes
+ {:description "Find all the genes containing a given protein domain.",
+  :tags ["im:aspect:Proteins" "im:frontpage" "im:public"],
+  :where
+  [{:path
+    "Protein.proteinDomainRegions.proteinDomain.primaryIdentifier",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "IPR003441"}],
+  :name "ProteinDomain_Genes",
+  :rank "8",
+  :title "Protein Domain --> Genes",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Protein.genes.primaryIdentifier"
+   "Protein.genes.chromosome.primaryIdentifier"
+   "Protein.proteinDomainRegions.proteinDomain.primaryIdentifier"
+   "Protein.proteinDomainRegions.proteinDomain.name"],
+  :orderBy [{:Protein.genes.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Keyword_GO_genes
+ {:description
+  "Enter a keyword to search for associated GO terms and genes (e.g. nodule morphogenesis)",
+  :tags ["im:aspect:Function" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene.goAnnotation.ontologyTerm.name",
+    :op "CONTAINS",
+    :code "A",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "nodule morphogenesis"}],
+  :name "Keyword_GO_genes",
+  :rank "4",
+  :title "Keyword --> GO terms and Genes",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.briefDescription"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.identifier"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_TEgenes
+ {:description "List all the transposable element genes in Mt4.0v2.",
+  :tags ["im:aspect:Genomics" "im:frontpage" "im:public"],
+  :where
+  [{:path "Gene.organism.name",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Medicago truncatula"}
+   {:path "Gene.sequenceOntologyTerm.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "transposable_element_gene"}],
+  :name "Gene_TEgenes",
+  :rank "6",
+  :title "Gene --> Transposable Element Genes",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.briefDescription"
+   "Gene.sequenceOntologyTerm.name"
+   "Gene.sequenceOntologyTerm.identifier"
+   "Gene.chromosome.primaryIdentifier"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :All_Proteins_In_Organism_To_Publications
+ {:tags ["im:aspect:Proteins" "im:public"],
+  :where
+  [{:path "Protein.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Plasmodium falciparum 3D7"}],
+  :name "All_Proteins_In_Organism_To_Publications",
+  :rank "9",
+  :title "All proteins in organism --> Publications",
+  :comment "",
+  :select
+  ["Protein.primaryIdentifier"
+   "Protein.primaryAccession"
+   "Protein.organism.name"
+   "Protein.publications.firstAuthor"
+   "Protein.publications.title"
+   "Protein.publications.year"
+   "Protein.publications.journal"
+   "Protein.publications.volume"
+   "Protein.publications.pages"
+   "Protein.publications.pubMedId"],
+  :orderBy [{:Protein.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Organism_Protein
+ {:description "Show all the proteins from a particular organism.",
+  :tags ["im:frontpage" "im:public"],
+  :where
+  [{:path "Protein.organism.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Plasmodium falciparum 3D7"}],
+  :name "Organism_Protein",
+  :rank "unranked",
+  :title "Organism --> All proteins.",
+  :comment "",
+  :select ["Protein.primaryIdentifier" "Protein.primaryAccession"],
+  :orderBy [{:Protein.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}}}

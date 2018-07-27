@@ -1,0 +1,1925 @@
+{:Pathway_ProteinGene
+ {:tags ["im:public"],
+  :where
+  [{:path "Gene.proteins.pathways.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Metabolism of lipids and lipoproteins"}],
+  :name "Pathway_ProteinGene",
+  :rank "48",
+  :title "Pathway --> Protein and Gene",
+  :comment "delete after reactome is done sorting biopax",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.proteins.primaryAccession"
+   "Gene.proteins.primaryIdentifier"
+   "Gene.proteins.pathways.identifier"
+   "Gene.proteins.pathways.name"
+   "Gene.proteins.pathways.dataSets.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :disExprGene
+ {:description
+  "Show expression for a gene or list of genes associated with specific disease state(s). Optionally constrain the P-value.  Data source: The Gene Expression Atlas (http://www.ebi.ac.uk/gxa/). Keywords: expression, expressed, Genes, Disease state, P value, T statistic.",
+  :tags ["im:aspect:Disease" "im:aspect:Expression" "im:public"],
+  :where
+  [{:path "AtlasExpression.condition",
+    :op "!=",
+    :code "B",
+    :editable false,
+    :switchable true,
+    :switched "ON",
+    :value "*empty*"}
+   {:path "AtlasExpression.condition",
+    :op "=",
+    :code "E",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "B-cell lymphoma"}
+   {:path "AtlasExpression.pValue",
+    :op "<=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "0.01"}],
+  :name "disExprGene",
+  :rank "21",
+  :title "Disease Expression --> Genes",
+  :comment "Added 01FEB2012: ML",
+  :constraintLogic "C and B and E",
+  :select
+  ["AtlasExpression.condition"
+   "AtlasExpression.gene.primaryIdentifier"
+   "AtlasExpression.gene.symbol"
+   "AtlasExpression.gene.name"
+   "AtlasExpression.expression"
+   "AtlasExpression.pValue"
+   "AtlasExpression.tStatistic"
+   "AtlasExpression.dataSets.name"],
+  :orderBy [{:AtlasExpression.condition "ASC"}],
+  :model {:name "genomic"}},
+ :Protein_GeneChromosomeLength
+ {:description
+  "Show the gene that codes for the following protein, with its chromosomal location and length.",
+  :tags ["im:aspect:Proteins" "im:public" "im:report"],
+  :where
+  [{:path "Protein",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG_HUMAN",
+    :extraValue "H. sapiens"}],
+  :name "Protein_GeneChromosomeLength",
+  :rank "40",
+  :title "Protein --> Gene.",
+  :comment "06.06.07 updated to work from protein class - Philip",
+  :select
+  ["Protein.primaryAccession"
+   "Protein.genes.primaryIdentifier"
+   "Protein.genes.symbol"
+   "Protein.genes.chromosome.primaryIdentifier"
+   "Protein.genes.chromosomeLocation.start"
+   "Protein.genes.chromosomeLocation.end"
+   "Protein.genes.chromosomeLocation.strand"
+   "Protein.genes.length"],
+  :orderBy [{:Protein.primaryAccession "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_proteindomain
+ {:description
+  "Show protein domain information for the proteins of a specified gene.",
+  :tags ["im:aspect:Function" "im:aspect:Proteins" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "TSPAN6",
+    :extraValue "H. sapiens"}],
+  :name "Gene_proteindomain",
+  :rank "45",
+  :title "Gene --> Protein + Domains",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.proteins.uniprotAccession"
+   "Gene.proteins.proteinDomainRegions.proteinDomain.name"
+   "Gene.proteins.proteinDomainRegions.proteinDomain.type"
+   "Gene.proteins.proteinDomainRegions.start"
+   "Gene.proteins.proteinDomainRegions.end"
+   "Gene.proteins.proteinDomainRegions.identifier"
+   "Gene.proteins.proteinDomainRegions.database"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Term_inGWASoptionalGene
+ {:description
+  "Search GWAS experiments and return SNPs and associated genes. Searchable fields include: First Author, Pub Med ID, phenotype and Phenotype [Example: *diabetes* or *obesity* or try typing your keyword to bring up autocomplete options]. Filter by p-value cut-off [Format Examples: 0.01 or 2.0E-6; default = 0.01]. [Keywords: genome wide association, study, studies, disease] ",
+  :tags ["im:aspect:GWAS" "im:public"],
+  :where
+  [{:path "GWAS.results.phenotype",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*Diabetes*"}
+   {:path "GWAS.results.pValue",
+    :op "<=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "0.01"}],
+  :name "Term_inGWASoptionalGene",
+  :rank "55",
+  :joins ["GWAS.results.associatedGenes"],
+  :title "GWAS term --> SNP + Associated gene if available",
+  :comment "",
+  :constraintLogic "B and C and A and D",
+  :select
+  ["GWAS.firstAuthor"
+   "GWAS.publication.pubMedId"
+   "GWAS.results.SNP.primaryIdentifier"
+   "GWAS.results.pValue"
+   "GWAS.name"
+   "GWAS.results.phenotype"
+   "GWAS.results.associatedGenes.symbol"
+   "GWAS.results.associatedGenes.name"
+   "GWAS.results.associatedGenes.organism.shortName"],
+  :orderBy [{:GWAS.firstAuthor "ASC"}],
+  :model {:name "genomic"}},
+ :ListPathway
+ {:description
+  "For a given Gene A (or List A of Genes) show any associated Pathway(s) in common with Gene B (or List B of Genes). Datasource: KEGG or REACTOME. Keywords: pathways, cascade, metabolism, reaction",
+  :tags ["im:aspect:Function" "im:aspect:Pathways" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ABCC8",
+    :extraValue "H. sapiens"}
+   {:path "Gene.pathways.genes",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "INSR",
+    :extraValue "H. sapiens"}],
+  :name "ListPathway",
+  :rank "26",
+  :title "Gene A --> Pathways <-- Gene B ",
+  :comment "Under development for in-list comparisons: ML",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.pathways.genes.primaryIdentifier"
+   "Gene.pathways.genes.symbol"
+   "Gene.pathways.genes.name"
+   "Gene.pathways.name"
+   "Gene.pathways.identifier"
+   "Gene.pathways.dataSets.name"
+   "Gene.pathways.genes.organism.shortName"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_particularGoannotation
+ {:description
+  "For a Gene (or List of Genes) with GO Annotation, returns a subset of genes with that particular GO anotation. Used to filter lasrge Gene sets by GO term.",
+  :tags
+  ["im:aspect:Function"
+   "im:aspect:Gene Ontology"
+   "im:aspect:Genomics"
+   "im:public"
+   "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG",
+    :extraValue "H. sapiens"}
+   {:path "Gene.goAnnotation.ontologyTerm.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*transcription factor*"}],
+  :name "Gene_particularGoannotation",
+  :rank "25",
+  :joins ["Gene.goAnnotation"],
+  :title "Gene + GO term --> Genes by GO term",
+  :comment "Added 1NOV2010: ML",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Dis
+ {:description
+  "For a given Gene (or List of Genes) returns a list of associated diseases (source: OMIM)",
+  :tags ["im:aspect:Disease" "im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG",
+    :extraValue "H. sapiens"}],
+  :name "Gene_Dis",
+  :rank "4",
+  :title "Gene --> Disease (OMIM)",
+  :comment "Added 23NOV2010: ML",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.diseases.name"
+   "Gene.diseases.identifier"
+   "Gene.organism.shortName"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :GeneExpress
+ {:description
+  "Show expression for a gene or list of genes. Optionally constrain the P-value and the T-statistic.  The results can also be optionally filtered on organism part, cell type or disease state. Data source: The Gene Expression Atlas (http://www.ebi.ac.uk/gxa/).  Keywords:  Expression, Genes, Organism part, Disease state, Cell type, P value, T statistic.",
+  :tags ["im:aspect:Expression" "im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ADAMTS1",
+    :extraValue "H. sapiens"}
+   {:path "Gene.atlasExpression.tStatistic",
+    :op ">=",
+    :code "A",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "4"}
+   {:path "Gene.atlasExpression.pValue",
+    :op "<=",
+    :code "F",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "0.0001"}
+   {:path "Gene.atlasExpression.type",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "disease_state"}],
+  :name "GeneExpress",
+  :rank "17",
+  :title
+  "Gene --> Gene Expression (Tissue, Disease; Array Express, E-MTAB-62)",
+  :comment "Added 23AUG2011:ML",
+  :constraintLogic "C and B and A and F and D",
+  :select
+  ["Gene.symbol"
+   "Gene.name"
+   "Gene.organism.name"
+   "Gene.atlasExpression.condition"
+   "Gene.atlasExpression.type"
+   "Gene.atlasExpression.tStatistic"
+   "Gene.atlasExpression.pValue"
+   "Gene.atlasExpression.expression"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :TissueAtlas_Expression
+ {:description
+  "Show expression for a gene or list of genes associated with a specific tissue(s). Optionally constrain the P-value.  Data source: Array express (http://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-62 - Human gene expression atlas of 5372 samples representing 369 different cell and tissue types, disease states and cell lines). Keywords: expression, expressed, Genes, Disease state, P value, T statistic.",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "AtlasExpression.condition",
+    :op "=",
+    :code "E",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Brain"}
+   {:path "AtlasExpression.pValue",
+    :op "<=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "0.01"}],
+  :name "TissueAtlas_Expression",
+  :rank "7",
+  :title "Tissue --> Gene Expression (Array Express E-MTAB-62)",
+  :comment "",
+  :constraintLogic "C and E",
+  :select
+  ["AtlasExpression.condition"
+   "AtlasExpression.gene.primaryIdentifier"
+   "AtlasExpression.gene.symbol"
+   "AtlasExpression.gene.name"
+   "AtlasExpression.expression"
+   "AtlasExpression.pValue"
+   "AtlasExpression.tStatistic"
+   "AtlasExpression.dataSets.name"],
+  :orderBy [{:AtlasExpression.condition "ASC"}],
+  :model {:name "genomic"}},
+ :SNP_GWAShit
+ {:description
+  "For a given SNP (or List of SNPs) returns GWAS results featuring that SNP (where applicable, associated Gene is also returned). Results can be filtered by P-value [Format Examples: 0.01 or 2.0E-6; default = 0.01], Author [Format: type the start of a Author to bring up autocomplete options. NOTE: This Filtr is OFF by default. Click to turn ON] OR  Phenotype [Example: *diabetes* or *obesity* or type the start of a keyword to bring up autocomplete options] [Keywords: genome wide association, study, studies, disease]",
+  :tags ["im:aspect:GWAS" "im:aspect:SNPs" "im:public" "im:report"],
+  :where
+  [{:path "GWAS.results.SNP",
+    :op "LOOKUP",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "rs1801282",
+    :extraValue "H. sapiens"}
+   {:path "GWAS.results.pValue",
+    :op "<=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "0.01"}],
+  :name "SNP_GWAShit",
+  :rank "16",
+  :joins ["GWAS.results.associatedGenes"],
+  :title "SNP --> GWAS Hits",
+  :comment "Added 10NOV2010: ML",
+  :constraintLogic "A and B and D and C",
+  :select
+  ["GWAS.results.SNP.primaryIdentifier"
+   "GWAS.results.pValue"
+   "GWAS.firstAuthor"
+   "GWAS.results.phenotype"
+   "GWAS.name"
+   "GWAS.publication.pubMedId"
+   "GWAS.results.associatedGenes.symbol"
+   "GWAS.results.associatedGenes.primaryIdentifier"],
+  :orderBy [{:GWAS.firstAuthor "ASC"}],
+  :model {:name "genomic"}},
+ :GOname_GOidentifier
+ {:tags ["im:aspect:Function" "im:aspect:Gene Ontology" "im:public"],
+  :where
+  [{:path "GOTerm.name",
+    :op "LIKE",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*blastoderm*"}],
+  :name "GOname_GOidentifier",
+  :rank "51",
+  :title "GO term name --> GO term identifier.",
+  :comment "",
+  :select ["GOTerm.name" "GOTerm.identifier" "GOTerm.description"],
+  :orderBy [{:GOTerm.name "ASC"}],
+  :model {:name "genomic"}},
+ :PathwayGenes
+ {:description
+  "For a given Pathways show any Genes associated with the Pathway(s) in a given organism (Data Source: KEGG or REACTOME). [NOTE: Organism is an optional filter which is ON by default but can be turned OFF to show genes from all organisms.] Keywords: Pathway, KEGG, Reactome",
+  :tags
+  ["im:aspect:Function" "im:aspect:Pathways" "im:public" "im:report"],
+  :where
+  [{:path "Pathway.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Metabolism of lipids and lipoproteins"}
+   {:path "Pathway.genes.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "H. sapiens"}],
+  :name "PathwayGenes",
+  :rank "15",
+  :title "Pathway --> Genes",
+  :comment "Added 23FEB2011: ML",
+  :constraintLogic "A and B",
+  :select
+  ["Pathway.identifier"
+   "Pathway.name"
+   "Pathway.dataSets.name"
+   "Pathway.dataSets.dataSource.name"
+   "Pathway.genes.primaryIdentifier"
+   "Pathway.genes.symbol"
+   "Pathway.genes.name"
+   "Pathway.genes.organism.shortName"],
+  :orderBy [{:Pathway.identifier "ASC"}],
+  :model {:name "genomic"}},
+ :geneGWAS_reportPg
+ {:description
+  "Admin template to display GWAS results in Gene report pages. Do not use. Instead use: Gene --> GWAS hit",
+  :tags ["im:aspect:SNPs" "im:public" "im:report"],
+  :where
+  [{:path "GWAS.results.associatedGenes",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG",
+    :extraValue "H. sapiens"}],
+  :name "geneGWAS_reportPg",
+  :rank "35",
+  :title "Gene Report --> GWAS hit",
+  :comment "Added 16MAR2011: ML (to appear in report pages)",
+  :select
+  ["GWAS.results.associatedGenes.primaryIdentifier"
+   "GWAS.results.associatedGenes.symbol"
+   "GWAS.results.associatedGenes.name"
+   "GWAS.results.SNP.primaryIdentifier"
+   "GWAS.results.pValue"
+   "GWAS.results.phenotype"
+   "GWAS.firstAuthor"
+   "GWAS.publication.pubMedId"
+   "GWAS.results.associatedGenes.organism.shortName"],
+  :orderBy [{:GWAS.firstAuthor "ASC"}],
+  :model {:name "genomic"}},
+ :Tissue_Expression_GTex
+ {:description
+  "For a specified tissue, show the gene expression levels according to the GTex RNA-seq data (https://www.gtexportal.org/home/)",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene.rnaSeqResults.tissue",
+    :op "CONTAINS",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Brain"}],
+  :name "Tissue_Expression_GTex",
+  :rank "55",
+  :title "Tissue --> Gene Expression (GTex data)",
+  :comment "",
+  :select
+  ["Gene.rnaSeqResults.tissue"
+   "Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.rnaSeqResults.expressionScore"
+   "Gene.rnaSeqResults.dataSets.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Pathway
+ {:description
+  "For a given Gene (or List of Genes) show any associated Pathway(s) (Data Source: KEGG or REACTOME). Keywords: pathways, metabolism, cascade ",
+  :tags ["im:aspect:Pathways" "im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG",
+    :extraValue "H. sapiens"}],
+  :name "Gene_Pathway",
+  :rank "1",
+  :title "Gene --> Pathway",
+  :comment "Added 26OCT2010: ML",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.pathways.name"
+   "Gene.pathways.dataSets.name"
+   "Gene.pathways.identifier"
+   "Gene.organism.shortName"],
+  :orderBy
+  [{:Gene.primaryIdentifier "ASC"}
+   {:Gene.primaryIdentifier "ASC"}
+   {:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Expression_GTex
+ {:description
+  "For a specified gene or list of genes, show the tissue expression levels according to the GTex RNA-seq data (https://www.gtexportal.org/home/)",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "pparg",
+    :extraValue "H. sapiens"}],
+  :name "Gene_Expression_GTex",
+  :rank "46",
+  :title "Gene --> Tissue Expression (GTex data)",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.rnaSeqResults.tissue"
+   "Gene.rnaSeqResults.expressionScore"
+   "Gene.rnaSeqResults.dataSets.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Protein
+ {:description
+  "For a given Gene (or List of Genes) returns the corresponding Protein(s) products.",
+  :tags ["im:aspect:Proteins" "im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG",
+    :extraValue "H. sapiens"}],
+  :name "Gene_Protein",
+  :rank "14",
+  :title "Gene --> Proteins.",
+  :comment "Added 26OCT2010: ML",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.proteins.primaryIdentifier"
+   "Gene.proteins.primaryAccession"
+   "Gene.proteins.name"
+   "Gene.proteins.isUniprotCanonical"
+   "Gene.proteins.molecularWeight"
+   "Gene.proteins.length"
+   "Gene.proteins.isFragment"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :MeSH_Publication
+ {:description "For given MeSH term show all publications.",
+  :tags ["im:aspect:Literature" "im:public"],
+  :where
+  [{:path "MeshTerm.name",
+    :op "CONTAINS",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Ataxia"}],
+  :name "MeSH_Publication",
+  :rank "47",
+  :title "MeSH term --> Publication",
+  :comment "",
+  :select
+  ["MeshTerm.name"
+   "MeshTerm.publications.firstAuthor"
+   "MeshTerm.publications.title"
+   "MeshTerm.publications.year"
+   "MeshTerm.publications.journal"
+   "MeshTerm.publications.volume"
+   "MeshTerm.publications.pages"
+   "MeshTerm.publications.pubMedId"],
+  :orderBy [{:MeshTerm.name "ASC"}],
+  :model {:name "genomic"}},
+ :Protein_complex_details
+ {:description
+  "Retrieve details of protein complexes that the specified protein is known to be part of.",
+  :tags
+  ["im:aspect:Interactions"
+   "im:aspect:Proteins"
+   "im:public"
+   "im:report"],
+  :where
+  [{:path "Complex.allInteractors.participant", :type "Protein"}
+   {:path "Complex.allInteractors.participant",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "F261_HUMAN"}],
+  :name "Protein_complex_details",
+  :rank "23",
+  :joins ["Complex.publications" "Complex.goAnnotation"],
+  :title "Protein --> Protein Complex",
+  :comment "",
+  :select
+  ["Complex.name"
+   "Complex.function"
+   "Complex.systematicName"
+   "Complex.allInteractors.participant.primaryIdentifier"
+   "Complex.allInteractors.biologicalRole"
+   "Complex.allInteractors.stoichiometry"
+   "Complex.allInteractors.type"
+   "Complex.goAnnotation.id"
+   "Complex.goAnnotation.qualifier"
+   "Complex.publications.pubMedId"
+   "Complex.allInteractors.participant.genes.primaryIdentifier"
+   "Complex.allInteractors.participant.genes.symbol"],
+  :orderBy [{:Complex.name "ASC"}],
+  :model {:name "genomic"}},
+ :domain_protein_gene
+ {:description
+  "Show proteins which have a specified protein domain or family.",
+  :tags ["im:aspect:Proteins" "im:public" "im:report"],
+  :where
+  [{:path "ProteinDomain",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*kinase*"}],
+  :name "domain_protein_gene",
+  :rank "31",
+  :title "Protein Domain --> Protein and Genes",
+  :comment "",
+  :select
+  ["ProteinDomain.name"
+   "ProteinDomain.primaryIdentifier"
+   "ProteinDomain.type"
+   "ProteinDomain.proteinDomainRegions.start"
+   "ProteinDomain.proteinDomainRegions.end"
+   "ProteinDomain.proteinDomainRegions.identifier"
+   "ProteinDomain.proteinDomainRegions.database"
+   "ProteinDomain.proteinDomainRegions.protein.primaryAccession"
+   "ProteinDomain.proteinDomainRegions.protein.genes.primaryIdentifier"],
+  :orderBy [{:ProteinDomain.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Pathways_Protein
+ {:description "For a pathway and dataset, show all proteins.",
+  :tags ["im:public"],
+  :where
+  [{:path "Protein.pathways.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Metabolism of lipids and lipoproteins"}],
+  :name "Pathways_Protein",
+  :rank "43",
+  :title "Pathways --> Protein",
+  :comment "delete after reactome is done sorting biopax",
+  :select
+  ["Protein.primaryAccession"
+   "Protein.primaryIdentifier"
+   "Protein.pathways.identifier"
+   "Protein.pathways.name"
+   "Protein.pathways.dataSets.name"],
+  :orderBy [{:Protein.primaryAccession "ASC"}],
+  :model {:name "genomic"}},
+ :GOterm_Gene
+ {:description
+  "Search for Genes in a specified organism that are associated with a particular Gene Ontology (GO) annotation.",
+  :tags
+  ["im:aspect:Function"
+   "im:aspect:Gene Ontology"
+   "im:aspect:Genomics"
+   "im:public"
+   "im:report"],
+  :where
+  [{:path "Gene.goAnnotation.ontologyTerm.name",
+    :op "LIKE",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "DNA binding"}
+   {:path "Gene.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "H. sapiens"}],
+  :name "GOterm_Gene",
+  :rank "2",
+  :title "GO term --> Genes",
+  :comment "Added 26OCT2010: ML",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.organism.shortName"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :protein_interactions
+ {:description
+  "For a specified protein, show physical and genetic interaction partners.  Optionally constrain to show just physical or genetic interactions or interactions determined by a specific method.",
+  :tags ["im:aspect:Interactions" "im:aspect:Proteins" "im:public"],
+  :where
+  [{:path "Gene.proteins.uniprotName",
+    :op "=",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG_HUMAN"}],
+  :name "protein_interactions",
+  :rank "27",
+  :title "Protein --> Interactions",
+  :comment "",
+  :constraintLogic "B and C and D",
+  :select
+  ["Gene.proteins.uniprotAccession"
+   "Gene.proteins.uniprotName"
+   "Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.interactions.participant2.primaryIdentifier"
+   "Gene.interactions.participant2.symbol"
+   "Gene.interactions.details.type"
+   "Gene.interactions.details.name"
+   "Gene.interactions.details.role1"
+   "Gene.interactions.details.role2"
+   "Gene.interactions.details.experiment.interactionDetectionMethods.name"
+   "Gene.interactions.details.experiment.name"
+   "Gene.interactions.details.experiment.publication.pubMedId"
+   "Gene.interactions.details.dataSets.name"],
+  :orderBy [{:Gene.proteins.uniprotAccession "ASC"}],
+  :model {:name "genomic"}},
+ :gene_complex_details
+ {:description
+  "Retrieve details of protein complexes that the specified gene is known to be part of.",
+  :tags ["im:aspect:Interactions" "im:aspect:Proteins" "im:public"],
+  :where
+  [{:path "Complex.allInteractors.participant", :type "Protein"}
+   {:path "Complex.allInteractors.participant.genes",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PFKFB1",
+    :extraValue "H. sapiens"}],
+  :name "gene_complex_details",
+  :rank "33",
+  :joins ["Complex.publications" "Complex.goAnnotation"],
+  :title "Gene --> protein complex",
+  :comment "",
+  :select
+  ["Complex.name"
+   "Complex.function"
+   "Complex.systematicName"
+   "Complex.allInteractors.participant.primaryIdentifier"
+   "Complex.allInteractors.biologicalRole"
+   "Complex.allInteractors.stoichiometry"
+   "Complex.allInteractors.type"
+   "Complex.goAnnotation.id"
+   "Complex.goAnnotation.qualifier"
+   "Complex.publications.pubMedId"
+   "Complex.allInteractors.participant.genes.primaryIdentifier"
+   "Complex.allInteractors.participant.genes.symbol"],
+  :orderBy [{:Complex.name "ASC"}],
+  :model {:name "genomic"}},
+ :GenePathway_interactions2
+ {:description
+  "For a gene or gene list return those that interact with genes in a specified pathway.",
+  :tags ["im:aspect:Interactions" "im:aspect:Pathways" "im:public"],
+  :where
+  [{:path "Gene.interactions.participant2", :type "Gene"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "DVL2",
+    :extraValue "H. sapiens"}
+   {:path "Gene.interactions.participant2.pathways.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Signaling by NOTCH"}],
+  :name "GenePathway_interactions2",
+  :rank "24",
+  :title "Gene + Pathway --> Interactions",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.interactions.participant2.primaryIdentifier"
+   "Gene.interactions.participant2.symbol"
+   "Gene.interactions.participant2.pathways.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_OverlapppingGenes
+ {:description "For a particular gene, search for overlapping genes.",
+  :tags ["im:aspect:Genomics" "im:public" "im:report"],
+  :where
+  [{:path "Gene.overlappingFeatures", :type "Gene"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG"}],
+  :name "Gene_OverlapppingGenes",
+  :rank "32",
+  :joins ["Gene.overlappingFeatures"],
+  :title "Gene --> Overlapping genes.",
+  :comment "Added 26OCT2010 - ML",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.chromosomeLocation.start"
+   "Gene.chromosomeLocation.end"
+   "Gene.chromosomeLocation.strand"
+   "Gene.overlappingFeatures.primaryIdentifier"
+   "Gene.overlappingFeatures.symbol"
+   "Gene.overlappingFeatures.chromosomeLocation.start"
+   "Gene.overlappingFeatures.chromosomeLocation.end"
+   "Gene.overlappingFeatures.chromosomeLocation.strand"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Protein_GOterms
+ {:description
+  "For a given Protein (or List of Proteins), returns the associated Gene Ontology (GO) terms. Optionally, you can specify Ontology category (eg. cellular_component, molecular_function, biological_process: OFF returns All).",
+  :tags
+  ["im:aspect:Function"
+   "im:aspect:Gene Ontology"
+   "im:aspect:Proteins"
+   "im:frontpage"
+   "im:public"
+   "im:report"],
+  :where
+  [{:path "Protein",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG_HUMAN",
+    :extraValue "H. sapiens"}
+   {:path "Protein.genes.goAnnotation.ontologyTerm.namespace",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "biological_process"}],
+  :name "Protein_GOterms",
+  :rank "47",
+  :title "Protein --> GO terms",
+  :comment "Added 1NOV2010: ML",
+  :constraintLogic "A and B",
+  :select
+  ["Protein.primaryAccession"
+   "Protein.genes.symbol"
+   "Protein.genes.primaryIdentifier"
+   "Protein.genes.goAnnotation.ontologyTerm.namespace"
+   "Protein.genes.goAnnotation.ontologyTerm.identifier"
+   "Protein.genes.goAnnotation.ontologyTerm.name"
+   "Protein.genes.organism.shortName"],
+  :orderBy [{:Protein.primaryAccession "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_inGWAS
+ {:description
+  "For a given Gene (or List of Genes) returns a list of SNPs associated with the Gene in GWAS experiments. Results can be constrained by P-value [Format Examples: 0.05 or 2.0E-6; default = 0.01] or Phenotype [Example: *diabetes* or *obesity* or try typing your keyword to bring up the autocomplete options] [Keywords: genome wide association, study, studies, disease]",
+  :tags ["im:aspect:GWAS" "im:public" "im:report"],
+  :where
+  [{:path "GWAS.results.associatedGenes",
+    :op "LOOKUP",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG",
+    :extraValue "H. sapiens"}
+   {:path "GWAS.results.pValue",
+    :op "<=",
+    :code "B",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "1e-04"}],
+  :name "Gene_inGWAS",
+  :rank "5",
+  :title "Gene --> GWAS hit",
+  :comment "Added 10NOV2010: ML",
+  :constraintLogic "B and C and D",
+  :select
+  ["GWAS.results.associatedGenes.primaryIdentifier"
+   "GWAS.results.associatedGenes.symbol"
+   "GWAS.results.associatedGenes.name"
+   "GWAS.results.SNP.primaryIdentifier"
+   "GWAS.results.pValue"
+   "GWAS.results.phenotype"
+   "GWAS.firstAuthor"
+   "GWAS.name"
+   "GWAS.publication.pubMedId"
+   "GWAS.results.associatedGenes.organism.shortName"],
+  :orderBy [{:GWAS.firstAuthor "ASC"}],
+  :model {:name "genomic"}},
+ :complex_participants
+ {:description
+  "For a given macromolecular complex, show the participating molecules.",
+  :tags ["im:aspect:Proteins" "im:public" "im:report"],
+  :where
+  [{:path
+    "Complex.allInteractors.interactions.participant1.locatedFeatures.feature",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Complex.allInteractors.interactions.participant2"}
+   {:path "Complex.name",
+    :op "CONTAINS",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "transcription"}],
+  :name "complex_participants",
+  :rank "50",
+  :joins ["Complex.allInteractors.interactions"],
+  :title "Protein Complex --> Participants",
+  :comment "",
+  :constraintLogic "C and A",
+  :select
+  ["Complex.allInteractors.participant.primaryIdentifier"
+   "Complex.allInteractors.participant.secondaryIdentifier"
+   "Complex.allInteractors.participant.symbol"
+   "Complex.allInteractors.stoichiometry"
+   "Complex.allInteractors.type"
+   "Complex.allInteractors.biologicalRole"
+   "Complex.name"],
+  :model {:name "genomic"}},
+ :Dis_Gene
+ {:description
+  "For a given human disease returns a list of associated or implicated human genes (source: OMIM)",
+  :tags ["im:aspect:Disease" "im:frontpage" "im:public" "im:report"],
+  :where
+  [{:path "Disease.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*Diabetes*"}],
+  :name "Dis_Gene",
+  :rank "6",
+  :title "Disease --> Gene(s)",
+  :comment "Added 23NOV2010: ML",
+  :select
+  ["Disease.genes.primaryIdentifier"
+   "Disease.genes.symbol"
+   "Disease.genes.name"
+   "Disease.name"
+   "Disease.identifier"
+   "Disease.genes.organism.shortName"],
+  :orderBy [{:Disease.name "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_GO
+ {:description
+  "Search for GO annotations for a particular gene (or List of Genes).",
+  :tags
+  ["im:aspect:Function"
+   "im:aspect:Gene Ontology"
+   "im:aspect:Genomics"
+   "im:frontpage"
+   "im:public"
+   "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG",
+    :extraValue "H. sapiens"}],
+  :name "Gene_GO",
+  :rank "3",
+  :title "Gene --> GO terms.",
+  :comment "Added 15NOV2010: ML",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.goAnnotation.ontologyTerm.identifier"
+   "Gene.goAnnotation.ontologyTerm.name"
+   "Gene.goAnnotation.ontologyTerm.namespace"
+   "Gene.goAnnotation.evidence.code.code"
+   "Gene.goAnnotation.ontologyTerm.parents.identifier"
+   "Gene.goAnnotation.ontologyTerm.parents.name"
+   "Gene.goAnnotation.qualifier"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Interactions_forReportPage
+ {:description
+  "For a specified gene, show physical and genetic interaction partners.  Optionally constrain to show just physical or genetic interactions or interactions determined by a specific method.",
+  :tags ["im:aspect:Interactions" "im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "pparg",
+    :extraValue "H. sapiens"}],
+  :name "Gene_Interactions_forReportPage",
+  :rank "44",
+  :title "Gene --> Physical and Genetic Interactions",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.interactions.participant2.primaryIdentifier"
+   "Gene.interactions.participant2.symbol"
+   "Gene.interactions.details.type"
+   "Gene.interactions.details.name"
+   "Gene.interactions.details.role1"
+   "Gene.interactions.details.role2"
+   "Gene.interactions.details.experiment.interactionDetectionMethods.name"
+   "Gene.interactions.details.experiment.name"
+   "Gene.interactions.details.experiment.publication.pubMedId"
+   "Gene.interactions.details.dataSets.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_TissueExpressionIllumina
+ {:description
+  "For a specified gene or gene list, show the tissue expression according to the Illumina body map data.  (https://www.ebi.ac.uk/gxa/experiments/E-MTAB-513/Results)",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene.atlasExpression.dataSets.name",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "E-MTAB-513 illumina body map"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "pparg"}],
+  :name "Gene_TissueExpressionIllumina",
+  :rank "42",
+  :title "Gene --> Tissue Expression (Illumina body map)",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.atlasExpression.dataSets.name"
+   "Gene.symbol"
+   "Gene.atlasExpression.condition"
+   "Gene.atlasExpression.expression"
+   "Gene.atlasExpression.pValue"
+   "Gene.atlasExpression.type"],
+  :orderBy [{:Gene.atlasExpression.dataSets.name "ASC"}],
+  :model {:name "genomic"}},
+ :GOtermidentifier_name
+ {:tags ["im:public"],
+  :where
+  [{:path "GOTerm.identifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "GO:0007350"}],
+  :name "GOtermidentifier_name",
+  :rank "54",
+  :title "GO term identifier --> GO term name.",
+  :comment "",
+  :select ["GOTerm.identifier" "GOTerm.name" "GOTerm.description"],
+  :orderBy [{:GOTerm.identifier "ASC"}],
+  :model {:name "genomic"}},
+ :GeneOrthAllele
+ {:description
+  "For a given Gene (or List of Genes) in named organism (default: Human) returns the orthologues in a different organisms (default : Mouse), alleles (MGI) and associated (major) Phenotypic terms (MGI).  [keywords: homologue, homolog, paralogue, paralogue, ortholog, allele, strain, phenotype]",
+  :tags
+  ["im:aspect:Comparative Genomics"
+   "im:aspect:Disease"
+   "im:public"
+   "im:report"],
+  :where
+  [{:path "Gene.homologues.homologue.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "M. musculus"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "pparg",
+    :extraValue "H. sapiens"}],
+  :name "GeneOrthAllele",
+  :rank "19",
+  :title "Gene (Hum OR Rat) --> Mouse Allele (Phenotype)",
+  :comment "Added 27JUL2011:ML",
+  :constraintLogic "B and A",
+  :select
+  ["Gene.symbol"
+   "Gene.name"
+   "Gene.homologues.homologue.organism.shortName"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.homologue.name"
+   "Gene.homologues.homologue.alleles.symbol"
+   "Gene.homologues.homologue.alleles.name"
+   "Gene.homologues.homologue.alleles.primaryIdentifier"
+   "Gene.homologues.homologue.alleles.genotypes.phenotypeTerms.name"
+   "Gene.homologues.homologue.alleles.genotypes.phenotypeTerms.description"
+   "Gene.homologues.homologue.alleles.genotypes.name"
+   "Gene.homologues.homologue.alleles.genotypes.zygosity"
+   "Gene.homologues.homologue.alleles.genotypes.geneticBackground"
+   "Gene.homologues.homologue.alleles.genotypes.phenotypeTerms.identifier"
+   "Gene.homologues.homologue.alleles.genotypes.phenotypeTerms.ontology.name"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Identifiers
+ {:tags ["im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ENSG00000099942"}],
+  :name "Gene_Identifiers",
+  :rank "41",
+  :title "Gene --> All identifiers.",
+  :comment "07:02:07:Updated to work from gene identifier - Rachel.",
+  :select
+  ["Gene.secondaryIdentifier"
+   "Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.crossReferences.identifier"
+   "Gene.crossReferences.source.name"],
+  :orderBy [{:Gene.secondaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Complex_Participant_Details
+ {:description
+  " For a given macromolecular complex, retrieve Gene Ontology annotations and references for the complex as a whole; also retrieve the subunits of the complex, their stoichiometry, and their biological roles in the complex.",
+  :tags ["im:aspect:Proteins" "im:public"],
+  :where
+  [{:path
+    "Complex.allInteractors.interactions.participant1.locatedFeatures.feature",
+    :op "=",
+    :code "C",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Complex.allInteractors.interactions.participant2"}
+   {:path "Complex.name",
+    :op "CONTAINS",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "transcription"}],
+  :name "Complex_Participant_Details",
+  :rank "39",
+  :joins
+  ["Complex.goAnnotation"
+   "Complex.publications"
+   "Complex.allInteractors.interactions"],
+  :title "Protein Complex --> Details + Participants",
+  :comment "",
+  :constraintLogic "C and A",
+  :select
+  ["Complex.name"
+   "Complex.identifier"
+   "Complex.systematicName"
+   "Complex.goAnnotation.ontologyTerm.name"
+   "Complex.goAnnotation.ontologyTerm.identifier"
+   "Complex.publications.pubMedId"
+   "Complex.function"
+   "Complex.properties"
+   "Complex.allInteractors.participant.primaryIdentifier"
+   "Complex.allInteractors.participant.secondaryIdentifier"
+   "Complex.allInteractors.participant.symbol"
+   "Complex.allInteractors.stoichiometry"
+   "Complex.allInteractors.type"
+   "Complex.allInteractors.biologicalRole"],
+  :orderBy [{:Complex.identifier "ASC"}],
+  :model {:name "genomic"}},
+ :phenotype2alleles
+ {:description
+  "For a given phenotype (as defined in the mammalian phenotype ontology) returns a list of mouse alleles (MGI) which display these phenotypes. Keywords: phenotype, strain, allele, mouse, knockout, deletion, mutation",
+  :tags ["im:aspect:Function" "im:public" "im:report"],
+  :where
+  [{:path "Gene.alleles.genotypes.phenotypeTerms.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "abnormal adipose tissue distribution"}],
+  :name "phenotype2alleles",
+  :rank "36",
+  :title "Phenotype --> Alleles",
+  :comment "Added 31JAN2012: ML",
+  :constraintLogic "B and A and C",
+  :select
+  ["Gene.alleles.genotypes.phenotypeTerms.name"
+   "Gene.symbol"
+   "Gene.alleles.symbol"
+   "Gene.alleles.primaryIdentifier"
+   "Gene.alleles.genotypes.name"
+   "Gene.alleles.name"
+   "Gene.alleles.type"
+   "Gene.alleles.genotypes.geneticBackground"
+   "Gene.alleles.genotypes.zygosity"
+   "Gene.alleles.organism.name"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :protein_domain
+ {:description
+  "Show protein domains and families for the specified protein.",
+  :tags
+  ["im:aspect:Function" "im:aspect:Proteins" "im:public" "im:report"],
+  :where
+  [{:path "Protein",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG_HUMAN"}],
+  :name "protein_domain",
+  :rank "49",
+  :title "Protein-> Domains",
+  :comment "",
+  :select
+  ["Protein.uniprotAccession"
+   "Protein.uniprotName"
+   "Protein.proteinDomainRegions.proteinDomain.name"
+   "Protein.proteinDomainRegions.proteinDomain.primaryIdentifier"
+   "Protein.proteinDomainRegions.proteinDomain.type"
+   "Protein.proteinDomainRegions.start"
+   "Protein.proteinDomainRegions.end"
+   "Protein.proteinDomainRegions.identifier"
+   "Protein.proteinDomainRegions.database"],
+  :orderBy [{:Protein.uniprotAccession "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Orth
+ {:description
+  "For a given Gene (or List of Genes) in named organism (default: Human) returns the orthologues in a different organisms. [keywords: homologue, homolog, paralogue, paralogue, ortholog]",
+  :tags
+  ["im:aspect:Comparative Genomics"
+   "im:aspect:Homology"
+   "im:public"
+   "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG",
+    :extraValue "H. sapiens"}],
+  :name "Gene_Orth",
+  :rank "11",
+  :title "Gene --> Orthologues",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.homologues.homologue.primaryIdentifier"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.homologue.organism.shortName"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :Protein_Gene_Ortho
+ {:description
+  "For a given Protein (or List of Proteins), returns the associated genes and homologues.",
+  :tags ["im:aspect:Homology" "im:public" "im:report"],
+  :where
+  [{:path "Protein",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG_HUMAN",
+    :extraValue "H. sapiens"}],
+  :name "Protein_Gene_Ortho",
+  :rank "53",
+  :title "Protein --> Gene and Orthologues",
+  :comment "",
+  :select
+  ["Protein.primaryAccession"
+   "Protein.genes.symbol"
+   "Protein.genes.primaryIdentifier"
+   "Protein.genes.organism.shortName"
+   "Protein.genes.homologues.homologue.primaryIdentifier"
+   "Protein.genes.homologues.homologue.symbol"
+   "Protein.genes.homologues.homologue.organism.shortName"],
+  :orderBy [{:Protein.primaryAccession "ASC"}],
+  :model {:name "genomic"}},
+ :humDisGeneOrthol
+ {:description
+  "For a given human disease returns a list of associated or implicated human genes and orthologues in other species (mouse and rat. Default:mouse) (disease source: OMIM)",
+  :tags
+  ["im:aspect:Comparative Genomics"
+   "im:aspect:Disease"
+   "im:aspect:Genomics"
+   "im:frontpage"
+   "im:public"],
+  :where
+  [{:path "Disease.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "*Diabetes*"}
+   {:path "Disease.genes.homologues.homologue.organism.shortName",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "M. musculus"}],
+  :name "humDisGeneOrthol",
+  :rank "13",
+  :title "Human Disease --> [Human +] Orthologue Gene(s)",
+  :comment "Added 28AUG2012: ML",
+  :constraintLogic "A and B",
+  :select
+  ["Disease.identifier"
+   "Disease.name"
+   "Disease.genes.primaryIdentifier"
+   "Disease.genes.symbol"
+   "Disease.genes.name"
+   "Disease.genes.homologues.homologue.primaryIdentifier"
+   "Disease.genes.homologues.homologue.symbol"
+   "Disease.genes.homologues.homologue.organism.shortName"],
+  :orderBy [{:Disease.name "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_AllelePhen
+ {:description
+  "For a given mouse Gene (or List of Genes) returns the alleles (MGI) and associated (major) Phenotypic terms (MGI).  [keywords: allele, strain, phenotype]",
+  :tags
+  ["im:aspect:Disease" "im:aspect:Function" "im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Pparg",
+    :extraValue "M. musculus"}],
+  :name "Gene_AllelePhen",
+  :rank "29",
+  :title "Mouse Gene --> Allele [Phenotype]",
+  :comment "",
+  :select
+  ["Gene.symbol"
+   "Gene.name"
+   "Gene.alleles.primaryIdentifier"
+   "Gene.alleles.name"
+   "Gene.alleles.genotypes.geneticBackground"
+   "Gene.alleles.genotypes.zygosity"
+   "Gene.alleles.genotypes.name"
+   "Gene.alleles.genotypes.phenotypeTerms.identifier"
+   "Gene.alleles.genotypes.phenotypeTerms.name"
+   "Gene.alleles.genotypes.phenotypeTerms.description"
+   "Gene.alleles.organism.name"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :Tissue_Expression_illumina
+ {:description
+  "For a specified tissue or tissue list, show gene expression according to the Illumina body map data.  (https://www.ebi.ac.uk/gxa/experiments/E-MTAB-513/Results)",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene.atlasExpression.dataSets.name",
+    :op "=",
+    :code "A",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "E-MTAB-513 illumina body map"}
+   {:path "Gene.atlasExpression.condition",
+    :op "=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "brain"}],
+  :name "Tissue_Expression_illumina",
+  :rank "52",
+  :title "Tissue --> Gene Expression (Illumina body map)",
+  :comment "",
+  :constraintLogic "A and C",
+  :select
+  ["Gene.atlasExpression.condition"
+   "Gene.symbol"
+   "Gene.atlasExpression.expression"
+   "Gene.atlasExpression.type"
+   "Gene.atlasExpression.dataSets.name"],
+  :orderBy [{:Gene.atlasExpression.expression "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Location
+ {:description
+  "Show the chromosome and the chromosome location of a particular gene.",
+  :tags ["im:aspect:Genomics" "im:public" "im:report"],
+  :where
+  [{:path "Gene.locations.locatedOn", :type "Chromosome"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG"}],
+  :name "Gene_Location",
+  :rank "10",
+  :title "Gene --> Chromosomal location.",
+  :comment "",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.chromosome.primaryIdentifier"
+   "Gene.locations.start"
+   "Gene.locations.end"
+   "Gene.locations.strand"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_proteinAtlasExpression
+ {:description
+  "For a given human gene returns tissues in which the corresponding protein has been identified. Optional filters are expression level and experimental confidence.  Data Source: Protein Atlas",
+  :tags ["im:aspect:Expression" "im:public"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "AAGAB",
+    :extraValue "H. sapiens"}
+   {:path "Gene.proteinAtlasExpression.level",
+    :op "ONE OF",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :values ["High" "Moderate" "Strong"]}
+   {:path "Gene.proteinAtlasExpression.reliability",
+    :op "ONE OF",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :values ["High" "Medium" "Supportive"]}],
+  :name "Gene_proteinAtlasExpression",
+  :rank "37",
+  :title "Gene --> Protein tissue Localisation",
+  :comment "",
+  :constraintLogic "B and C and A",
+  :select
+  ["Gene.symbol"
+   "Gene.primaryIdentifier"
+   "Gene.proteinAtlasExpression.tissue.name"
+   "Gene.proteinAtlasExpression.expressionType"
+   "Gene.proteinAtlasExpression.level"
+   "Gene.proteinAtlasExpression.reliability"
+   "Gene.proteinAtlasExpression.cellType"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_To_Publications
+ {:description
+  "Returns a list of publications that reference a specified gene. References are loaded from NCBI for Human, Mouse and Rat.",
+  :tags ["im:aspect:Literature" "im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG"}],
+  :name "Gene_To_Publications",
+  :rank "30",
+  :title "Gene --> Publications.",
+  :comment "Added",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.publications.pubMedId"
+   "Gene.publications.title"
+   "Gene.publications.firstAuthor"
+   "Gene.publications.journal"
+   "Gene.publications.year"],
+  :orderBy [{:Gene.publications.year "DESC"}],
+  :model {:name "genomic"}},
+ :geneInteractiongene
+ {:description
+  "For a given Gene A (or List A of Genes) show any interactions that occur with gene B (or List B of Genes)",
+  :tags ["im:aspect:Interactions" "im:aspect:Proteins" "im:public"],
+  :where
+  [{:path "Gene.interactions.participant2", :type "Gene"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "ABCC8",
+    :extraValue "H. sapiens"}
+   {:path "Gene.interactions.participant2",
+    :op "LOOKUP",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "RAPGEF4",
+    :extraValue "H. sapiens"}],
+  :name "geneInteractiongene",
+  :rank "8",
+  :title "Gene A --> Interaction <-- Gene B",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.interactions.participant2.primaryIdentifier"
+   "Gene.interactions.participant2.symbol"
+   "Gene.interactions.details.type"
+   "Gene.interactions.details.role1"
+   "Gene.interactions.details.role2"
+   "Gene.interactions.details.experiment.interactionDetectionMethods.name"
+   "Gene.interactions.details.experiment.publication.pubMedId"
+   "Gene.interactions.details.dataSets.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Interactions2
+ {:description
+  "For a specified gene, show physical and genetic interaction partners.  Optionally constrain to show just physical or genetic interactions or interactions determined by a specific method.",
+  :tags ["im:aspect:Interactions" "im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "pparg",
+    :extraValue "H. sapiens"}],
+  :name "Gene_Interactions2",
+  :rank "9",
+  :title "Gene --> Interactions",
+  :comment "",
+  :constraintLogic "A and B and C",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.interactions.participant2.primaryIdentifier"
+   "Gene.interactions.participant2.symbol"
+   "Gene.interactions.details.type"
+   "Gene.interactions.details.name"
+   "Gene.interactions.details.role1"
+   "Gene.interactions.details.role2"
+   "Gene.interactions.details.experiment.interactionDetectionMethods.name"
+   "Gene.interactions.details.experiment.name"
+   "Gene.interactions.details.experiment.publication.pubMedId"
+   "Gene.interactions.details.dataSets.name"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :ChromRegion_GenesTransExon
+ {:description
+  "For a specified organism and chromosomal location show all genes, transcripts and exons",
+  :tags ["im:aspect:Genomics" "im:frontpage" "im:public"],
+  :where
+  [{:path "Chromosome.locatedFeatures.feature", :type "Exon"}
+   {:path "Chromosome.organism.name",
+    :op "=",
+    :code "D",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Homo sapiens"}
+   {:path "Chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "21"}
+   {:path "Chromosome.locatedFeatures.start",
+    :op ">=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "9000000"}
+   {:path "Chromosome.locatedFeatures.end",
+    :op "<=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "12000000"}],
+  :name "ChromRegion_GenesTransExon",
+  :rank "20",
+  :title "Chromosomal Location --> All Genes + Transcripts + Exons",
+  :comment "Added 26OCT2010: ML",
+  :constraintLogic "A and B and C and D",
+  :select
+  ["Chromosome.primaryIdentifier"
+   "Chromosome.locatedFeatures.start"
+   "Chromosome.locatedFeatures.feature.primaryIdentifier"
+   "Chromosome.locatedFeatures.feature.gene.primaryIdentifier"
+   "Chromosome.locatedFeatures.feature.gene.symbol"
+   "Chromosome.locatedFeatures.feature.gene.transcripts.primaryIdentifier"
+   "Chromosome.organism.name"],
+  :orderBy
+  [{:Chromosome.primaryIdentifier "ASC"}
+   {:Chromosome.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :Organism_Protein
+ {:description
+  "For a given organism (default = H. sapiens) displays all proteins.",
+  :tags ["im:public"],
+  :where
+  [{:path "Protein.organism.shortName",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "H. sapiens"}],
+  :name "Organism_Protein",
+  :rank "34",
+  :title "Organism --> All proteins.",
+  :comment "",
+  :select
+  ["Protein.primaryIdentifier"
+   "Protein.primaryAccession"
+   "Protein.organism.shortName"],
+  :orderBy [{:Protein.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :ChromRegion_Genes
+ {:description
+  "Show the genes located between two points on a chromosome. [Keywords: span, region, co-ordinates]",
+  :tags ["im:aspect:Genomics" "im:frontpage" "im:public" "im:report"],
+  :where
+  [{:path "Chromosome.locatedFeatures.feature", :type "Gene"}
+   {:path "Chromosome.locatedFeatures.feature.organism.name",
+    :op "=",
+    :code "E",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Homo sapiens"}
+   {:path "Chromosome.primaryIdentifier",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "11"}
+   {:path
+    "Chromosome.locatedFeatures.feature.chromosomeLocation.start",
+    :op ">=",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "17200000"}
+   {:path "Chromosome.locatedFeatures.feature.chromosomeLocation.end",
+    :op "<=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "17500000"}],
+  :name "ChromRegion_Genes",
+  :rank "18",
+  :title "Region --> Genes",
+  :comment "Added 26OCT2010: ML",
+  :constraintLogic "A and B and C and E",
+  :select
+  ["Chromosome.primaryIdentifier"
+   "Chromosome.locatedFeatures.feature.primaryIdentifier"
+   "Chromosome.locatedFeatures.feature.symbol"
+   "Chromosome.locatedFeatures.feature.chromosomeLocation.start"
+   "Chromosome.locatedFeatures.feature.chromosomeLocation.end"
+   "Chromosome.locatedFeatures.feature.chromosomeLocation.strand"],
+  :orderBy [{:Chromosome.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}},
+ :tissue_proteinatlas
+ {:description
+  "For a given human tissue returns a list of Genes which are localised in the tissue. Optional filters are expression level and experimental confidence.",
+  :tags ["im:aspect:Expression" "im:aspect:Function" "im:public"],
+  :where
+  [{:path "Gene.proteinAtlasExpression.tissue.name",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "pancreas"}
+   {:path "Gene.proteinAtlasExpression.level",
+    :op "ONE OF",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :values ["High" "Moderate" "Strong"]}
+   {:path "Gene.proteinAtlasExpression.reliability",
+    :op "ONE OF",
+    :code "C",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :values ["High" "Medium" "Supportive"]}],
+  :name "tissue_proteinatlas",
+  :rank "38",
+  :title "Tissue --> Protein Atlas expression",
+  :comment "Added 31JAN2012: ML",
+  :constraintLogic "A and B and C",
+  :select
+  ["Gene.symbol"
+   "Gene.primaryIdentifier"
+   "Gene.proteinAtlasExpression.tissue.name"
+   "Gene.proteinAtlasExpression.expressionType"
+   "Gene.proteinAtlasExpression.level"
+   "Gene.proteinAtlasExpression.reliability"
+   "Gene.proteinAtlasExpression.cellType"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :Term_inGWAS
+ {:description
+  "Search GWAS experiments and return SNPs and associated genes. Searchable fields include: First Author, Pub Med ID, phenotype and Phenotype [Example: *diabetes* or *obesity* or try typing your keyword to bring up autocomplete options]. Filter by p-value cut-off [Format Examples: 0.01 or 2.0E-6; default = 0.01]. [Keywords: genome wide association, study, studies, disease] NOTE: THIS TEMPLATE ONLY RETURNS SNPs THAT ALSO HAVE AN ASSOCIATED GENE.  USE TEMPLATE \"GWAS term --> SNP + Associated gene if available\" FOR ALL SNPS.",
+  :tags ["im:aspect:GWAS" "im:public"],
+  :where
+  [{:path "GWAS.results.phenotype",
+    :op "=",
+    :code "A",
+    :editable true,
+    :switchable true,
+    :switched "ON",
+    :value "*Diabetes*"}
+   {:path "GWAS.results.pValue",
+    :op "<=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "0.01"}],
+  :name "Term_inGWAS",
+  :rank "28",
+  :title "GWAS term --> SNP + Associated gene",
+  :comment "Added 14DEC2010: ML",
+  :constraintLogic "B and C and A and D",
+  :select
+  ["GWAS.firstAuthor"
+   "GWAS.publication.pubMedId"
+   "GWAS.results.SNP.primaryIdentifier"
+   "GWAS.results.pValue"
+   "GWAS.name"
+   "GWAS.results.phenotype"
+   "GWAS.results.associatedGenes.symbol"
+   "GWAS.results.associatedGenes.name"
+   "GWAS.results.associatedGenes.organism.shortName"],
+  :orderBy [{:GWAS.firstAuthor "ASC"}],
+  :model {:name "genomic"}},
+ :PhenotypeGene
+ {:description
+  "For a given Phenotype (or List of Phenotypes) links mouse genes (with alleles displaying this phenotype) to orthologous genes (Use optional filter to return only human orthologues).  [keywords: homologue, homolog, paralogue, paralogue, ortholog, allele, strain, phenotype]",
+  :tags ["im:aspect:Disease" "im:public"],
+  :where
+  [{:path "Gene.homologues.homologue.organism",
+    :op "!=",
+    :code "B",
+    :editable false,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Gene.organism"}
+   {:path "Gene.alleles.genotypes.phenotypeTerms.name",
+    :op "CONTAINS",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "lipid"}],
+  :name "PhenotypeGene",
+  :rank "48",
+  :title "Mouse Phenotype -->  Mouse Genes + Orthologous genes",
+  :comment "",
+  :constraintLogic "D and A and B and C",
+  :select
+  ["Gene.organism.name"
+   "Gene.symbol"
+   "Gene.name"
+   "Gene.alleles.genotypes.phenotypeTerms.name"
+   "Gene.homologues.homologue.primaryIdentifier"
+   "Gene.homologues.homologue.symbol"
+   "Gene.homologues.homologue.organism.name"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :Gene_Alleles_Disease
+ {:description
+  "For a gene, show alleles and any associated diseases. ClinVar data.",
+  :tags ["im:aspect:Disease" "im:public" "im:report"],
+  :where
+  [{:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "PPARG",
+    :extraValue "H. sapiens"}],
+  :name "Gene_Alleles_Disease",
+  :rank "22",
+  :title "Gene --> Alleles and Disease",
+  :comment "",
+  :select
+  ["Gene.symbol"
+   "Gene.name"
+   "Gene.primaryIdentifier"
+   "Gene.secondaryIdentifier"
+   "Gene.organism.name"
+   "Gene.alleles.primaryIdentifier"
+   "Gene.alleles.organism.name"
+   "Gene.alleles.clinicalSignificance"
+   "Gene.alleles.alternate"
+   "Gene.alleles.type"
+   "Gene.alleles.reference"
+   "Gene.alleles.diseases.identifier"
+   "Gene.alleles.diseases.name"],
+  :orderBy [{:Gene.symbol "ASC"}],
+  :model {:name "genomic"}},
+ :GeneInteractorsExpression
+ {:description
+  "For a specified gene or genes, show genes that interact with this gene that are also expressed in the specified tissue.  (Interactors could be physical or genetic; Expression is based on tissue expression from the Protein Atlas Project and should be further interrogated for reliability level).",
+  :tags ["im:aspect:Expression" "im:aspect:Interactions" "im:public"],
+  :where
+  [{:path "Gene.interactions.participant2", :type "Gene"}
+   {:path "Gene",
+    :op "LOOKUP",
+    :code "A",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "pax6",
+    :extraValue "H. sapiens"}
+   {:path
+    "Gene.interactions.participant2.proteinAtlasExpression.tissue.name",
+    :op "=",
+    :code "B",
+    :editable true,
+    :switchable false,
+    :switched "LOCKED",
+    :value "Pancreas"}],
+  :name "GeneInteractorsExpression",
+  :rank "12",
+  :title
+  "Gene + Tissue Expression  --> Interactors that are expressed in that tissue",
+  :comment "",
+  :constraintLogic "A and B",
+  :select
+  ["Gene.primaryIdentifier"
+   "Gene.symbol"
+   "Gene.interactions.participant2.primaryIdentifier"
+   "Gene.interactions.participant2.symbol"
+   "Gene.interactions.participant2.proteinAtlasExpression.tissue.name"
+   "Gene.interactions.participant2.proteinAtlasExpression.level"],
+  :orderBy [{:Gene.primaryIdentifier "ASC"}],
+  :model {:name "genomic"}}}
