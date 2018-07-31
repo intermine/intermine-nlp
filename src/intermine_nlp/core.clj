@@ -1,6 +1,5 @@
 (ns intermine-nlp.core
-  (:require [imcljs.fetch :as fetch]
-            [intermine-nlp.parse :as parse]
+  (:require [intermine-nlp.parse :as parse]
             [intermine-nlp.nlp :as nlp]
             [intermine-nlp.model :as model]
             [intermine-nlp.util :as util]

@@ -27,7 +27,7 @@
          [{:root root}]
          (try
            (im-fetch/templates {:root root})
-           (catch java.lang.Exception e (print "Couldn't access database")))
+           (catch java.lang.Exception e (println "Couldn't access database")))
          [db-name]
          (let [url (case db-name
                      "medic"    "medicmine.jcvi.org/medicmine"
@@ -37,13 +37,16 @@
                      "rat"      "ratmine.mcw.edu/ratmine"
                      "mouse"    "www.mousemine.org/mousemine"
                      "fly-beta" "beta.flymine.org/beta"
-                     "www.flymine.org/query")
+                     java.lang.Exception)
                db-request {:root url
                            :token nil
                            :model {:name "genomic"}}]
            (try
              (im-fetch/templates db-request)
-             (catch java.lang.Exception e (load-local-templates db-name))))))
+             (catch java.lang.Exception e
+               (do
+                 (println "Couldn't access database, attempting local read.")
+                 (load-local-templates db-name)))))))
 
 (def fetch-templates
     "Fetch templates for the given dataset. Defaults to flymine.

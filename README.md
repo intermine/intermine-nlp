@@ -55,3 +55,14 @@ To load a model and construct a parser pipeline:
 ```
 And here's a visualization of the parse tree generated for that last query:
 ![alt text](parse_tree.png "Parse of the sentence 'Show me genes with length greater than 2200.'")
+
+
+## Test
+To run unit tests, just execute (assuming leiningen is installed) `lein test`, from the root project
+directory. Expect this to take around a minute, as the JVM has to be started up, and the full
+test suit involves fetching some values from remote servers. Alternatively, you can run the test
+suite from within a currently-running Clojure session. This can be done rather inconveniently from
+within the leiningen/Clojure REPL by require each namespace in test/intermine-nlp. However, your
+environment probably supports something more automated. In Emacs using Cider, I can run `M-x cider-test-run-project-tests`
+(`C-c C-t p`) to run all tests in all test namespaces, or `M-x cider-test-run-ns-tests` (`C-c C-t n`)
+to run all tests in the current test namespace.

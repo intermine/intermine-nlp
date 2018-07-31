@@ -6,10 +6,10 @@
             [intermine-nlp.util :as util]
             [intermine-nlp.template :as template]
             [imcljs.fetch :as im-fetch]
-            [imcljs.path :as path]))
+            [imcljs.path :as im-path]))
 
 
-(defn rand-val
+(defn rand-map-val
   "Get a random value from a map"
   [m]
   (-> m vals rand-nth))
@@ -21,7 +21,7 @@
         [& classes] class-kws]
     (if classes
       (try
-        (rand-val (im-path/attributes model path))
+        (rand-map-val (im-path/attributes model path))
         (catch Exception e nil))
       nil)))
 
@@ -147,7 +147,9 @@
         field-type (get-in attr [:field :type])]
     {:path path
      :op (rand-op field-type)
-     :value (rand-value field-type)}))
+     ;; :value (rand-possible-value service path)
+     :value (rand-value field-type)
+     }))
 
 (defn rand-depth-constraint
   "Returns a random constraint with depth between 1 and 'depth'.

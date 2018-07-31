@@ -25,8 +25,8 @@ On no twenty spring of in esteem spirit likely estate. Continue new you declared
 
 
 (deftest model-grammar-test
-  (let [model-class-parser (insta/parser (parse/model-parser db-model) :start :CLASS)
-        model-field-parser (insta/parser (parse/model-parser db-model) :start :FIELD)
+  (let [model-class-parser (insta/parser (parse/model-grammar db-model) :start :CLASS)
+        model-field-parser (insta/parser (parse/model-grammar db-model) :start :FIELD)
         class-names (->> db-model :classes vals (map :name))
         fields (->> (map keyword class-names)
                     (map (fn [class-kw] (randq/rand-field db-model [class-kw])))
@@ -34,7 +34,7 @@ On no twenty spring of in esteem spirit likely estate. Continue new you declared
                     distinct
                     flatten)
         field-names (distinct (map :name fields))]
-    (testing "Testing model-parser"
+    (testing "Testing model-grammar"
       (are [classes] (every? #(= (insta/parse model-class-parser %) [:CLASS %]) classes)
         class-names)
       (are [fields] (every? #(= (insta/parse model-field-parser %) [:FIELD %]) fields)
