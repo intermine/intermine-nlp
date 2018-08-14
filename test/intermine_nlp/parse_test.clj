@@ -6,11 +6,16 @@
             [intermine-nlp.util :as util]
             [instaparse.core :as insta]
             [imcljs.path :as im-path]
-            [clojure.test :as test]))
+            [clojure.set :refer [map-invert]]
+            [clojure.test :as test]
+            [intermine-nlp.nlp :as nlp]))
 
 (def db-model (model/fetch-model "fly"))
 (def service {:root "www.flymine.org/query"
               :model db-model})
+
+(def lemma-class-map (map-invert (parse/field-lemma-mapping db-model)))
+(def lemma-field-map (map-invert (parse/class-lemma-mapping db-model)))
 
 (def sample-text "Man request adapted spirits set pressed. Up to denoting subjects sensible feelings it indulged directly. We dwelling elegance do shutters appetite yourself diverted. Our next drew much you with rank. Tore many held age hold rose than our. She literature sentiments any contrasted. Set aware joy sense young now tears china shy.
 To shewing another demands to. Marianne property cheerful informed at striking at. Clothes parlors however by cottage on. In views it or meant drift to. Be concern parlors settled or do shyness address. Remainder northward performed out for moonlight. Yet late add name was rent park from rich. He always do do former he highly.
@@ -24,22 +29,6 @@ Put all speaking her delicate recurred possible. Set indulgence inquietude discr
 On no twenty spring of in esteem spirit likely estate. Continue new you declared differed learning bringing honoured. At mean mind so upon they rent am walk. Shortly am waiting inhabit smiling he chiefly of in. Lain tore time gone him his dear sure. Fat decisively estimating affronting assistance not. Resolve pursuit regular so calling me. West he plan girl been my then up no.")
 
 
-(deftest model-grammar-test
-  (let [model-class-parser (insta/parser (parse/model-grammar db-model) :start :CLASS)
-        model-field-parser (insta/parser (parse/model-grammar db-model) :start :FIELD)
-        class-names (->> db-model :classes vals (map :name))
-        fields (->> (map keyword class-names)
-                    (map (fn [class-kw] (randq/rand-field db-model [class-kw])))
-                    (repeat 2)
-                    distinct
-                    flatten)
-        field-names (distinct (map :name fields))]
-    (testing "Testing model-grammar"
-      (are [classes] (every? #(= (insta/parse model-class-parser %) [:CLASS %]) classes)
-        class-names)
-      (are [fields] (every? #(= (insta/parse model-field-parser %) [:FIELD %]) fields)
-        field-names))))
-
 (deftest gen-parser-test
   ;; TODO: parse collection of human-generated queries
   (let [parser1 (parse/gen-parser db-model)]
@@ -49,4 +38,4 @@ On no twenty spring of in esteem spirit likely estate. Continue new you declared
         "which Genes doesn't parse."
         "Gene length for all")
       (are [string] ((complement insta/failure?) (insta/parse parser1 string))
-        "show me Gene with primaryIdentifier ovo"))))
+        "show me gene with primaryidentifier ovo"))))

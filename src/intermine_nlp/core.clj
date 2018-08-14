@@ -5,46 +5,37 @@
             [intermine-nlp.util :as util]
             [instaparse.core :as insta]
             [clojure.string :as string]
-            [clojure.pprint :refer [pprint]])
+            [clojure.pprint :refer [pprint]]
+            [clojure.set :refer [map-invert]]
+            [imcljs.query :as im-query]
+            [intermine-nlp.query :as query]
+            [intermine-nlp.fuzzy :as fuzzy])
   (:gen-class))
-
-
-(defn read-sentence
-  "Read a sentence from a file (for testing)"
-  [path]
-  (-> path slurp read-string :english))
-
-(defn read-pathquery
-  "Read a PathQuery from a file (for testing)"
-  [path]
-  (-> path slurp read-string :pathquery))
-
 
 (defn parser-pipeline
   "Generate a parser pipeline for a given InterMine model.
   options:
-         :lemmatize (default = false)"
-  [model & {:as options}]
-  (let [class-lemma-map (->> model
-                             :classes
-                             keys
-                             (map name)
-                             (clojure.string/join " ")
-                             nlp/lemma-map)
+  "
+  [service & {:as options}]
+  (let [model (:model service)
         parser (parse/gen-parser model)
-        parser-lemmatized (parse/gen-parser model class-lemma-map)]
-    #(cond->> %
-        (:lemmatize options) nlp/lemmatize-as-text
-        (:lemmatize options) parser-lemmatized
-        (not (:lemmatize options)) parser
-        ;; (:lemmatize options) transform tree
-        )))
+        threshold (or (:threshold options) 0.8)]
+    #(->> %
+          nlp/lemmatize-as-text
+          (fuzzy/replace-class-names model threshold)
+          (fuzzy/replace-field-names model threshold)
+          nlp/lemmatize-as-text
+          (insta/parse parser)
+          parse/transform-tree
+          (query/gen-query service)
+          )))
 
 (defn -main
-  "In the future I'll return a query, right now I'll just give you the parse tree."
+  "I'll try to parse your English query and give you the PathQuery translation."
   [& args]
   (let [fly-model (model/fetch-model "fly")
-        pipeline (parser-pipeline fly-model :lemmatize true)]
+        fly-service {:root "www.flymine.org/query" :model fly-model}
+        pipeline (parser-pipeline fly-service)]
     (pprint "Enter a simple query and I'll attempt to parse it!")
     (pprint "Example: Show me genes with primaryIdentifier like ovo.")
     (loop []
@@ -54,7 +45,7 @@
             result (pipeline text)]
         (if (not (empty? text))
           (do (cond
-                (insta/failure? result) (pprint "Sorry, I couldn't parse that.")
+                (every? empty? result) (pprint "Sorry, I couldn't parse that.")
                 :else                   (pprint result))
               (recur))
           (pprint "Bye! Happy hacking."))))))

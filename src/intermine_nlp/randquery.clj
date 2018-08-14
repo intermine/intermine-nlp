@@ -1,6 +1,5 @@
 (ns intermine-nlp.randquery
-  (:require [imcljs.query :as query]
-            [imcljs.path :as im-path]
+  (:require [imcljs.path :as im-path]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as string]
             [intermine-nlp.util :as util]
@@ -194,7 +193,7 @@
           path (im-path/join-path class-kws)
           top-path (im-path/adjust-path-to-last-class model path)
           top-path-kw (keyword top-path)
-          summary (top-path-kw (util/summaries service))]
+          summary (top-path-kw (util/fetch-summaries service))]
       (vec (map (partial merge-paths path) summary)))))
 
 (defn rand-class

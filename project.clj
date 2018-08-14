@@ -1,4 +1,4 @@
-(defproject intermine-nlp "0.1.0-SNAPSHOT"
+(defproject intermine-nlp "0.1.1-SNAPSHOT"
   :description "intermine-nlp provides translation from natural (English) language to PathQuery queries."
   :url "http://example.com/FIXME"
   :license {:name "Gnu Lesser General Public License Version 2.1"
@@ -23,9 +23,9 @@
                  [instaparse "1.4.9"]
                  [rhizome "0.2.9"]
                  [clj-fuzzy "0.4.1"]
+                 [org.clojure/math.combinatorics "0.1.4"]
                  ]
-  ;; :main ^:skip-aot intermine-nlp.core
   :main intermine-nlp.core
-  ;; :main ^:skip-aot intermine-nlp.nlp
+  ;; :main ^:skip-aot intermine-nlp.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})

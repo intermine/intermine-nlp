@@ -1,17 +1,26 @@
 QUERY =
   VIEW
-  | VIEW 'where' CONSTR
-  | VIEW 'with' CONSTR
-  | VIEW 'in which' CONSTR
-  | VIEW 'for which' CONSTR
-  | VIEW 'have' CONSTR
-  | VIEW 'are' CONSTR
-  | VIEW 'is' CONSTR
-  | VIEW 'have' CONSTR
-  | VIEW CONSTR
+  | VIEW 'where' CONSTRS
+  | VIEW 'with' CONSTRS
+  | VIEW 'in which' CONSTRS
+  | VIEW 'for which' CONSTRS
+  | VIEW 'have' CONSTRS
+  | VIEW 'are' CONSTRS
+  | VIEW 'is' CONSTRS
+  | VIEW 'be' CONSTRS
+  | VIEW 'have' CONSTRS
+  | VIEW CONSTRS
+  | ORGANISM ',' VIEW
+  | ORGANISM ',' VIEW CONSTRS
+  | ORGANISM 'show the' VIEW
+  | ORGANISM 'show the' VIEW CONSTRS
+  | VIEW 'in' ORGANISM
+  | VIEW CONSTRS 'in' ORGANISM
+  | 'the' QUERY
   | 'show' QUERY
   | 'show me' QUERY
   | 'show I' QUERY
+  | 'show i' QUERY
   | 'show all' QUERY
   | 'show the' QUERY
   | 'which' QUERY
@@ -23,38 +32,49 @@ QUERY =
   | 'list all' QUERY
   | 'what is' QUERY
   | 'I want to see' QUERY
+  | 'i want to see' QUERY
+  | "the" QUERY
+  | QUERY 'in' ORGANISM
+  | ORGANISM QUERY
+  | 'from' ORGANISM 'select' QUERY
+  | 'from' ORGANISM QUERY
   | QUERY 'sort' SORT
   | QUERY 'sort by' SORT
   | QUERY "?"
   | QUERY "."
   | QUERY "!"
 
+
 VIEW =
-  VIEW 'and' VIEW
-  | CLASS
+  PATH ('and' PATH)+
+  | PATH (',' PATH)+
+  | PATH
+
+PATH =
+  CLASS
   | CLASS FIELD
   | FIELD
-  | ORGANISM
-  | ORGANISM ',' CLASS
-  | ORGANISM ',' CLASS FIELD
-  | ORGANISM 'show the' CLASS
-  | ORGANISM 'show the' FIELD
-  | ORGANISM 'show the' CLASS FIELD
+  | FIELD 'of' CLASS
+  | CLASS 'with' FIELD
+  | (CLASS '.')+ FIELD
 
+
+CONSTRS =
+  CONSTR ('and' CONSTR)+
+  | CONSTR ('or' CONSTR)+
+  | CONSTR (',' CONSTR)+
+  | CONSTR
 
 CONSTR =
-  CONSTR 'and' CONSTR
-  | CONSTR 'or' CONSTR
-  | VALUE
-  | CLASS 'exists'
-  | FIELD COMPARE VALUE
-  | VALUE COMPARE FIELD
-  | FIELD VALUE
-  | VALUE FIELD
-  | FIELD MULTI_COMPARE VALUES
-  | VALUES MULTI_COMPARE FIELD
-  | UNARY_OP FIELD
-  | FIELD UNARY_OP
+  VALUE
+  | PATH 'exists'
+  | PATH COMPARE VALUE
+  | PATH VALUE
+  | VALUE PATH
+  | PATH MULTI_COMPARE VALUES
+  | VALUES MULTI_COMPARE PATH
+  | UNARY_OP PATH
+  | PATH UNARY_OP
 
 
 COMPARE =
@@ -83,6 +103,7 @@ LIKE =
 NLIKE =
   "not" LIKE
   | "isn't" LIKE
+  | "be not" LIKE
 
 MATH_COMP =
   EQ
@@ -114,7 +135,11 @@ GT =
   | 'greater than'
   | 'over'
   | 'more than'
+  | 'above'
+  | 'longer'
+  | 'longer than'
   | '>'
+
 
 LT =
   'LT'
@@ -124,6 +149,8 @@ LT =
   | 'less than'
   | 'below'
   | 'under'
+  | 'shorter'
+  | 'shorter than'
   | '<'
 
 GEQ =
@@ -133,7 +160,6 @@ GEQ =
 LEQ =
   LT 'or' EQ
   | '<='
-
 
 LIST_COMP =
   "%NOT IMPLEMENTED"
@@ -150,6 +176,7 @@ MULTI_COMPARE =
 
 M_ONE_OF =
   "one of"
+  | "one of either"
   | "contained in"
   | "in"
   | "either"
@@ -157,6 +184,7 @@ M_ONE_OF =
 M_NONE_OF =
   "not" M_ONE_OF
   | "isn't" M_ONE_OF
+  | "be not" M_ONE_OF
   | "neither"
 
 M_OVERLAPS =
@@ -166,6 +194,7 @@ M_OVERLAPS =
 M_NOVERLAPS =
   "not" M_OVERLAPS
   | "isn't" M_OVERLAPS
+  | "be not" M_OVERLAPS
 
 M_OUTSIDE =
   "%NOT IMPLEMENTED"
@@ -188,21 +217,24 @@ NULL =
   | "empty"
 
 NNULL =
-  "not null"
-  | "isn't null"
-  | "not empty"
-  | "isn't empty"
+  "not" NULL
+  | "isn't" NULL
+  | "be not" NULL
+  | "is not" NULL
 
 SORT =
-  SORT SORT
+  SORT SORT+
   | VALUE 'descend'
   | VALUE 'ascend'
 
 VALUES =
-  VALUE VALUE+
+  VALUE (("or"|"and"|",") VALUE)+
+
 
 VALUE =
   #"[0-9a-zA-Z]+"
 
 ORGANISM =
-  'Fly'
+  'fly'
+  | 'drosophila'
+  | 'Drosophila'

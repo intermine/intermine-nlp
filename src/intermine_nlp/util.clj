@@ -47,5 +47,43 @@
   of possible-values and unique-values are broken"
   (memoize possible-values-))
 
-(def summaries
+(def fetch-summaries
+  "Fetch summary fields for all classes in a database.
+  Argument: service"
   (memoize (partial im-fetch/summary-fields)))
+
+(defn class-summary
+  "Fetches the summary for a given class from a given db service"
+  [service class-name]
+  (let [summaries (fetch-summaries service)]
+    (get summaries (keyword class-name))))
+
+(defn un-lemmatize
+  "Convert a lemmatized  path back to its schema form. If no match (or if
+  the path is already in schema form), return the original path."
+  [path lemma-path-map]
+  (or (get lemma-path-map path) path))
+
+(defn class-names
+  "Returns a list of class names (strings) for all classes in a given model."
+  [model]
+  (->> model
+       :classes
+       keys
+       (map name)
+       distinct))
+
+(defn field-names
+  "Returns a list of field names (strings) for all classes in a given model.
+  If class provided, returns list of fields for given class in model."
+  ([model]
+   (let [class-paths (class-names model)]
+     (distinct (flatten (map #(->> %
+                                   (im-path/attributes model)
+                                   keys
+                                   (map name)) class-paths)))))
+  ([model class]
+   (distinct (flatten (->> class
+                           (im-path/attributes model)
+                           keys
+                           (map name))))))
