@@ -12,7 +12,9 @@
   (let [path (str "resources/db_models/" db-name "mine_model.edn")]
     (try (with-open [file (io/reader path)]
            (-> file java.io.PushbackReader. edn/read))
-         (catch Exception e (printf "Couldn't open local model '%s'." path)))))
+         (catch Exception e
+           (printf "Couldn't open local model '%s'." path)
+           ))))
 
 (defn fetch-model
   "Fetch a model for the given dataset. Defaults to flymine.
@@ -53,5 +55,7 @@
   "Store a model in the appropriate directory (resources/db_models)."
   [model db-name]
   (let [path (str "resources/db_models/" db-name "mine_model.edn")]
-    (try (->> model prn-str (spit path))
-         (catch Exception e (printf "Couldn't store model at '%s'." path)))))
+    (binding [*print-length* false]
+      (try (->> model pr-str (spit path))
+           (catch Exception e (printf "Couldn't store model at '%s'." path))))))
+

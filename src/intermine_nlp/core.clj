@@ -12,25 +12,48 @@
             [intermine-nlp.fuzzy :as fuzzy])
   (:gen-class))
 
+(def default-service {:root "www.flymine.org/query" :model {:name "genomic"}})
+(def default-model (model/fetch-model default-service))
+
+(defn debug-print
+  "Print some text with a label, for use with doto and threading macros."
+  ([text tag]
+   (println (str (format "%-16s" tag) text))))
+
 (defn parser-pipeline
   "Generate a parser pipeline for a given InterMine model.
-  options:
+  service should be of the format {:root \"url-of-db-query-service\"}.
+  options: :debug (prints / visualizes at each step)
   "
   [service & {:as options}]
-  (let [model (:model service)
+  (let [model (try (model/fetch-model service)
+                   (catch Exception e (model/fetch-model (assoc service :model {:name "genomic"}))))
+        service (assoc service :model model)
         parser (parse/gen-parser model)
         threshold (or (:threshold options) 0.8)]
-    #(->> %
-          nlp/lemmatize-as-text
-          (fuzzy/replace-class-names model threshold)
-          (fuzzy/replace-field-names model threshold)
-          nlp/lemmatize-as-text
-          (insta/parse parser)
-          parse/transform-tree
-          (query/gen-query service)
-          )))
+    (cond
+      (:debug options)
+      #(as-> % $
+         (fuzzy/replace-model-names model threshold $)
+         (doto $ (debug-print "Fuzzy Matched: "))
+         (nlp/lemmatize-as-text $)
+         (doto $ (debug-print "Lemmatized: "))
+         (insta/parse parser $)
+         (doto $ insta/visualize)
+         (parse/transform-tree $)
+         (doto $ (debug-print "Transformed Tree: "))
+         (query/gen-query service $) 
+         )
+      :else
+      #(->> %
+            (fuzzy/replace-model-names model threshold)
+         nlp/lemmatize-as-text
+         (insta/parse parser)
+         parse/transform-tree
+         (query/gen-query service)
+         ))))
 
-(defn -main
+ (defn -main
   "I'll try to parse your English query and give you the PathQuery translation."
   [& args]
   (let [fly-model (model/fetch-model "fly")
@@ -45,7 +68,7 @@
             result (pipeline text)]
         (if (not (empty? text))
           (do (cond
-                (every? empty? result) (pprint "Sorry, I couldn't parse that.")
+                (every? nil? (vals result)) (pprint "Sorry, I couldn't parse that.")
                 :else                   (pprint result))
               (recur))
-          (pprint "Bye! Happy hacking."))))))
+          (pprint "Bye, and happy hacking."))))))

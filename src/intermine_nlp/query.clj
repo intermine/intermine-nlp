@@ -37,10 +37,12 @@
   (util/class-summary service path))
 
 (defn gen-root
+  "Generate the root path string based on the :PATH->:CLASS of a view.
+  If no root, return nil."
   [view lemma-class-map]
   (let [classes (distinct (flatten (map #(get-in % [:PATH :CLASS]) view)))
         class-paths (distinct (map #(util/un-lemmatize % lemma-class-map) classes))]
-    (first class-paths)))
+    (some identity class-paths)))
 
 (defn gen-path
   "Merge the values in a map of view elements (:CLASS, :FIELD) into an
@@ -60,15 +62,16 @@
       (not-empty field) field)))
 
 (defn gen-view
-  "Merge the values in a seq of :PATH elements into an imcljs view map."
+  "Merge the values in a seq of :PATH elements into an imcljs view map.
+  If no view, return nil."
   [service paths root lemma-class-map lemma-field-map]
-  (let [view (vec
+  (let [view (seq
               (map #(gen-path (:model service) (:PATH %) root lemma-class-map lemma-field-map)
                    paths))]
     (cond
       (= view [root]) (gen-summary service root)
       :else           view)))
-
+ 
 (defn gen-constraint
   "Merge the values in a map of constraint elements(:CLASS, :FIELD, :VALUE,
   :COMPARE, :MULTI_COMPARE, :UNARY_OP) into an imcljs constraint map."
@@ -98,9 +101,10 @@
     )))
 
 (defn gen-constraints
-  "Merge the values in a seq of :CONSTR elements into an imcljs constraints map."
+  "Merge the values in a seq of :CONSTR elements into an imcljs constraints map.
+  If no constraints, return nil."
   [model constraints root lemma-class-map lemma-field-map]
-  (vec
+  (seq
    (map #(gen-constraint model (:CONSTR %) root lemma-class-map lemma-field-map) constraints)))
 
 (defn gen-query

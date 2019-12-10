@@ -1,7 +1,7 @@
 (ns intermine-nlp.parse
   (:require [clojure.core.match :refer [match]]
             [instaparse.core :as insta]
-            [instaparse.combinators :refer :all]
+            [instaparse.combinators :refer [string alt ebnf]]
             [imcljs.path :as im-path]
             [clojure.pprint :refer [pprint]]
             [intermine-nlp.nlp :as nlp]
@@ -62,7 +62,9 @@
 
 ;;; Parse Tree transformations
 (def view-map
-  {:PATH  (fn [& children] {:PATH (apply merge (remove string? children))})
+  {:PATH  (fn [& children] {:PATH
+                           (apply merge
+                                  (remove string? children))})
    :CLASS (fn [text] {:CLASS text})
    :FIELD (fn [text] {:FIELD text})
    :VALUE (fn [text] {:VALUE text})
@@ -82,7 +84,7 @@
    :PATH  (fn [& path] {:PATH (apply merge path)})
    :CLASS (fn [text] {:CLASS text})
    :FIELD (fn [text] {:FIELD text})
-   :VALUE (fn [text] {:VALUE text})
+   :VALUE (fn [text] {:VALUE (string/trim text)})
    :VALUES (fn [& values] {:VALUES (filter identity (map :VALUE values))})
    :COMPARE (fn [comparison] {:COMPARE (first (second comparison))})
    :MULTI_COMPARE (fn [comparison] {:MULTI_COMPARE (first comparison)})
@@ -111,6 +113,7 @@
    })
 
 (defn transform-tree
-  "Transform a parse tree according "
+  "Transform a parse tree according to 'top-map' specification."
   [parse-tree]
   (apply merge (flatten (insta/transform top-map parse-tree))))
+

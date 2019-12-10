@@ -1,68 +1,69 @@
 QUERY =
   VIEW
-  | VIEW 'where' CONSTRS
-  | VIEW 'with' CONSTRS
-  | VIEW 'in which' CONSTRS
-  | VIEW 'for which' CONSTRS
-  | VIEW 'have' CONSTRS
-  | VIEW 'are' CONSTRS
-  | VIEW 'is' CONSTRS
-  | VIEW 'be' CONSTRS
-  | VIEW 'have' CONSTRS
+  | VIEW <'where'> CONSTRS
+  | VIEW <'with'> CONSTRS
+  | VIEW <'in which'> CONSTRS
+  | VIEW <'for which'> CONSTRS
+  | VIEW <'have'> CONSTRS
+  | VIEW <'that have'> CONSTRS
+  | VIEW <'are'> CONSTRS
+  | VIEW <'that are'> CONSTRS
+  | VIEW <'is'> CONSTRS
+  | VIEW <'that is'> CONSTRS
+  | VIEW <'be'> CONSTRS
+  | VIEW <'that be'> CONSTRS
   | VIEW CONSTRS
-  | ORGANISM ',' VIEW
-  | ORGANISM ',' VIEW CONSTRS
-  | ORGANISM 'show the' VIEW
-  | ORGANISM 'show the' VIEW CONSTRS
-  | VIEW 'in' ORGANISM
-  | VIEW CONSTRS 'in' ORGANISM
-  | 'the' QUERY
-  | 'show' QUERY
-  | 'show me' QUERY
-  | 'show I' QUERY
-  | 'show i' QUERY
-  | 'show all' QUERY
-  | 'show the' QUERY
-  | 'which' QUERY
-  | 'all' QUERY
-  | 'all the' QUERY
-  | 'all of the' QUERY
-  | 'for' QUERY
-  | 'list' QUERY
-  | 'list all' QUERY
-  | 'what is' QUERY
-  | 'I want to see' QUERY
-  | 'i want to see' QUERY
-  | "the" QUERY
-  | QUERY 'in' ORGANISM
+  | ORGANISM <','> VIEW
+  | ORGANISM <','> VIEW CONSTRS
+  | ORGANISM <'show the'> VIEW
+  | ORGANISM <'show the'> VIEW CONSTRS
+  | VIEW <'in'> ORGANISM
+  | VIEW CONSTRS <'in'> ORGANISM
+  | <'the'> QUERY
+  | <'show'> QUERY
+  | <'show me'> QUERY
+  | <'show I'> QUERY
+  | <'show the'> QUERY
+  | <'which'> QUERY
+  | <'find'> QUERY
+  | <'all'> QUERY
+  | <'all of the'> QUERY
+  | <'for'> QUERY
+  | <'list'> QUERY
+  | <'list all'> QUERY
+  | <'what'> QUERY
+  | <'what is'> QUERY
+  | <'what are'> QUERY
+  | <'I want to see'> QUERY
+  | <'the'> QUERY
+  | QUERY <'in'> ORGANISM
   | ORGANISM QUERY
-  | 'from' ORGANISM 'select' QUERY
-  | 'from' ORGANISM QUERY
-  | QUERY 'sort' SORT
-  | QUERY 'sort by' SORT
-  | QUERY "?"
-  | QUERY "."
-  | QUERY "!"
+  | <'from'> ORGANISM <'select'> QUERY
+  | <'from'> ORGANISM QUERY
+  | QUERY <'sort'> SORT
+  | QUERY <'sort by'> SORT
+  | QUERY <'?'>
+  | QUERY <'.'>
+  | QUERY <'!'>
 
 
 VIEW =
-  PATH ('and' PATH)+
-  | PATH (',' PATH)+
+  PATH (<'and'> PATH)+
+  | PATH (<','> PATH)+
   | PATH
 
 PATH =
   CLASS
   | CLASS FIELD
   | FIELD
-  | FIELD 'of' CLASS
-  | CLASS 'with' FIELD
-  | (CLASS '.')+ FIELD
+  | FIELD <'of'> CLASS
+  | (CLASS <'.'>)+ FIELD
 
 
 CONSTRS =
-  CONSTR ('and' CONSTR)+
-  | CONSTR ('or' CONSTR)+
-  | CONSTR (',' CONSTR)+
+  CONSTR (<'and'> CONSTR)+
+  | CONSTR (<'or'> CONSTR)+
+  | CONSTR (<','> CONSTR)+
   | CONSTR
 
 CONSTR =
@@ -230,9 +231,10 @@ SORT =
 VALUES =
   VALUE (("or"|"and"|",") VALUE)+
 
-
 VALUE =
   #"[0-9a-zA-Z]+"
+  | (<"`">|<"'">) #"[^'`]+" (<"`">|<"'">)
+
 
 ORGANISM =
   'fly'

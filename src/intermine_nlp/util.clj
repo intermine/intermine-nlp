@@ -65,25 +65,25 @@
   (or (get lemma-path-map path) path))
 
 (defn class-names
-  "Returns a list of class names (strings) for all classes in a given model."
+  "Returns set of class names (strings) for all classes in a given model."
   [model]
   (->> model
        :classes
        keys
        (map name)
-       distinct))
+       set))
 
 (defn field-names
   "Returns a list of field names (strings) for all classes in a given model.
-  If class provided, returns list of fields for given class in model."
+  If class provided, returns set of fields for given class in model."
   ([model]
    (let [class-paths (class-names model)]
-     (distinct (flatten (map #(->> %
-                                   (im-path/attributes model)
-                                   keys
-                                   (map name)) class-paths)))))
+     (set (flatten (map #(->> %
+                              (im-path/attributes model)
+                              keys
+                              (map name)) class-paths)))))
   ([model class]
-   (distinct (flatten (->> class
-                           (im-path/attributes model)
-                           keys
-                           (map name))))))
+   (set (flatten (->> class
+                      (im-path/attributes model)
+                      keys
+                      (map name))))))

@@ -14,4 +14,5 @@
         "which Genes doesn't parse."
         "Gene length for all")
       (are [string] (not-any? empty? (vals (pipeline string)))
-        "Show me genes with primaryIdentifier ovo"))))
+        "Show me genes with primaryIdentifier ovo"
+        "What drosophila alleles have secondaryidentifier like 'BLORP'?"))))

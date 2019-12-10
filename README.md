@@ -89,10 +89,13 @@ to run all tests in the current test namespace.
 ## Future Work
 Ranked in ascending order of difficulty (and by urgency in descending order, approximately):
 
-* Improve test coverage of existing codebase
+* Improve test coverage of existing codebase - consider starting with translations of templates
 * Parse sorting ("..., sort by length ascending.")
+* Constraint Logic: Which drosophila genes in chromosome ABC include transcript_ids XYZ?
 * Multi-word fuzzy matching of raw input, such as "primary IDs"->"primaryIdentifier" (consider clojure.math.combinatorics)
+* Implement abbreviation replacement, i.e., secondaryID -> secondaryIdentifier
 * Further improvement of grammar (resources/grammar.bnf) and query/parse functionality, manually covering more constructions and schema-dependant special cases
+* Parser fails gracefully: individual constraints/views which are parseable are ignored (this may be very difficult)
 * Collect more human translation data, incorporating it more efficiently/automatically in tests
 * NLP grammatical parsing (treebank?) as fallback mode
 * Incorporate statistical, modern NLP algorithms; requires much more training data

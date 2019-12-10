@@ -14,8 +14,6 @@
                  [org.clojure/core.async "0.2.395"]
                  [org.clojure/core.match "0.3.0-alpha5"]
                  [clojure-opennlp "0.4.0"]
-                 ;; [org.clojurenlp/core "3.7.0"]
-                 ;; [com.zensols.nlp/parse "0.1.4"]
                  [edu.stanford.nlp/stanford-corenlp "3.9.1"]
                  [edu.stanford.nlp/stanford-corenlp "3.9.1" :classifier "models"]
                  [edu.stanford.nlp/stanford-parser "3.9.1"]
